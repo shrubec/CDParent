@@ -37,7 +37,8 @@ local.properties
 
 # maven output folder
 /target/ 
-
+target
+target/*
 
 # TeXlipse plugin
 .texlipse
