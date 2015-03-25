@@ -106,8 +106,8 @@ function selectElement(element,panelId) {
 function updateElementStyleAndPosition(cardElement,setPositionOnly) {
 	var x=document.getElementById('mainForm:elementPositionX').value;
 	var y=document.getElementById('mainForm:elementPositionY').value;
-	var elementName=document.getElementById('mainForm:elementName').value;
 	if (setPositionOnly == false) {
+		var elementName=document.getElementById('mainForm:elementName').value;
 		var elementWidth=document.getElementById('mainForm:elementWidth').value;
 		var elementHeight=document.getElementById('mainForm:elementHeight').value;
 		var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
@@ -116,6 +116,24 @@ function updateElementStyleAndPosition(cardElement,setPositionOnly) {
 	else {
 		callUpdater(cardElement.id,x,y,null,null,null,null);
 	}
+	
+}
+
+function updateImageSize(imagePanel,imageElement) {
+	var x=document.getElementById('mainForm:elementPositionX').value;
+	var y=document.getElementById('mainForm:elementPositionY').value;
+	var elementName=document.getElementById('mainForm:elementName').value;
+	var elementWidth=convertPixelsToMilimeters(imageElement.width).toFixed(2);
+	var elementHeight=convertPixelsToMilimeters(imageElement.height).toFixed(2);
+	document.getElementById('mainForm:elementWidth').value=elementWidth;
+	document.getElementById('mainForm:elementHeight').value=elementHeight;
+	callUpdater(imagePanel.id,x,y,elementName,elementWidth,elementHeight,null);
+}
+
+function resizeImage(imagePanelId) {
+	cardElement=document.getElementById(imagePanelId+'_image');
+	imagePanel=document.getElementById(imagePanelId);
+	updateImageSize(imagePanel,cardElement);
 	
 }
 

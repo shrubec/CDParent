@@ -40,7 +40,6 @@ public class Updater extends HttpServlet {
 		String elementHeight=request.getParameter("elementHeight");
 		String elementEditor=request.getParameter("elementEditor");
 		String elementName=request.getParameter("elementName");
-		
 		ElementSessionDO element=null;
 		Map map=(Map) request.getSession().getAttribute("elementMap");
 		if (map.get(id) == null) {
@@ -51,9 +50,9 @@ public class Updater extends HttpServlet {
 		else {
 			element=(ElementSessionDO)map.get(id);
 		}
-		
 		element.setElementX(x);
 		element.setElementY(y);
+		
 		if (!elementName.equals("null")) element.setElementName(elementName);
 		if (!elementWidth.equals("null")) element.setElementWidth(elementWidth);
 		if (!elementHeight.equals("null")) element.setElementHeight(elementHeight);

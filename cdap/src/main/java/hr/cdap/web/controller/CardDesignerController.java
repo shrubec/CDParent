@@ -261,10 +261,14 @@ public class CardDesignerController {
 					component=imagePanel;
 					
 					Resizable resizableElement=new Resizable();
-					resizableElement.setId("resizableElement"+element.getFormId());
+					resizableElement.setId("resizableElement_"+element.getFormId());
 					resizableElement.setFor(element.getFormId());
 					resizableElement.setAspectRatio(true);
+					resizableElement.setOnResize("resizeImage('mainForm:"+element.getFormId()+"');");
 					component.getChildren().add(resizableElement);
+					
+					
+					
 				}
 				else {
 					OutputLabel formLabel=new OutputLabel();
