@@ -14,4 +14,12 @@ public class ElementSessionDO {
 	private String elementHeight;
 	private String elementEditor;
 	
+	//za dodatne podatke polja
+	private String elementDataType;
+	private String elementMinChar;
+	private String elementMaxChar;
+	private String elementDateFormat;
+	private String elementCardNumber;
+	private String elementRequired;
+	
 }

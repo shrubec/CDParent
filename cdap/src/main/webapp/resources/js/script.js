@@ -99,7 +99,9 @@ function selectElement(element,panelId) {
 	}
 	var style=element.getAttribute("style");
 	style=style+'border:1px solid red;';
+	console.log('test 1...');
 	element.setAttribute("style", style);
+	console.log('test 2... '+element);
 	currentlySelected=element;
 }
 
@@ -134,6 +136,6 @@ function resizeImage(imagePanelId) {
 	cardElement=document.getElementById(imagePanelId+'_image');
 	imagePanel=document.getElementById(imagePanelId);
 	updateImageSize(imagePanel,cardElement);
-	
+	saveImageSize();
 }
 

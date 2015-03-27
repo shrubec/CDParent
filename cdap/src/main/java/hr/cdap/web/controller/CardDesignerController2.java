@@ -38,7 +38,7 @@ import org.primefaces.context.RequestContext;
 @ManagedBean
 @ViewScoped
 @SuppressWarnings("rawtypes")
-public class CardDesignerController {
+public class CardDesignerController2 {
 	
 	public static final String ELEMENT_TYPE_LABEL="1";
 	public static final String ELEMENT_TYPE_FIELD="2";
@@ -52,13 +52,13 @@ public class CardDesignerController {
 	
 	private @Getter @Setter TempCardElement selectedCardElement;
 	private @Getter @Setter List<TempCardElement> elementList=new ArrayList<TempCardElement>();
-	private @Getter @Setter TempCardElement selectedElement;
+//	private @Getter @Setter TempCardElement selectedElement;
 	private @Getter @Setter String selectedId;
 	
 	private @Getter @Setter String ime="";
 	
 	
-	public CardDesignerController() {
+	public CardDesignerController2() {
 		System.out.println("CardDesignerController...");
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		if (session == null) {
@@ -66,36 +66,26 @@ public class CardDesignerController {
 		}
 		
 		session.setAttribute("elementMap", new HashMap<String,String>());
-		selectedElement=new TempCardElement();
+//		selectedElement=new TempCardElement();
 		elementList=new ArrayList<TempCardElement>();
 	}
 	
 	
-//	@PostConstruct
-//	public void fetchCardElements() {
-//		HttpServletRequest request=(HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
-//		System.out.println("Post construct... " + request.getParameter("template"));
-//		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-//		
-//		elementList=(List<TempCardElement> ) session.getAttribute(request.getParameter("template"));
-//		
-//		System.out.println("Dohvacen element list: " +elementList );
-//		
-//		if (elementList == null) elementList=new ArrayList<TempCardElement>();
-//		for (TempCardElement element:elementList) {
-//			element.setAddedOnForm(false);
-//			
-//			selectedId=element.getFormId(); //ovo vjerojatno ne treba
-//			
-//			executeJS_markSelectedElement(element);
-//			executeJS_setElementStyleAndValue(element);
-//			addElementsOnForm();
-//			
-//		}
-//		
-//	}
-//	
-//	
+	public  TempCardElement getSelectedElement() {
+		
+		if (elementList.isEmpty()) {
+			return new TempCardElement();
+		}
+		else {
+			for (TempCardElement element:elementList) {
+				if (("mainForm:"+element.getFormId()).equals(selectedId)) {
+					return element;
+				}
+			}
+		}
+		return null;
+	}
+	
 	
 	
 	private Integer fetchNumberOfElements(String type) {
@@ -140,32 +130,76 @@ public class CardDesignerController {
 			element.setWidth("40");
 			element.setHeight("10");
 		}
-		else {
-			element.setValue("SPECIMEN");
-			element.setStyleValue("SPECIMEN");
+		
+		else if (type.equals(ELEMENT_TYPE_FIELD)) {
+			element.setValue("SPECIMEN"+String.valueOf(elementList.size()));
+			element.setStyleValue("SPECIMEN"+String.valueOf(elementList.size()));
 			element.setWidth("40");
 			element.setHeight("8");
 			element.setDataType(ELEMENT_DATA_TYPE_STRING);
 			element.setMinCharLength("3");
 			element.setMaxCharLength("20");
 		}
+		else {
+			element.setValue("SPECIMEN"+String.valueOf(elementList.size()));
+			element.setStyleValue("SPECIMEN"+String.valueOf(elementList.size()));
+			element.setWidth("40");
+			element.setHeight("8");
+		}
 		
 		elementList.add(element);
 		selectedId=("mainForm:"+element.getFormId());
-		selectedElement=element;
+//		selectedElement=element;
 
+		HttpServletRequest request=(HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		Map map=(Map) request.getSession().getAttribute("elementMap");
+		
+		ElementSessionDO elementSessionDO=new ElementSessionDO();
+		elementSessionDO.setElementId("mainForm:"+element.getFormId());
+		elementSessionDO.setElementEditor(element.getStyleValue());
+		elementSessionDO.setElementHeight(element.getHeight());
+		elementSessionDO.setElementWidth(element.getWidth());
+		elementSessionDO.setElementX(element.getPositionX());
+		elementSessionDO.setElementY(element.getPositionY());
+		elementSessionDO.setElementName(element.getName());
+		elementSessionDO.setElementMinChar(element.getMinCharLength());
+		elementSessionDO.setElementMaxChar(element.getMaxCharLength());
+		elementSessionDO.setElementDateFormat(element.getDateFormat());
+		elementSessionDO.setElementRequired(element.getRequired() ? "DA":"NE");
+		
+		if (element.getDataType() != null) {
+			if (element.getDataType().equals(ELEMENT_DATA_TYPE_STRING)) {
+				elementSessionDO.setElementDataType("Text");
+			}
+			else if (element.getDataType().equals(ELEMENT_DATA_TYPE_NUMBER))
+				elementSessionDO.setElementDataType("Broj");
+			else if (element.getDataType().equals(ELEMENT_DATA_TYPE_DATE)) {
+				elementSessionDO.setElementDataType("Datum");
+				elementSessionDO.setElementDateFormat("dd.MM.yyyy");
+			}
+			else if (element.getDataType().equals(ELEMENT_DATA_TYPE_SERIAL)) {
+				elementSessionDO.setElementDataType("Serijski broj");
+				elementSessionDO.setElementCardNumber("0000001");
+			}
+		}
+		
+		map.put(elementSessionDO.getElementId(), elementSessionDO);
 		
 		
-		executeJS_markSelectedElement(element);
+		
 		//executeJS_setElementStyleAndValue(element);
 		
-		addElementsOnForm(false);
+		for (TempCardElement e:elementList) {
+			addElementOnForm(e);
+			
+		}
 		
+		executeJS_markElementSelected(element);
 		
 	}
 	
 	
-	private void executeJS_markSelectedElement(TempCardElement element) {
+	private void executeJS_markElementSelected(TempCardElement element) {
 		String selectedSide="frontSide";
 		if (element.getSide().equals("2")) {
 			selectedSide="backSide";
@@ -222,9 +256,9 @@ public class CardDesignerController {
 				element.setName(elementSessionDO.getElementName()); 
 				element.setValue(elementSessionDO.getElementEditor());
 				element.setStyleValue(elementSessionDO.getElementEditor());
-				selectedElement=element;
+//				selectedElement=element;
 				executeJS_setElementStyleAndValue(element);
-				executeJS_markSelectedElement(element);
+				executeJS_markElementSelected(element);
 			}
 		}
 	}
@@ -270,11 +304,13 @@ public class CardDesignerController {
 	
 	//metoda sluzi da se refresha vrijednost editora - ta komponenta se ne zeli automatski refresati kad mu se sa javascriptom promijeni vrijednost
 	public void refreshEditorValueOnly() {
-		for (TempCardElement element:elementList) {
-			if (selectedId.equals("mainForm:"+element.getFormId())) {
-				selectedElement=element;
-			}
-		}
+//		
+//		for (TempCardElement element:elementList) {
+//			if (selectedId.equals("mainForm:"+element.getFormId())) {
+//				selectedElement=element;
+//			}
+//		}
+		
 		RequestContext.getCurrentInstance().update("mainForm:elementEditor");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel1");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel2");
@@ -283,9 +319,9 @@ public class CardDesignerController {
 	}
 	
 	
-	public void addElementsOnForm(boolean savedTemplate) {
+	
+	public void addElementOnForm(TempCardElement element) {
 		
-		for (TempCardElement element:elementList) {
 			
 			String coordinatesTarget="this";
 			if (element.getType().equals(ELEMENT_TYPE_IMAGE)|| element.getType().equals(ELEMENT_TYPE_SIGNATURE)) {
@@ -294,22 +330,27 @@ public class CardDesignerController {
 			String findCoordinates;
 			OutputPanel panel=resolveSide(element.getSide());
 			if (element.getSide().equals("1")) {
-				findCoordinates="findCoordinatesFront("+coordinatesTarget+");refreshEditorValueOnly()";
+				findCoordinates="selectElementFront("+coordinatesTarget+");";//refreshEditorValueOnly()";
 			}
 			else {
-				findCoordinates="findCoordinatesBack("+coordinatesTarget+");refreshEditorValueOnly()";
+				findCoordinates="selectElementBack("+coordinatesTarget+");";//refreshEditorValueOnly()";
 			}
 			
 			if (!element.addedOnForm) {
 				
 				UIComponent component=null;
+				BigDecimal width=new BigDecimal(element.getWidth());
+				BigDecimal height=new BigDecimal(element.getHeight());
+				width=width.divide(new BigDecimal("0.264583333"),0, RoundingMode.HALF_UP);
+				height=height.divide(new BigDecimal("0.264583333"),0, RoundingMode.HALF_UP);
 				
 				if (element.getType().equals(ELEMENT_TYPE_IMAGE)|| element.getType().equals(ELEMENT_TYPE_SIGNATURE)) {
 					
-//					findCoordinates=findCoordinates+";updateImageSize("+coordinatesTarget+",'mainForm:"+element.getFormId()+"_image"+"')";
+					//findCoordinates=findCoordinates+";";//updateImageSize("+coordinatesTarget+",'mainForm:"+element.getFormId()+"_image"+"')";
 					
 					OutputPanel imagePanel=new OutputPanel();
 					imagePanel.setId(element.getFormId());
+					imagePanel.setStyle("width:"+width+"px;height:"+height+"px;");
 					
 					GraphicImage graphicImage=new GraphicImage();
 					if (element.getType().equals(ELEMENT_TYPE_IMAGE)) graphicImage.setValue("images/slika.jpg");
@@ -337,6 +378,7 @@ public class CardDesignerController {
 					formLabel.setValue(element.getValue());
 					formLabel.setOnclick(findCoordinates);
 					formLabel.setId(element.getFormId());
+					
 					component=formLabel;
 					panel.getChildren().add(formLabel);
 				}
@@ -362,54 +404,54 @@ public class CardDesignerController {
 			}
 			
 			
-//			
-//			if (savedTemplate) {
-//				
-//				UIComponent formElement=fetchElement(panel, element.getFormId());
-//				if (formElement instanceof OutputLabel) {
-//					((OutputLabel) formElement).setValue(element.getValue());
-//					System.out.println("Postavljena nova vrijednost... " + element.getValue());
-//					
-//				}
-//				executeJS_setElementStyleAndValue(element);
-//				
-//			}
-//			else {
-				ElementSessionDO elementSessionDO=fetchElementMapValues(element.getFormId());
+			
+			ElementSessionDO elementSessionDO=fetchElementMapValues(element.getFormId());
 				
 				if (elementSessionDO != null) {
+					
+					System.out.println("Element u sessionu pronadjen...");
+					
 					element.setName(elementSessionDO.getElementName());
 					element.setPositionX(elementSessionDO.getElementX());
 					element.setPositionY(elementSessionDO.getElementY());
 					element.setWidth(elementSessionDO.getElementWidth());
 					element.setHeight(elementSessionDO.getElementHeight());
+				
 					element.setValue(elementSessionDO.getElementEditor());
 					element.setStyleValue(elementSessionDO.getElementEditor());
 					
-					UIComponent formElement=fetchElement(panel, element.getFormId());
-					if (formElement instanceof OutputLabel) {
-						((OutputLabel) formElement).setValue(element.getValue());
-						System.out.println("Postavljena nova vrijednost... " + element.getValue());
-						
-					}
-					executeJS_setElementStyleAndValue(element);
+//					if (element.getValue() == null || element.getValue().isEmpty()) element.setValue("???");
+//					if (element.getStyleValue() == null || element.getStyleValue().isEmpty()) element.setStyleValue("???");
+					
+					
+					//ako je value null, komponenta se ne vidi
+//					UIComponent formElement=fetchElement(panel, element.getFormId());
+//					if (formElement instanceof OutputLabel) {
+//						((OutputLabel) formElement).setValue(element.getValue());
+//						System.out.println("Postavljena nova vrijednost... " + element.getValue());
+//						
+//					}
+					
+					
+//					executeJS_setElementStyleAndValue(element);
+					
 					
 				}
 				
-//			}
+				
 			
 			
 			
-			RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:"+panel.getId()+"','mainForm:"+element.getFormId()+"',"+element.getPositionX()+","+element.getPositionY()+");");
-			
+			/*
 			
 			if (selectedId != null && selectedId.equals("mainForm:"+element.getFormId())) {
 				executeJS_markSelectedElement(element);
 			}
+			*/
 			
+			System.out.println("Element " + element.getFormId() + ": " + element.getPositionX() + " - " + element.getPositionY());
+			RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:"+panel.getId()+"','mainForm:"+element.getFormId()+"',"+element.getPositionX()+","+element.getPositionY()+");");
 			
-			
-		}
 		
 	}
 	
@@ -425,7 +467,7 @@ public class CardDesignerController {
 	
 	public void elementChanged(ValueChangeEvent evt) {
 		System.out.println("Element changed... " + evt.getComponent().getId());
-		addElementsOnForm(false);
+//		addElementsOnForm(false);
 	}
 	
 	
@@ -475,7 +517,6 @@ public class CardDesignerController {
 		private String positionY;
 		private String width;
 		private String height;
-		private String maxLength;
 		private String type; //buduca referenca
 		
 		private String dataType; //buduca referenca
@@ -495,7 +536,7 @@ public class CardDesignerController {
 	}
 	
 	
-	
+	/*
 	public void changeDataType() {
 		
 		selectedElement.setMinCharLength(null);
@@ -517,22 +558,73 @@ public class CardDesignerController {
 		}
 		
 	}
-
+*/
 	
 	
 	public void saveCardTemplate() {
+		
 		for (TempCardElement element:elementList) {
+			
 			if (element.getStyleValue() != null) {
 				element.setValue(getPlainTextValue(element.getStyleValue()).trim());
 			}
+//			
+			ElementSessionDO elementSessionDO=fetchElementMapValues(element.getFormId());
+			element.setName(elementSessionDO.getElementName());
+			element.setPositionX(elementSessionDO.getElementX());
+			element.setPositionY(elementSessionDO.getElementY());
+			element.setWidth(elementSessionDO.getElementWidth());
+			element.setHeight(elementSessionDO.getElementHeight());
+		
+			element.setValue(elementSessionDO.getElementEditor());
+			element.setStyleValue(elementSessionDO.getElementEditor());
+			
+//			if (element.getValue() == null || element.getValue().isEmpty()) element.setValue("???");
+//			if (element.getStyleValue() == null || element.getStyleValue().isEmpty()) element.setStyleValue("???");
+			
+			
+			element.setMinCharLength(elementSessionDO.getElementMinChar());
+			element.setMaxCharLength(elementSessionDO.getElementMaxChar());
+			element.setDateFormat(elementSessionDO.getElementDateFormat());
+			element.setStartSerialNumber(elementSessionDO.getElementCardNumber());
+			if(elementSessionDO.getElementRequired().equals("DA")) 
+				element.setRequired(true);
+			else
+				element.setRequired(false);
+			if (elementSessionDO.getElementDataType().equals("Text")) {
+				element.setDataType(ELEMENT_DATA_TYPE_STRING);
+				element.setDateFormat(null);
+				element.setStartSerialNumber(null);
+			}
+			else if (elementSessionDO.getElementDataType().equals("Number")) {
+				element.setDataType(ELEMENT_DATA_TYPE_STRING);
+				element.setDateFormat(null);
+				element.setStartSerialNumber(null);
+				element.setMinCharLength(null);
+				element.setMaxCharLength(null);
+			}
+			else if (elementSessionDO.getElementDataType().equals("Date")) {
+				element.setDataType(ELEMENT_DATA_TYPE_DATE);
+				element.setStartSerialNumber(null);
+				element.setMinCharLength(null);
+				element.setMaxCharLength(null);
+			}
+			else if (elementSessionDO.getElementDataType().equals("Serijski broj")) {
+				element.setDataType(ELEMENT_DATA_TYPE_SERIAL);
+			}
+			
+		
+			
 		}
+		
+		
 		validateCardTemplate();
 		
 		
 		//privremeni save templeta
 //		saveFormValuesIntoObjectWithoutRefresh();
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		selectedElement=new TempCardElement();
+//		selectedElement=new TempCardElement();
 		List<TempCardElement> savedElementList=new ArrayList<TempCardElement>();
 		savedElementList.addAll(elementList);
 		session.setAttribute(ime, savedElementList);
@@ -573,48 +665,71 @@ public class CardDesignerController {
 		}
 		
 		
+		HttpServletRequest request=(HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		Map map=(Map) request.getSession().getAttribute("elementMap");
+		map.clear();
 		
 		for (TempCardElement element:elementList) {
+
 			element.setAddedOnForm(false);
-			selectedElement=element;
-			executeJS_markSelectedElement(element);
-			executeJS_setElementStyleAndValue(element);
-			addElementsOnForm(true);
-			
-			
-			/*
 			ElementSessionDO elementSessionDO=new ElementSessionDO();
-			elementSessionDO.setElementId(element.getFormId());
-			elementSessionDO.setElementWidth(element.getWidth());
+			elementSessionDO.setElementId("mainForm:"+element.getFormId());
+			elementSessionDO.setElementEditor(element.getStyleValue());
 			elementSessionDO.setElementHeight(element.getHeight());
-			elementSessionDO.setElementName(element.getName()); 
+			elementSessionDO.setElementWidth(element.getWidth());
 			elementSessionDO.setElementX(element.getPositionX());
 			elementSessionDO.setElementY(element.getPositionY());
-			elementSessionDO.setElementEditor(element.getStyleValue());
+			elementSessionDO.setElementName(element.getName());
+			map.put(elementSessionDO.getElementId(), elementSessionDO);
 			
-			Map map=(Map) session.getAttribute("elementMap");
-			map.put(element.getFormId(), elementSessionDO);
 			
-			*/
+			
+			//executeJS_setElementStyleAndValue(element);
+			
+			addElementOnForm(element);
+			
+//			executeJS_markElementSelected(element);
 			
 		}
-		
+		RequestContext.getCurrentInstance().execute("clearForm()");
 		
 		
 	}
 	
 	public void validateCardTemplate() {
 		
-		List<String> messages=new ArrayList<String>();
-		for (TempCardElement element:elementList) {
-			CardDesignValidator.validateCardElement(messages, element);
-		}
-		
-		for (String s:messages) {
-			System.out.println("Validacija: " + s);
-		}
+//		List<String> messages=new ArrayList<String>();
+//		for (TempCardElement element:elementList) {
+//			CardDesignValidator.validateCardElement(messages, element);
+//		}
+//		
+//		for (String s:messages) {
+//			System.out.println("Validacija: " + s);
+//		}
 		
 	}
 	
+	
+	/*
+	public void dummyRemote() {
+		
+		 FacesContext context = FacesContext.getCurrentInstance();
+		    Map map = context.getExternalContext().getRequestParameterMap();
+		    String selectedID = (String) map.get("selectedID");
+		    String positionX = (String) map.get("positionX");
+		    String positionY = (String) map.get("positionY");
+		    System.out.println("Dummy " + positionX + ", " + positionY);
+		
+		for (TempCardElement element:elementList) {
+			if (("mainForm:"+element.getFormId()).equals(selectedID)) {
+				element.setPositionX(positionX);
+				element.setPositionY(positionY);
+				
+				System.out.println("Nove koordinate za element " + element.getFormId());
+			}
+			System.out.println("Dummy "+element.getFormId()+": " + element.getPositionX()+"-"+element.getPositionY());
+		}
+	}
+	*/
 	
 }

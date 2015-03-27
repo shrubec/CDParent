@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+
+ 	<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+          <title>Cards</title>
+       </f:facet>
+
+	<script>
+	
+	function test() {
+		var val=Math.random();
+		PF('editorHtml').clear();
+		PF('editorHtml').editor.focus();
+		    setTimeout(function() {
+		    	PF('editorHtml').editor.execCommand('inserthtml', val, false);
+		    }, 0);
+		    return false;
+	}
+	
+	
+	</script>
+
+</h:head>
+
+<h:body>
+
+<h:form id="mainForm">
+
+	
+
+	<p:editor 
+		id="elementEditor" 
+		width="250" 
+		height="100" 
+		controls="bold italic underline font size color undo redo" 
+		widgetVar="editorHtml"
+		value="123456"
+	/>
+	<textArea id="testElement"> asdasd</textArea>
+
+
+
+  <p:commandButton value="Test"  icon="ui-icon-disk" onclick="test()"/>
+ 
+
+
+</h:form>
+
+</h:body>
+</html>
