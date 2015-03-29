@@ -12,7 +12,7 @@ function callUpdater(id, x, y, name, width, height, editor) {
 	}
 	xmlhttp.onreadystatechange = function() {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
-	}
+	};
 
 	xmlhttp.open("GET", "Updater?id=" + id + "&x=" + x + "&y=" + y + "&elementName="+ name + "&elementWidth=" + width + "&elementHeight=" + height+ "&elementEditor=" + editor + "&random=" + Math.random(), true);
 	xmlhttp.send();
@@ -34,7 +34,7 @@ function updateValueOnFormWithAjax(elementId, objectName, fieldName) {
 				document.getElementById(fieldName).value='';
 			}
 		}
-	}
+	};
 
 	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+ "&random=" + Math.random(), true);
 	xmlhttp.send();
@@ -50,11 +50,9 @@ function updateEditorValueOnFormWithAjax(elementId, objectName) {
 	}
 	xmlhttp.onreadystatechange = function() {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			if (xmlhttp.responseText != 'null') {
-				updateEditorValue(xmlhttp.responseText);
-			}
+			updateEditorValue(xmlhttp.responseText);
 		}
-	}
+	};
 
 	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+ "&random=" + Math.random(), true);
 	xmlhttp.send();
@@ -63,7 +61,9 @@ function updateEditorValueOnFormWithAjax(elementId, objectName) {
 
 
 function updateEditorValue(value) {
+	console.log('cistim editor');
 	PF('elementEditorWidgetVar').clear();
+	console.log('postavljam vrijednost na editor: ' + value);
 	if (value != 'null') {
 		PF('elementEditorWidgetVar').editor.focus();
 		setTimeout(function() {
@@ -85,7 +85,7 @@ function updateValueOnFormAndObjectWithAjax (elementId, objectName, fieldName,ne
 			document.getElementById(fieldName).value=xmlhttp.responseText;
 			console.log('Postavljena vrijednost za ' + fieldName+': ' + newValue);
 		}
-	}
+	};
 
 	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+"&newValue=" + newValue+ "&random=" + Math.random(), true);
 	xmlhttp.send();
@@ -114,6 +114,10 @@ function selectElement(cardElement,panelId) {
 	//ovo se izracuna
 	var x=convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft).toFixed(2);
 	var y=convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop).toFixed(2);
+	
+	
+	console.log('izracunate kooridnate za ' + cardElement.id+': ' + x + ' - ' + y);
+	
 	//document.getElementById('mainForm:elementPositionX').value=x;
 	//document.getElementById('mainForm:elementPositionY').value=y;
 	//document.getElementById('mainForm:selectedId').value=cardElement.id;
@@ -132,11 +136,12 @@ function selectElement(cardElement,panelId) {
 	
 	
 	updateValueOnFormWithAjax(cardElement.id,'elementDataType','mainForm:elementDataType');
-	updateValueOnFormWithAjax(cardElement.id,'elementMinChar','mainForm:elementMaximumLength');
-	updateValueOnFormWithAjax(cardElement.id,'elementMaxChar','mainForm:elementMinimumLength');
+	updateValueOnFormWithAjax(cardElement.id,'elementMinChar','mainForm:elementMinimumLength');
+	updateValueOnFormWithAjax(cardElement.id,'elementMaxChar','mainForm:elementMaximumLength');
 	updateValueOnFormWithAjax(cardElement.id,'elementDateFormat','mainForm:dateFormat');
 	updateValueOnFormWithAjax(cardElement.id,'elementCardNumber','mainForm:startCardNumber');
 	updateValueOnFormWithAjax(cardElement.id,'elementRequired','mainForm:elementRequired');
+	
 	
 	/*
 	var width=convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft).toFixed(2);

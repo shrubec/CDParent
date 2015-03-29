@@ -311,11 +311,14 @@ public class CardDesignerController2 {
 //			}
 //		}
 		
-		RequestContext.getCurrentInstance().update("mainForm:elementEditor");
-		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel1");
-		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel2");
+//		RequestContext.getCurrentInstance().update("mainForm:elementEditor");
+//		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel1");
+//		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel2");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel3");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel4");
+		
+		System.out.println("refreshani donji paneli... " + getSelectedId() + ", " + getSelectedElement().getMinCharLength());
+		
 	}
 	
 	
@@ -587,31 +590,47 @@ public class CardDesignerController2 {
 			element.setMaxCharLength(elementSessionDO.getElementMaxChar());
 			element.setDateFormat(elementSessionDO.getElementDateFormat());
 			element.setStartSerialNumber(elementSessionDO.getElementCardNumber());
-			if(elementSessionDO.getElementRequired().equals("DA")) 
-				element.setRequired(true);
-			else
-				element.setRequired(false);
-			if (elementSessionDO.getElementDataType().equals("Text")) {
-				element.setDataType(ELEMENT_DATA_TYPE_STRING);
-				element.setDateFormat(null);
-				element.setStartSerialNumber(null);
-			}
-			else if (elementSessionDO.getElementDataType().equals("Number")) {
-				element.setDataType(ELEMENT_DATA_TYPE_STRING);
+		
+		
+			
+			if (elementSessionDO.getElementDataType() == null) {
+				element.setDataType(null);
 				element.setDateFormat(null);
 				element.setStartSerialNumber(null);
 				element.setMinCharLength(null);
 				element.setMaxCharLength(null);
+				element.setRequired(null);
 			}
-			else if (elementSessionDO.getElementDataType().equals("Date")) {
-				element.setDataType(ELEMENT_DATA_TYPE_DATE);
-				element.setStartSerialNumber(null);
-				element.setMinCharLength(null);
-				element.setMaxCharLength(null);
+			else {
+				
+				if(elementSessionDO.getElementRequired().equals("DA")) 
+					element.setRequired(true);
+				else
+					element.setRequired(false);
+				
+				if (elementSessionDO.getElementDataType().equals("Text")) {
+					element.setDataType(ELEMENT_DATA_TYPE_STRING);
+					element.setDateFormat(null);
+					element.setStartSerialNumber(null);
+				}
+				else if (elementSessionDO.getElementDataType().equals("Number")) {
+					element.setDataType(ELEMENT_DATA_TYPE_STRING);
+					element.setDateFormat(null);
+					element.setStartSerialNumber(null);
+					element.setMinCharLength(null);
+					element.setMaxCharLength(null);
+				}
+				else if (elementSessionDO.getElementDataType().equals("Date")) {
+					element.setDataType(ELEMENT_DATA_TYPE_DATE);
+					element.setStartSerialNumber(null);
+					element.setMinCharLength(null);
+					element.setMaxCharLength(null);
+				}
+				else if (elementSessionDO.getElementDataType().equals("Serijski broj")) {
+					element.setDataType(ELEMENT_DATA_TYPE_SERIAL);
+				}
 			}
-			else if (elementSessionDO.getElementDataType().equals("Serijski broj")) {
-				element.setDataType(ELEMENT_DATA_TYPE_SERIAL);
-			}
+			
 			
 		
 			
@@ -692,7 +711,6 @@ public class CardDesignerController2 {
 			
 		}
 		RequestContext.getCurrentInstance().execute("clearForm()");
-		
 		
 	}
 	

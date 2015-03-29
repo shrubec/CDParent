@@ -198,7 +198,12 @@
  <!-- remote komande - javascript -->
  
 
-
+ 
+ <p:remoteCommand 
+ 	name="refreshEditorValueOnly" 
+ 	action="#{cardDesignerController2.refreshEditorValueOnly}"  
+ 	 update="mainForm:elementDataPanel3" 
+ />
   
  <h:inputHidden id="selectedId" value="#{cardDesignerController2.selectedId}"></h:inputHidden>
 

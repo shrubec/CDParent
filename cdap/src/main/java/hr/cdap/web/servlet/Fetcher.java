@@ -53,13 +53,13 @@ public class Fetcher extends HttpServlet {
 					method.invoke(object, newValue);
 					out.print(newValue);
 					
-					System.out.println("Postavljena nova vrijednost u objekt "+objectName+": " + newValue);
+//					System.out.println("Postavljena nova vrijednost u objekt "+objectName+": " + newValue);
 					
 				}
 				else {
 //					if (value == null || value.equals("null")) value="";
 					out.print(value);
-					System.out.println("Vracena vrijednost iz objekta "+objectName+": " + value);
+//					System.out.println("Vracena vrijednost iz objekta "+objectName+": " + value);
 				}
 				
 			} catch (NoSuchMethodException e) {
