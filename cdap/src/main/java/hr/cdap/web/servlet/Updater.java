@@ -52,8 +52,10 @@ public class Updater extends HttpServlet {
 		else {
 			element=(ElementSessionDO)map.get(id);
 		}
-		element.setElementX(x);
-		element.setElementY(y);
+		
+		
+		if (!x.equals("null")) element.setElementX(x);
+		if (!y.equals("null")) element.setElementY(y);
 		
 		
 		
@@ -63,7 +65,7 @@ public class Updater extends HttpServlet {
 		if (!elementEditor.equals("null")) element.setElementEditor(new String(elementEditor.getBytes("ISO-8859-1"),"UTF-8"));
 		
 		
-		System.out.println("Updater pozicija za "+id+": " + x + ", " + y);
+		System.out.println("Updater pozicija za "+id+": " + x + ", " + y+", " + elementWidth + " / " + elementHeight);
 		
 		
 		request.getSession().setAttribute("selectedElementId", id);

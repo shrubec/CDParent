@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -83,7 +84,7 @@ public class CardDesignerController2 {
 				}
 			}
 		}
-		return null;
+		return new TempCardElement();
 	}
 	
 	
@@ -231,7 +232,7 @@ public class CardDesignerController2 {
 			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getValue()+"'");
 		}
 		
-		RequestContext.getCurrentInstance().execute("moveToPosition()");
+//		RequestContext.getCurrentInstance().execute("moveToPosition()");
 	}
 	
 	
@@ -303,7 +304,7 @@ public class CardDesignerController2 {
 	}
 	
 	//metoda sluzi da se refresha vrijednost editora - ta komponenta se ne zeli automatski refresati kad mu se sa javascriptom promijeni vrijednost
-	public void refreshEditorValueOnly() {
+	public void refreshAdditionalForm() {
 //		
 //		for (TempCardElement element:elementList) {
 //			if (selectedId.equals("mainForm:"+element.getFormId())) {
@@ -333,10 +334,10 @@ public class CardDesignerController2 {
 			String findCoordinates;
 			OutputPanel panel=resolveSide(element.getSide());
 			if (element.getSide().equals("1")) {
-				findCoordinates="selectElementFront("+coordinatesTarget+");";//refreshEditorValueOnly()";
+				findCoordinates="selectElementFront("+coordinatesTarget+");";
 			}
 			else {
-				findCoordinates="selectElementBack("+coordinatesTarget+");";//refreshEditorValueOnly()";
+				findCoordinates="selectElementBack("+coordinatesTarget+");";
 			}
 			
 			if (!element.addedOnForm) {
@@ -455,7 +456,7 @@ public class CardDesignerController2 {
 			System.out.println("Element " + element.getFormId() + ": " + element.getPositionX() + " - " + element.getPositionY());
 			RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:"+panel.getId()+"','mainForm:"+element.getFormId()+"',"+element.getPositionX()+","+element.getPositionY()+");");
 			
-		
+			executeJS_setElementStyleAndValue(element);
 	}
 	
 	
@@ -523,7 +524,6 @@ public class CardDesignerController2 {
 		private String type; //buduca referenca
 		
 		private String dataType; //buduca referenca
-		private String startCardNumber; //ovo bude nekakav izbornik
 		private Boolean required;
 		
 		private String minCharLength;
@@ -699,6 +699,34 @@ public class CardDesignerController2 {
 			elementSessionDO.setElementX(element.getPositionX());
 			elementSessionDO.setElementY(element.getPositionY());
 			elementSessionDO.setElementName(element.getName());
+			
+			
+			
+			
+			if (element.getDataType() != null) {
+				if (element.getDataType().equals(ELEMENT_DATA_TYPE_STRING)) {
+					elementSessionDO.setElementDataType("Text");
+					elementSessionDO.setElementMinChar(element.getMinCharLength());
+					elementSessionDO.setElementMaxChar(element.getMaxCharLength());
+				}
+				else if (element.getDataType().equals(ELEMENT_DATA_TYPE_NUMBER))
+					elementSessionDO.setElementDataType("Broj");
+				else if (element.getDataType().equals(ELEMENT_DATA_TYPE_DATE)) {
+					elementSessionDO.setElementDataType("Datum");
+					elementSessionDO.setElementDateFormat(element.getDateFormat());
+				}
+				else if (element.getDataType().equals(ELEMENT_DATA_TYPE_SERIAL)) {
+					elementSessionDO.setElementDataType("Serijski broj");
+					elementSessionDO.setElementCardNumber(element.getStartSerialNumber());
+				}
+				
+				elementSessionDO.setElementRequired(element.getRequired()?"DA":"NE");
+				
+			}
+			
+			
+			
+			
 			map.put(elementSessionDO.getElementId(), elementSessionDO);
 			
 			
@@ -749,5 +777,7 @@ public class CardDesignerController2 {
 		}
 	}
 	*/
+	
+	
 	
 }

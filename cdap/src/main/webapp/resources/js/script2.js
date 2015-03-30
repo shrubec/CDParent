@@ -105,6 +105,9 @@ function selectElementBack(cardElement) {
 }
 
 function selectElement(cardElement,panelId) {
+	
+	document.getElementById('mainForm:selectedId').value=cardElement.id;
+	
 	markElementSelected	(cardElement,panelId);
 	card=document.getElementById(panelId);
 	var cardRect = card.getBoundingClientRect();
@@ -134,13 +137,14 @@ function selectElement(cardElement,panelId) {
 	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementX','mainForm:elementPositionX',x);
 	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementY','mainForm:elementPositionY',y);
 	
-	
+	/*
 	updateValueOnFormWithAjax(cardElement.id,'elementDataType','mainForm:elementDataType');
 	updateValueOnFormWithAjax(cardElement.id,'elementMinChar','mainForm:elementMinimumLength');
 	updateValueOnFormWithAjax(cardElement.id,'elementMaxChar','mainForm:elementMaximumLength');
 	updateValueOnFormWithAjax(cardElement.id,'elementDateFormat','mainForm:dateFormat');
 	updateValueOnFormWithAjax(cardElement.id,'elementCardNumber','mainForm:startCardNumber');
 	updateValueOnFormWithAjax(cardElement.id,'elementRequired','mainForm:elementRequired');
+	*/
 	
 	
 	/*
@@ -159,6 +163,9 @@ function selectElement(cardElement,panelId) {
 	//updateElementStyleAndPosition(cardElement);
 	//displayFormValues();
 	
+	
+	refreshAdditionalForm();
+	
 	console.log('Nova pozicija za ' +cardElement.id+ ': ' +  x+', ' + y);
 	
 	
@@ -172,7 +179,7 @@ function clearForm() {
 	document.getElementById('mainForm:elementName').value='';
 	document.getElementById('mainForm:elementWidth').value='';
 	document.getElementById('mainForm:elementHeight').value='';
-	document.getElementById('mainForm:elementEditor_input').value=''; 
+	updateEditorValue('');
 }
 
 
@@ -211,7 +218,7 @@ function moveToPositionInitial(selectedPanel,selectedElement,x,y) {
 	var startLeft=panelRect.left;
 	var newTop=pxTop+startTop;
 	var newLeft=pxLeft+startLeft;
-	initialSelectedElement=document.getElementById(selectedElement)
+	initialSelectedElement=document.getElementById(selectedElement);
 	initialSelectedElement.style.position = "absolute";
 	initialSelectedElement.style.left = newLeft+"px";
 	initialSelectedElement.style.top=newTop+"px";
@@ -219,9 +226,49 @@ function moveToPositionInitial(selectedPanel,selectedElement,x,y) {
 }
 
 function updateElementMap() {
+	console.log('update element map... ' + currentlySelected.id);
 	updateElementStyleAndPosition(currentlySelected,false);
-	saveFormValues();
+//	saveFormValues();
+	redrawElementByFormValues();
 }
+
+function updateElementEditorMap() {
+	console.log('update element map... ' + currentlySelected.id + ', ' + document.getElementById('mainForm:elementType').value);
+	var elementType=document.getElementById('mainForm:elementType').value;
+	if (elementType == '1' || elementType == '2') {	//ako je labela ili polje
+		var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
+		callUpdater(currentlySelected.id,null,null,null,null,null,elementEditor);
+		currentlySelected.innerHTML=elementEditor;
+	} 
+}
+
+
+
+function redrawElementByFormValues() {
+	
+	panel=document.getElementById(currentlySelectedPanel);
+	var panelRect = panel.getBoundingClientRect();
+	var pxTop=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionY').value));
+	var pxLeft=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionX').value));
+	var pxWidth=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementWidth').value));
+	var pxHeight=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementHeight').value));
+	var elementEditor=document.getElementById('mainForm:elementEditor_input').value;
+	
+	var startTop=panelRect.top;
+	var startLeft=panelRect.left;
+	var newTop=pxTop+startTop;
+	var newLeft=pxLeft+startLeft;
+	
+	currentlySelected.style.position = "absolute";
+	currentlySelected.style.left = newLeft+"px";
+	currentlySelected.style.top=newTop+"px";
+	currentlySelected.style.width = pxWidth+"px";
+	currentlySelected.style.height = pxHeight+"px";
+	
+}
+
+
+
 
 function markElementSelected(element,panelId) {
 	currentlySelectedPanel=panelId;
@@ -263,7 +310,7 @@ function resizeImage(imagePanelId) {
 	cardElement=document.getElementById(imagePanelId+'_image');
 	imagePanel=document.getElementById(imagePanelId);
 	updateImageSize(imagePanel,cardElement);
-	saveImageSize();
+	//saveImageSize();
 }
 
 

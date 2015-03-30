@@ -72,33 +72,34 @@
 	<p:outputLabel value="Naziv elementa" />
 	<p:inputText 
 		id="elementName" 
+		onchange="updateElementMap()" 
 	/>
 	
 	<p:outputLabel value="Pozicija X" />
 	<p:inputText 
 		id="elementPositionX" 
-	
+		onchange="updateElementMap()" 
 		disabled="#{cardDesignerController2.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Pozicija Y" />
 	<p:inputText 
 		id="elementPositionY" 
-	
+		onchange="updateElementMap()" 
 		disabled="#{cardDesignerController2.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Širina polja u mm" />
 	<p:inputText 
 		id="elementWidth" 
-	
+		onchange="updateElementMap()" 
 		disabled="#{cardDesignerController2.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Visina polja u mm" />
 	<p:inputText 
 		id="elementHeight" 
-
+		onchange="updateElementMap()" 
 		disabled="#{cardDesignerController2.selectedElement.type == null}"
 	/>
 
@@ -114,6 +115,7 @@
 		height="100" 
 		controls="bold italic underline font size color undo redo"
 		widgetVar="elementEditorWidgetVar" 
+		onchange="updateElementEditorMap()"
 	/>
 	
 </p:panel>
@@ -125,8 +127,8 @@
 	<p:outputLabel value="Tip podatka" />
 	<p:selectOneMenu 
 		id="elementDataType" 
-		value="#{cardDesignerController.selectedElement.dataType}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type == 1}"   > 
+		value="#{cardDesignerController2.selectedElement.dataType}" 
+		disabled="#{cardDesignerController2.selectedElement.type == null or cardDesignerController2.selectedElement.type == 1}"   > 
 			<f:selectItem itemLabel="Tekst" itemValue="1" />
 			<f:selectItem itemLabel="Broj" itemValue="2" />
 			<f:selectItem itemLabel="Datum" itemValue="3" />
@@ -134,7 +136,7 @@
 			<p:ajax 
 				event="change" 
 				process="@this" 
-				listener="#{cardDesignerController.changeDataType}" 
+				listener="#{cardDesignerController2.changeDataType}" 
 				update="mainForm:elementMinimumLength, mainForm:elementMaximumLength, mainForm:dateFormat, mainForm:startCardNumber, mainForm:elementRequired"
 			/>
 	</p:selectOneMenu>
@@ -142,40 +144,42 @@
 	
 	<!-- samo za tekstualna polja -->
 	<p:outputLabel value="Minimalni broj znakova" />
+	
+
 	<p:inputText 
 		id="elementMinimumLength" 
-		value="#{cardDesignerController.selectedElement.minCharLength}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 1}" 
+		value="#{cardDesignerController2.selectedElement.minCharLength}" 
+		disabled="#{cardDesignerController2.selectedElement.type == null or cardDesignerController2.selectedElement.type != 2 or cardDesignerController2.selectedElement.dataType != 1}" 
 	/>
 	
 	<p:outputLabel value="Maksimalni broj znakova" />
 	<p:inputText 
 		id="elementMaximumLength" 
-		value="#{cardDesignerController.selectedElement.maxCharLength}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 1}" 
+		value="#{cardDesignerController2.selectedElement.maxCharLength}" 
+		disabled="#{cardDesignerController2.selectedElement.type == null or cardDesignerController2.selectedElement.type != 2 or cardDesignerController2.selectedElement.dataType != 1}" 
 	/>
 	
 	<!-- samo za datumska polja  -->
 	<p:outputLabel value="Format datuma" />
 	<p:inputText 
 		id="dateFormat" 
-		value="#{cardDesignerController.selectedElement.dateFormat}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 3}" 
+		value="#{cardDesignerController2.selectedElement.dateFormat}" 
+		disabled="#{cardDesignerController2.selectedElement.type == null or cardDesignerController2.selectedElement.type != 2 or cardDesignerController2.selectedElement.dataType != 3}" 
 	/>
 	
 	<!-- samo za serijski broj -->
 	<p:outputLabel value="Početni serijski broj kartice" />
 	<p:inputText 
 		id="startCardNumber" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 4}" 
+		disabled="#{cardDesignerController2.selectedElement.type == null or cardDesignerController2.selectedElement.type != 2 or cardDesignerController2.selectedElement.dataType != 4}" 
 	/>
 	
 	
 	<p:outputLabel value="Podatak obavezan" />
 	<p:selectOneMenu 
 		id="elementRequired" 
-		value="#{cardDesignerController.selectedElement.required}"  
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType == 4}" >
+		value="#{cardDesignerController2.selectedElement.required}"  
+		disabled="#{cardDesignerController2.selectedElement.type == null or cardDesignerController2.selectedElement.type != 2 or cardDesignerController2.selectedElement.dataType == 4}" >
 			<f:selectItem itemLabel="DA" itemValue="true" />
 			<f:selectItem itemLabel="NE" itemValue="false" />
 	</p:selectOneMenu>
@@ -200,12 +204,12 @@
 
  
  <p:remoteCommand 
- 	name="refreshEditorValueOnly" 
- 	action="#{cardDesignerController2.refreshEditorValueOnly}"  
- 	 update="mainForm:elementDataPanel3" 
+ 	name="refreshAdditionalForm" 
+ 	action="#{cardDesignerController2.refreshAdditionalForm}"  
  />
   
  <h:inputHidden id="selectedId" value="#{cardDesignerController2.selectedId}"></h:inputHidden>
+ <h:inputHidden id="elementType" value="#{cardDesignerController2.selectedElement.type}"></h:inputHidden>
 
 </h:form>
 
