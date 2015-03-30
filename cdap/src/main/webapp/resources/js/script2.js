@@ -187,6 +187,14 @@ function clearForm() {
 	document.getElementById('mainForm:elementName').value='';
 	document.getElementById('mainForm:elementWidth').value='';
 	document.getElementById('mainForm:elementHeight').value='';
+	
+	document.getElementById('mainForm:elementDataType').value='';
+	document.getElementById('mainForm:elementMinimumLength').value='';
+	document.getElementById('mainForm:elementMaximumLength').value='';
+	document.getElementById('mainForm:dateFormat').value='';
+	document.getElementById('mainForm:startCardNumber').value='';
+	document.getElementById('mainForm:elementRequired').value='';
+	
 	PF('elementEditorWidgetVar').clear();
 }
 
@@ -243,7 +251,8 @@ function updateElementMap() {
 function updateElementEditorMap() {
 	console.log('update element editor map... ' + currentlySelected.id + ', ' + document.getElementById('mainForm:elementType').value + ', ' + disableEditorUpdate);
 	
-	if (disableEditorUpdate == false) {
+	var type=document.getElementById('mainForm:elementType').value;
+	if (disableEditorUpdate == false && type != '3' && type != '4') {
 			var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
 			callUpdater(currentlySelected.id,null,null,null,null,null,elementEditor);
 			currentlySelected.innerHTML=elementEditor;

@@ -51,7 +51,7 @@ public class CardDesignerController2 {
 	public static final String ELEMENT_DATA_TYPE_DATE="3";
 	public static final String ELEMENT_DATA_TYPE_SERIAL="4";
 	
-	private @Getter @Setter TempCardElement selectedCardElement;
+//	private @Getter @Setter TempCardElement selectedCardElement;
 	private @Getter @Setter List<TempCardElement> elementList=new ArrayList<TempCardElement>();
 //	private @Getter @Setter TempCardElement selectedElement;
 	private @Getter @Setter String selectedId;
@@ -75,7 +75,8 @@ public class CardDesignerController2 {
 	public  TempCardElement getSelectedElement() {
 		
 		if (elementList.isEmpty()) {
-			return new TempCardElement();
+//			return new TempCardElement();
+			return null;
 		}
 		else {
 			for (TempCardElement element:elementList) {
@@ -544,13 +545,14 @@ public class CardDesignerController2 {
 	}
 	
 	
-	/*
 	public void changeDataType() {
+		
+		TempCardElement selectedElement=getSelectedElement();
 		
 		selectedElement.setMinCharLength(null);
 		selectedElement.setMaxCharLength(null);
 		selectedElement.setDateFormat(null);
-		selectedElement.setStartCardNumber(null);
+		selectedElement.setStartSerialNumber(null);
 		selectedElement.setRequired(true);
 		
 		if (selectedElement.getDataType().equals(ELEMENT_DATA_TYPE_STRING)) {
@@ -561,12 +563,13 @@ public class CardDesignerController2 {
 			selectedElement.setDateFormat("dd.MM.yyyy");
 		}
 		else if (selectedElement.getDataType().equals(ELEMENT_DATA_TYPE_SERIAL)) {
-			selectedElement.setStartCardNumber("0000000001");
+			selectedElement.setStartSerialNumber("0000000001");
 			selectedElement.setRequired(null);
 		}
+	
+		executeJS_markElementSelected(selectedElement);
 		
 	}
-*/
 	
 	
 	public void saveCardTemplate() {
@@ -587,15 +590,13 @@ public class CardDesignerController2 {
 			element.setValue(elementSessionDO.getElementEditor());
 			element.setStyleValue(elementSessionDO.getElementEditor());
 			
-//			if (element.getValue() == null || element.getValue().isEmpty()) element.setValue("???");
-//			if (element.getStyleValue() == null || element.getStyleValue().isEmpty()) element.setStyleValue("???");
 			
-			
+			/*
 			element.setMinCharLength(elementSessionDO.getElementMinChar());
 			element.setMaxCharLength(elementSessionDO.getElementMaxChar());
 			element.setDateFormat(elementSessionDO.getElementDateFormat());
 			element.setStartSerialNumber(elementSessionDO.getElementCardNumber());
-		
+		*/
 		
 			
 			if (elementSessionDO.getElementDataType() == null) {
@@ -607,33 +608,33 @@ public class CardDesignerController2 {
 				element.setRequired(null);
 			}
 			else {
-				
-				if(elementSessionDO.getElementRequired().equals("DA")) 
-					element.setRequired(true);
-				else
-					element.setRequired(false);
-				
-				if (elementSessionDO.getElementDataType().equals("Text")) {
-					element.setDataType(ELEMENT_DATA_TYPE_STRING);
-					element.setDateFormat(null);
-					element.setStartSerialNumber(null);
-				}
-				else if (elementSessionDO.getElementDataType().equals("Number")) {
-					element.setDataType(ELEMENT_DATA_TYPE_STRING);
-					element.setDateFormat(null);
-					element.setStartSerialNumber(null);
-					element.setMinCharLength(null);
-					element.setMaxCharLength(null);
-				}
-				else if (elementSessionDO.getElementDataType().equals("Date")) {
-					element.setDataType(ELEMENT_DATA_TYPE_DATE);
-					element.setStartSerialNumber(null);
-					element.setMinCharLength(null);
-					element.setMaxCharLength(null);
-				}
-				else if (elementSessionDO.getElementDataType().equals("Serijski broj")) {
-					element.setDataType(ELEMENT_DATA_TYPE_SERIAL);
-				}
+//				
+//				if(elementSessionDO.getElementRequired().equals("DA")) 
+//					element.setRequired(true);
+//				else
+//					element.setRequired(false);
+//				
+//				if (elementSessionDO.getElementDataType().equals("Text")) {
+//					element.setDataType(ELEMENT_DATA_TYPE_STRING);
+//					element.setDateFormat(null);
+//					element.setStartSerialNumber(null);
+//				}
+//				else if (elementSessionDO.getElementDataType().equals("Number")) {
+//					element.setDataType(ELEMENT_DATA_TYPE_STRING);
+//					element.setDateFormat(null);
+//					element.setStartSerialNumber(null);
+//					element.setMinCharLength(null);
+//					element.setMaxCharLength(null);
+//				}
+//				else if (elementSessionDO.getElementDataType().equals("Date")) {
+//					element.setDataType(ELEMENT_DATA_TYPE_DATE);
+//					element.setStartSerialNumber(null);
+//					element.setMinCharLength(null);
+//					element.setMaxCharLength(null);
+//				}
+//				else if (elementSessionDO.getElementDataType().equals("Serijski broj")) {
+//					element.setDataType(ELEMENT_DATA_TYPE_SERIAL);
+//				}
 			}
 			
 			
@@ -664,6 +665,10 @@ public class CardDesignerController2 {
 		for (TempCardElement saved:savedElementList) {
 			System.out.println("SAVED ELEMENT: " + saved.getFormId()+", " + saved.getPositionX()+", " + saved.getPositionY() + ", " + saved.getWidth() + " / " + saved.getHeight());
 		}
+		
+		
+		RequestContext.getCurrentInstance().execute("clearForm()");
+		
 	}
 	
 	public void loadCardTemplate() {
