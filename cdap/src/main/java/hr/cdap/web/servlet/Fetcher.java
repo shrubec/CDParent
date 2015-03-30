@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class Fetcher
  */
+@SuppressWarnings({"rawtypes"})
 public class Fetcher extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -31,37 +32,37 @@ public class Fetcher extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		fetchValuesFromSession(request, response);
+	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	}
+
+	
+	private void fetchValuesFromSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		Map map=(Map) request.getSession().getAttribute("elementMap");
 		String elementId=request.getParameter("elementId");
 		String objectName=request.getParameter("objectName");
-		String newValue=request.getParameter("newValue");
-		
 		objectName = objectName.substring(0, 1).toUpperCase() + objectName.substring(1);
-		
-		Map map=(Map) request.getSession().getAttribute("elementMap");
+		String newValue=request.getParameter("newValue");
 		if (map.get(elementId) != null) {
-			
 			Object object=map.get(elementId);
-			
 			try {
 				Method method=ElementSessionDO.class.getMethod("get"+objectName, null);
 				String value=(String) method.invoke(object, null);
 				PrintWriter out = response.getWriter();
-				
 				if (newValue != null && !newValue.isEmpty()) {
 					method=ElementSessionDO.class.getMethod("set"+objectName, String.class);
 					method.invoke(object, newValue);
 					out.print(newValue);
-					
-//					System.out.println("Postavljena nova vrijednost u objekt "+objectName+": " + newValue);
-					
 				}
 				else {
-//					if (value == null || value.equals("null")) value="";
 					out.print(value);
-//					System.out.println("Vracena vrijednost iz objekta "+objectName+": " + value);
 				}
-				
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
 			} catch (SecurityException e) {
@@ -73,18 +74,7 @@ public class Fetcher extends HttpServlet {
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
 			}
-			
 		}
-		
-		
+	}
 	
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
 }

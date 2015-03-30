@@ -72,14 +72,14 @@
 	<p:outputLabel value="Naziv elementa" />
 	<p:inputText 
 		id="elementName" 
-		value="#{cardDesignerController.selectedElement.name}" 
+		onchange="updateElementMap()" 
+		disabled="#{cardDesignerController.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Pozicija X" />
 	<p:inputText 
 		id="elementPositionX" 
 		onchange="updateElementMap()" 
-		value="#{cardDesignerController.selectedElement.positionX}" 
 		disabled="#{cardDesignerController.selectedElement.type == null}"
 	/>
 	
@@ -87,7 +87,6 @@
 	<p:inputText 
 		id="elementPositionY" 
 		onchange="updateElementMap()" 
-		value="#{cardDesignerController.selectedElement.positionY}" 
 		disabled="#{cardDesignerController.selectedElement.type == null}"
 	/>
 	
@@ -95,7 +94,6 @@
 	<p:inputText 
 		id="elementWidth" 
 		onchange="updateElementMap()" 
-		value="#{cardDesignerController.selectedElement.width}" 
 		disabled="#{cardDesignerController.selectedElement.type == null}"
 	/>
 	
@@ -103,27 +101,26 @@
 	<p:inputText 
 		id="elementHeight" 
 		onchange="updateElementMap()" 
-		value="#{cardDesignerController.selectedElement.height}" 
 		disabled="#{cardDesignerController.selectedElement.type == null}"
 	/>
 
 </p:panel>
 
 
+
 <p:panel id="elementDataPanel2" header="Statički / inicijalni tekst" >
 
 	<p:editor 
 		id="elementEditor"  
-		onchange="updateElementMap()"
 		width="250" 
 		height="100" 
-		controls="bold italic underline font size color undo redo" 
-		value="#{cardDesignerController.selectedElement.value}"  
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type == 3}"
+		controls="bold italic underline font size color undo redo"
+		widgetVar="elementEditorWidgetVar" 
+		onchange="updateElementEditorMap()"
+		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type == 3 or cardDesignerController.selectedElement.type == 4}"   
 	/>
-
+	
 </p:panel>
-
 
 <p:panel id="elementDataPanel3" header="Dodatni podaci polja" >
 
@@ -133,7 +130,7 @@
 	<p:selectOneMenu 
 		id="elementDataType" 
 		value="#{cardDesignerController.selectedElement.dataType}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type == 1}"   > 
+		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2}"   > 
 			<f:selectItem itemLabel="Tekst" itemValue="1" />
 			<f:selectItem itemLabel="Broj" itemValue="2" />
 			<f:selectItem itemLabel="Datum" itemValue="3" />
@@ -149,6 +146,8 @@
 	
 	<!-- samo za tekstualna polja -->
 	<p:outputLabel value="Minimalni broj znakova" />
+	
+
 	<p:inputText 
 		id="elementMinimumLength" 
 		value="#{cardDesignerController.selectedElement.minCharLength}" 
@@ -174,6 +173,7 @@
 	<p:outputLabel value="Početni serijski broj kartice" />
 	<p:inputText 
 		id="startCardNumber" 
+		value="#{cardDesignerController.selectedElement.startSerialNumber}" 
 		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 4}" 
 	/>
 	
@@ -194,6 +194,7 @@
 </p:panel>
 
 
+
 <p:inputText 
 		id="ime" 
 		value="#{cardDesignerController.ime}" 
@@ -201,33 +202,15 @@
  <p:commandButton value="Submit"  icon="ui-icon-disk" actionListener="#{cardDesignerController.saveCardTemplate}" update="mainForm" />
  <p:commandButton value="Load"  icon="ui-icon-disk" actionListener="#{cardDesignerController.loadCardTemplate}" update="mainForm" />
  
- 
  <!-- remote komande - javascript -->
- <p:remoteCommand 
- 	name="displayFormValues" 
- 	actionListener="#{cardDesignerController.displayFormValuesFromObject}" 
- 	immediate="true" 
- />
- <p:remoteCommand 
- 	name="saveFormValues" 
- 	actionListener="#{cardDesignerController.saveFormValuesIntoObject}"  
- 	immediate="true" 
- />
  
  <p:remoteCommand 
- 	name="saveImageSize" 
- 	actionListener="#{cardDesignerController.saveImageSizeIntoObject}"  
- 	immediate="true" 
+ 	name="refreshAdditionalForm" 
+ 	action="#{cardDesignerController.refreshAdditionalForm}"  
  />
- 
- <p:remoteCommand 
- 	name="refreshEditorValueOnly" 
- 	actionListener="#{cardDesignerController.refreshEditorValueOnly}"  
- 	immediate="true" 
- />
-
   
  <h:inputHidden id="selectedId" value="#{cardDesignerController.selectedId}"></h:inputHidden>
+ <h:inputHidden id="elementType" />
 
 </h:form>
 

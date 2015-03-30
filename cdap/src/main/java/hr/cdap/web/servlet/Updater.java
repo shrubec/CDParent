@@ -32,9 +32,6 @@ public class Updater extends HttpServlet {
 	
 	@SuppressWarnings({"unchecked","rawtypes"})
 	private void saveElementIntoSession(HttpServletRequest request) throws UnsupportedEncodingException {
-		
-		System.out.println("Updater...");
-		
 		String id=request.getParameter("id");
 		String x=request.getParameter("x");
 		String y=request.getParameter("y");
@@ -53,21 +50,12 @@ public class Updater extends HttpServlet {
 			element=(ElementSessionDO)map.get(id);
 		}
 		
-		
 		if (!x.equals("null")) element.setElementX(x);
 		if (!y.equals("null")) element.setElementY(y);
-		
-		
-		
 		if (!elementName.equals("null")) element.setElementName(elementName);
 		if (!elementWidth.equals("null") && !elementWidth.isEmpty()) element.setElementWidth(elementWidth);
 		if (!elementHeight.equals("null") && !elementHeight.isEmpty()) element.setElementHeight(elementHeight);
 		if (!elementEditor.equals("null")) element.setElementEditor(new String(elementEditor.getBytes("ISO-8859-1"),"UTF-8"));
-		
-		
-		System.out.println("Updater pozicija za "+id+": " + x + ", " + y+", " + elementWidth + " / " + elementHeight);
-		
-		
 		request.getSession().setAttribute("selectedElementId", id);
 	}
 }

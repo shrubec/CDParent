@@ -1,6 +1,8 @@
 
+var disableEditorUpdate=false;
 var currentlySelected;
 var currentlySelectedPanel;
+
 
 function callUpdater(id, x, y, name, width, height, editor) {
 	var xmlhttp;
@@ -11,38 +13,154 @@ function callUpdater(id, x, y, name, width, height, editor) {
 	}
 	xmlhttp.onreadystatechange = function() {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
-	}
+	};
 
 	xmlhttp.open("GET", "Updater?id=" + id + "&x=" + x + "&y=" + y + "&elementName="+ name + "&elementWidth=" + width + "&elementHeight=" + height+ "&elementEditor=" + editor + "&random=" + Math.random(), true);
 	xmlhttp.send();
 }
 
-function findCoordinatesInitial(cardElementId,panelId) {
-	findCoordinates(document.getElementById(cardElementId),panelId);
+function updateValueOnFormWithAjax(elementId, objectName, fieldName) {
+	var xmlhttp;
+	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			if (xmlhttp.responseText != 'null') {
+				document.getElementById(fieldName).value=xmlhttp.responseText;
+			}
+			else {
+				document.getElementById(fieldName).value='';
+			}
+		}
+	};
+
+	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+ "&random=" + Math.random(), true);
+	xmlhttp.send();
+	
 }
 
-function findCoordinatesFront(cardElement) {
-	findCoordinates(cardElement,'mainForm:frontSide');
+function updateEditorValueOnFormWithAjax(elementId, objectName) {
+	var xmlhttp;
+	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			updateEditorValue(xmlhttp.responseText);
+		}
+	};
+
+	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+ "&random=" + Math.random(), true);
+	xmlhttp.send();
+	
 }
 
-function findCoordinatesBack(cardElement) {
-	findCoordinates(cardElement,'mainForm:backSide');
+
+function updateEditorValue(value) {
+	PF('elementEditorWidgetVar').clear();
+	PF('elementEditorWidgetVar').enable();
+	if (value != 'null') {
+		PF('elementEditorWidgetVar').editor.focus();
+		setTimeout(function() {
+			PF('elementEditorWidgetVar').editor.execCommand('inserthtml', value, false);
+		}, 0);
+		return false;
+	}
 }
 
-function findCoordinates(cardElement,panelId) {
-	selectElement(cardElement,panelId);
+function updateValueOnFormAndObjectWithAjax (elementId, objectName, fieldName,newValue) {
+	var xmlhttp;
+	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			document.getElementById(fieldName).value=xmlhttp.responseText;
+			console.log('Postavljena vrijednost za ' + fieldName+': ' + newValue);
+		}
+	};
+
+	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+"&newValue=" + newValue+ "&random=" + Math.random(), true);
+	xmlhttp.send();
+	
+}
+
+function selectElementInitial(cardElementId,panelId) {
+	selectElement(document.getElementById(cardElementId),panelId);
+}
+
+function selectElementFront(cardElement) {
+	selectElement(cardElement,'mainForm:frontSide');
+}
+
+function selectElementBack(cardElement) {
+	selectElement(cardElement,'mainForm:backSide');
+}
+
+function selectElement(cardElement,panelId) {
+	
+	document.getElementById('mainForm:selectedId').value=cardElement.id;
+	markElementSelected	(cardElement,panelId);
 	card=document.getElementById(panelId);
 	var cardRect = card.getBoundingClientRect();
 	var elementRect = cardElement.getBoundingClientRect();
 //	console.log(convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop),convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft));
+	
+	//ovo se izracuna
 	var x=convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft).toFixed(2);
 	var y=convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop).toFixed(2);
-	document.getElementById('mainForm:elementPositionX').value=x;
-	document.getElementById('mainForm:elementPositionY').value=y;
-	document.getElementById('mainForm:selectedId').value=cardElement.id;
-	updateElementStyleAndPosition(cardElement,true);
-	displayFormValues();
+	
+	disableEditorUpdate=true;
+	console.log('izracunate kooridnate za ' + cardElement.id+': ' + x + ' - ' + y + ', disableEditorUpdate: ' + disableEditorUpdate);
+	
+	//vrijednosti na formi se popunjavaju sa ajaxom
+	updateValueOnFormWithAjax(cardElement.id,'elementId','mainForm:selectedId');
+	updateValueOnFormWithAjax(cardElement.id,'elementType','mainForm:elementType');
+	updateValueOnFormWithAjax(cardElement.id,'elementName','mainForm:elementName');
+	updateValueOnFormWithAjax(cardElement.id,'elementWidth','mainForm:elementWidth');
+	updateValueOnFormWithAjax(cardElement.id,'elementHeight','mainForm:elementHeight');
+	updateEditorValueOnFormWithAjax(cardElement.id,'elementEditor'); //netreba id elementa jer ide prek widget var-a
+	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementX','mainForm:elementPositionX',x);
+	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementY','mainForm:elementPositionY',y);
+	
+	/*
+	updateValueOnFormWithAjax(cardElement.id,'elementDataType','mainForm:elementDataType');
+	updateValueOnFormWithAjax(cardElement.id,'elementMinChar','mainForm:elementMinimumLength');
+	updateValueOnFormWithAjax(cardElement.id,'elementMaxChar','mainForm:elementMaximumLength');
+	updateValueOnFormWithAjax(cardElement.id,'elementDateFormat','mainForm:dateFormat');
+	updateValueOnFormWithAjax(cardElement.id,'elementCardNumber','mainForm:startCardNumber');
+	updateValueOnFormWithAjax(cardElement.id,'elementRequired','mainForm:elementRequired');
+	*/
+	
+	refreshAdditionalForm();
 }
+
+
+function clearForm() {
+	disableEditorUpdate=true;
+	document.getElementById('mainForm:selectedId').value='';
+	document.getElementById('mainForm:elementPositionX').value='';
+	document.getElementById('mainForm:elementPositionY').value='';
+	document.getElementById('mainForm:elementName').value='';
+	document.getElementById('mainForm:elementWidth').value='';
+	document.getElementById('mainForm:elementHeight').value='';
+	document.getElementById('mainForm:elementDataType').value='';
+	document.getElementById('mainForm:elementMinimumLength').value='';
+	document.getElementById('mainForm:elementMaximumLength').value='';
+	document.getElementById('mainForm:dateFormat').value='';
+	document.getElementById('mainForm:startCardNumber').value='';
+	document.getElementById('mainForm:elementRequired').value='';
+	PF('elementEditorWidgetVar').clear();
+}
+
+
 
 function convertPixelsToMilimeters(pixels) {
 	return pixels*0.264583333;
@@ -55,7 +173,6 @@ function convertMilimetersToPixels(milimeters) {
 function moveToPosition() {
 	panel=document.getElementById(currentlySelectedPanel);
 	var panelRect = panel.getBoundingClientRect();
-//	console.log(panelRect.top, panelRect.right, panelRect.bottom, panelRect.left);
 	var pxTop=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionY').value));
 	var pxLeft=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionX').value));
 	var startTop=panelRect.top;
@@ -78,7 +195,7 @@ function moveToPositionInitial(selectedPanel,selectedElement,x,y) {
 	var startLeft=panelRect.left;
 	var newTop=pxTop+startTop;
 	var newLeft=pxLeft+startLeft;
-	initialSelectedElement=document.getElementById(selectedElement)
+	initialSelectedElement=document.getElementById(selectedElement);
 	initialSelectedElement.style.position = "absolute";
 	initialSelectedElement.style.left = newLeft+"px";
 	initialSelectedElement.style.top=newTop+"px";
@@ -86,11 +203,47 @@ function moveToPositionInitial(selectedPanel,selectedElement,x,y) {
 }
 
 function updateElementMap() {
+	console.log('update element map... ' + currentlySelected.id);
 	updateElementStyleAndPosition(currentlySelected,false);
-	saveFormValues();
+	redrawElementByFormValues();
 }
 
-function selectElement(element,panelId) {
+function updateElementEditorMap() {
+	var type=document.getElementById('mainForm:elementType').value;
+	console.log('update element editor map... ' + currentlySelected.id + ', ' + type + ', ' + disableEditorUpdate);
+	if (disableEditorUpdate == false && type != '3' && type != '4') {
+			var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
+			callUpdater(currentlySelected.id,null,null,null,null,null,elementEditor);
+			currentlySelected.innerHTML=elementEditor;
+	}
+	disableEditorUpdate=false;
+}
+
+
+
+function redrawElementByFormValues() {
+	
+	panel=document.getElementById(currentlySelectedPanel);
+	var panelRect = panel.getBoundingClientRect();
+	var pxTop=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionY').value));
+	var pxLeft=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionX').value));
+	var pxWidth=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementWidth').value));
+	var pxHeight=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementHeight').value));
+	var elementEditor=document.getElementById('mainForm:elementEditor_input').value;
+	
+	var startTop=panelRect.top;
+	var startLeft=panelRect.left;
+	var newTop=pxTop+startTop;
+	var newLeft=pxLeft+startLeft;
+	
+	currentlySelected.style.position = "absolute";
+	currentlySelected.style.left = newLeft+"px";
+	currentlySelected.style.top=newTop+"px";
+	currentlySelected.style.width = pxWidth+"px";
+	currentlySelected.style.height = pxHeight+"px";
+}
+
+function markElementSelected(element,panelId) {
 	currentlySelectedPanel=panelId;
 	if (currentlySelected != null) {
 		var oldStyle=currentlySelected.getAttribute("style");
@@ -99,26 +252,18 @@ function selectElement(element,panelId) {
 	}
 	var style=element.getAttribute("style");
 	style=style+'border:1px solid red;';
-	console.log('test 1...');
 	element.setAttribute("style", style);
-	console.log('test 2... '+element);
 	currentlySelected=element;
 }
 
 function updateElementStyleAndPosition(cardElement,setPositionOnly) {
+	
 	var x=document.getElementById('mainForm:elementPositionX').value;
 	var y=document.getElementById('mainForm:elementPositionY').value;
-	if (setPositionOnly == false) {
-		var elementName=document.getElementById('mainForm:elementName').value;
-		var elementWidth=document.getElementById('mainForm:elementWidth').value;
-		var elementHeight=document.getElementById('mainForm:elementHeight').value;
-		var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
-		callUpdater(cardElement.id,x,y,elementName,elementWidth,elementHeight,elementEditor);
-	}
-	else {
-		callUpdater(cardElement.id,x,y,null,null,null,null);
-	}
-	
+	var elementName=document.getElementById('mainForm:elementName').value;
+	var elementWidth=document.getElementById('mainForm:elementWidth').value;
+	var elementHeight=document.getElementById('mainForm:elementHeight').value;
+	callUpdater(cardElement.id,x,y,elementName,elementWidth,elementHeight,null);
 }
 
 function updateImageSize(imagePanel,imageElement) {
@@ -136,6 +281,5 @@ function resizeImage(imagePanelId) {
 	cardElement=document.getElementById(imagePanelId+'_image');
 	imagePanel=document.getElementById(imagePanelId);
 	updateImageSize(imagePanel,cardElement);
-	saveImageSize();
 }
 

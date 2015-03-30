@@ -1,7 +1,6 @@
 package hr.cdap.web.validator;
 
-import hr.cdap.web.controller.CardDesignerController;
-import hr.cdap.web.controller.CardDesignerController.TempCardElement;
+import hr.cdap.entity.TemplateElement;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -9,7 +8,7 @@ import java.util.List;
 
 public class CardDesignValidator {
 
-	public static void validateCardElement(List<String> messages,TempCardElement element) {
+	public static void validateCardElement(List<String> messages,TemplateElement element) {
 		
 		validateFieldRequired(messages, element.getFormId(), element.getName(), "Naziv elementa",  element.getName());
 		
@@ -25,23 +24,23 @@ public class CardDesignValidator {
 		validateFieldRequired(messages, element.getFormId(), element.getName(), "Visina polja",  element.getHeight());
 		validateFieldWholeNumber(messages, element.getFormId(), element.getName(), "Visina polja",  element.getHeight());
 		
-		if (element.getType().equals(CardDesignerController.ELEMENT_TYPE_LABEL) || element.getType().equals(CardDesignerController.ELEMENT_TYPE_FIELD)) {
+		if (element.getType().equals(TemplateElement.ELEMENT_TYPE_LABEL) || element.getType().equals(TemplateElement.ELEMENT_TYPE_FIELD)) {
 			validateFieldRequired(messages, element.getFormId(), element.getValue(), "Statièki / inicijalni tekst",  element.getValue());
 		}
-		if (element.getType().equals(CardDesignerController.ELEMENT_TYPE_FIELD)) {
-			if (element.getDataType().equals(CardDesignerController.ELEMENT_DATA_TYPE_STRING)) {
+		if (element.getType().equals(TemplateElement.ELEMENT_TYPE_FIELD)) {
+			if (element.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_STRING)) {
 				validateFieldRequired(messages, element.getFormId(), element.getName(), "Minimalni broj znakova",  element.getMinCharLength());
 				validateFieldWholeNumber(messages, element.getFormId(), element.getName(), "Minimalni broj znakova",  element.getMinCharLength());
 				validateFieldRequired(messages, element.getFormId(), element.getName(), "Maksimalni broj znakova",  element.getMaxCharLength());
 				validateFieldWholeNumber(messages, element.getFormId(), element.getName(), "Maksimalni broj znakova",  element.getMaxCharLength());
 			}
-			else if (element.getDataType().equals(CardDesignerController.ELEMENT_DATA_TYPE_DATE)) {
+			else if (element.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_DATE)) {
 				validateFieldRequired(messages, element.getFormId(), element.getName(), "Format datuma",  element.getDateFormat());
 				validateDateFormat(messages, element.getFormId(), element.getName(), "Format datuma",  element.getDateFormat());
 			}
-			else if (element.getDataType().equals(CardDesignerController.ELEMENT_DATA_TYPE_SERIAL)) {
-				validateFieldRequired(messages, element.getFormId(), element.getName(), "Poèetni serijski broj",  element.getStartCardNumber());
-				validateDateFormat(messages, element.getFormId(), element.getName(), "Poèetni serijski broj",  element.getStartCardNumber());
+			else if (element.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_SERIAL)) {
+				validateFieldRequired(messages, element.getFormId(), element.getName(), "Poèetni serijski broj",  element.getStartSerialNumber());
+				validateDateFormat(messages, element.getFormId(), element.getName(), "Poèetni serijski broj",  element.getStartSerialNumber());
 			}
 		}
 	}
