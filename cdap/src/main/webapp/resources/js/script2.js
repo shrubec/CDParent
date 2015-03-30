@@ -179,7 +179,7 @@ function clearForm() {
 	document.getElementById('mainForm:elementName').value='';
 	document.getElementById('mainForm:elementWidth').value='';
 	document.getElementById('mainForm:elementHeight').value='';
-	updateEditorValue('');
+	PF('elementEditorWidgetVar').clear();
 }
 
 
