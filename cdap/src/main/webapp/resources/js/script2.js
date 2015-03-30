@@ -1,4 +1,5 @@
 
+var disableEditorUpdate=false;
 var currentlySelected;
 var currentlySelectedPanel;
 
@@ -119,23 +120,29 @@ function selectElement(cardElement,panelId) {
 	var y=convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop).toFixed(2);
 	
 	
-	console.log('izracunate kooridnate za ' + cardElement.id+': ' + x + ' - ' + y);
+	
+	disableEditorUpdate=true;
+	console.log('izracunate kooridnate za ' + cardElement.id+': ' + x + ' - ' + y + ', disableEditorUpdate: ' + disableEditorUpdate);
 	
 	//document.getElementById('mainForm:elementPositionX').value=x;
 	//document.getElementById('mainForm:elementPositionY').value=y;
 	//document.getElementById('mainForm:selectedId').value=cardElement.id;
 	
 	
+	
+	
+	
 	//vrijednosti na formi se popunjavaju sa ajaxom
-	updateValueOnFormWithAjax(cardElement.id,'elementName','mainForm:elementName');
 	updateValueOnFormWithAjax(cardElement.id,'elementId','mainForm:selectedId');
+	updateValueOnFormWithAjax(cardElement.id,'elementType','mainForm:elementType');
+	updateValueOnFormWithAjax(cardElement.id,'elementName','mainForm:elementName');
 	updateValueOnFormWithAjax(cardElement.id,'elementWidth','mainForm:elementWidth');
 	updateValueOnFormWithAjax(cardElement.id,'elementHeight','mainForm:elementHeight');
-	
 	updateEditorValueOnFormWithAjax(cardElement.id,'elementEditor'); //netreba id elementa jer ide prek widget var-a
-	
 	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementX','mainForm:elementPositionX',x);
 	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementY','mainForm:elementPositionY',y);
+	
+	
 	
 	/*
 	updateValueOnFormWithAjax(cardElement.id,'elementDataType','mainForm:elementDataType');
@@ -173,6 +180,7 @@ function selectElement(cardElement,panelId) {
 
 
 function clearForm() {
+	disableEditorUpdate=true;
 	document.getElementById('mainForm:selectedId').value='';
 	document.getElementById('mainForm:elementPositionX').value='';
 	document.getElementById('mainForm:elementPositionY').value='';
@@ -233,13 +241,16 @@ function updateElementMap() {
 }
 
 function updateElementEditorMap() {
-	console.log('update element map... ' + currentlySelected.id + ', ' + document.getElementById('mainForm:elementType').value);
-	var elementType=document.getElementById('mainForm:elementType').value;
-	if (elementType == '1' || elementType == '2') {	//ako je labela ili polje
-		var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
-		callUpdater(currentlySelected.id,null,null,null,null,null,elementEditor);
-		currentlySelected.innerHTML=elementEditor;
-	} 
+	console.log('update element editor map... ' + currentlySelected.id + ', ' + document.getElementById('mainForm:elementType').value + ', ' + disableEditorUpdate);
+	
+	if (disableEditorUpdate == false) {
+			var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
+			callUpdater(currentlySelected.id,null,null,null,null,null,elementEditor);
+			currentlySelected.innerHTML=elementEditor;
+	}
+	
+	disableEditorUpdate=false;
+	
 }
 
 
@@ -290,8 +301,8 @@ function updateElementStyleAndPosition(cardElement,setPositionOnly) {
 	var elementName=document.getElementById('mainForm:elementName').value;
 	var elementWidth=document.getElementById('mainForm:elementWidth').value;
 	var elementHeight=document.getElementById('mainForm:elementHeight').value;
-	var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
-	callUpdater(cardElement.id,x,y,elementName,elementWidth,elementHeight,elementEditor);
+	//var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
+	callUpdater(cardElement.id,x,y,elementName,elementWidth,elementHeight,null);
 	
 }
 

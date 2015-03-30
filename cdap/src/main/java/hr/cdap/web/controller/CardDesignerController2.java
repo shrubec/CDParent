@@ -84,7 +84,7 @@ public class CardDesignerController2 {
 				}
 			}
 		}
-		return new TempCardElement();
+		return null;
 	}
 	
 	
@@ -121,15 +121,17 @@ public class CardDesignerController2 {
 		element.setPositionX("5");
 		element.setPositionY("5"); 
 		element.setSide(side);
-		element.setRequired(true);
+		
 		
 		if (type.equals(ELEMENT_TYPE_IMAGE)) {
 			element.setWidth("25");
 			element.setHeight("25");
+			element.setRequired(true);
 		}
 		else if (type.equals(ELEMENT_TYPE_SIGNATURE)) {
 			element.setWidth("40");
 			element.setHeight("10");
+			element.setRequired(true);
 		}
 		
 		else if (type.equals(ELEMENT_TYPE_FIELD)) {
@@ -140,6 +142,7 @@ public class CardDesignerController2 {
 			element.setDataType(ELEMENT_DATA_TYPE_STRING);
 			element.setMinCharLength("3");
 			element.setMaxCharLength("20");
+			element.setRequired(true);
 		}
 		else {
 			element.setValue("SPECIMEN"+String.valueOf(elementList.size()));
@@ -157,6 +160,7 @@ public class CardDesignerController2 {
 		
 		ElementSessionDO elementSessionDO=new ElementSessionDO();
 		elementSessionDO.setElementId("mainForm:"+element.getFormId());
+		elementSessionDO.setElementType(element.getType());
 		elementSessionDO.setElementEditor(element.getStyleValue());
 		elementSessionDO.setElementHeight(element.getHeight());
 		elementSessionDO.setElementWidth(element.getWidth());
@@ -166,7 +170,8 @@ public class CardDesignerController2 {
 		elementSessionDO.setElementMinChar(element.getMinCharLength());
 		elementSessionDO.setElementMaxChar(element.getMaxCharLength());
 		elementSessionDO.setElementDateFormat(element.getDateFormat());
-		elementSessionDO.setElementRequired(element.getRequired() ? "DA":"NE");
+		if (element.getRequired() != null)
+			elementSessionDO.setElementRequired(element.getRequired() ? "DA":"NE");
 		
 		if (element.getDataType() != null) {
 			if (element.getDataType().equals(ELEMENT_DATA_TYPE_STRING)) {
@@ -700,8 +705,8 @@ public class CardDesignerController2 {
 			elementSessionDO.setElementY(element.getPositionY());
 			elementSessionDO.setElementName(element.getName());
 			
-			
-			
+			if (element.getRequired() != null)
+				elementSessionDO.setElementRequired(element.getRequired()?"DA":"NE");
 			
 			if (element.getDataType() != null) {
 				if (element.getDataType().equals(ELEMENT_DATA_TYPE_STRING)) {
@@ -720,7 +725,7 @@ public class CardDesignerController2 {
 					elementSessionDO.setElementCardNumber(element.getStartSerialNumber());
 				}
 				
-				elementSessionDO.setElementRequired(element.getRequired()?"DA":"NE");
+				
 				
 			}
 			
