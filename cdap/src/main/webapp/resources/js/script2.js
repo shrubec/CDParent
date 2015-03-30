@@ -65,6 +65,9 @@ function updateEditorValue(value) {
 	console.log('cistim editor');
 	PF('elementEditorWidgetVar').clear();
 	console.log('postavljam vrijednost na editor: ' + value);
+	
+	PF('elementEditorWidgetVar').enable();
+	
 	if (value != 'null') {
 		PF('elementEditorWidgetVar').editor.focus();
 		setTimeout(function() {
@@ -249,9 +252,8 @@ function updateElementMap() {
 }
 
 function updateElementEditorMap() {
-	console.log('update element editor map... ' + currentlySelected.id + ', ' + document.getElementById('mainForm:elementType').value + ', ' + disableEditorUpdate);
-	
 	var type=document.getElementById('mainForm:elementType').value;
+	console.log('update element editor map... ' + currentlySelected.id + ', ' + type + ', ' + disableEditorUpdate);
 	if (disableEditorUpdate == false && type != '3' && type != '4') {
 			var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
 			callUpdater(currentlySelected.id,null,null,null,null,null,elementEditor);
