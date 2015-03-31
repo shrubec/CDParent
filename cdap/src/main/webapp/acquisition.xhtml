@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+
+ 	<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+          <title>Cards</title>
+       </f:facet>
+
+	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
+	<h:outputScript library="js" name="script.js" />
+
+</h:head>
+
+<h:body>
+
+<h:form id="mainForm">
+
+
+<p:dataTable var="card" >
+    <p:column headerText="Id">
+        <h:outputText value="#{card.id}" />
+    </p:column>
+ 
+    <p:column headerText="Tip kartice">
+        <h:outputText value="#{card.type}" />
+    </p:column>
+ 
+    <p:column headerText="Datum kreiranja">
+        <h:outputText value="#{card.dateCreated}" >
+        	<f:convertDateTime pattern="dd.MM.yyyy"/>
+        </h:outputText>
+    </p:column>
+ 
+   
+</p:dataTable>
+
+
+</h:form>
+
+</h:body>
+</html>

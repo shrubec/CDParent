@@ -1,57 +1,43 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
-
-<h:head>
-
- 	<f:facet name="first">
-            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
-          <title>Cards</title>
-       </f:facet>
-
-	<script>
-	
-	function test() {
-		var val=Math.random();
-		PF('editorHtml').clear();
-		PF('editorHtml').editor.focus();
-		    setTimeout(function() {
-		    	PF('editorHtml').editor.execCommand('inserthtml', val, false);
-		    }, 0);
-		    return false;
-	}
-	
-	
-	</script>
-
-</h:head>
-
-<h:body>
-
-<h:form id="mainForm">
-
-	
-
-	<p:editor 
-		id="elementEditor" 
-		width="250" 
-		height="100" 
-		controls="bold italic underline font size color undo redo" 
-		widgetVar="editorHtml"
-		value="123456"
-	/>
-	<textArea id="testElement"> asdasd</textArea>
+    <h:head />
+     
+    <h:body>
+      <h:form id="mainForm">
+      
+      
+      
+       <h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="5">
+        <p:outputLabel for="cardType" value="Tip kartice:" />
+        <p:selectOneMenu id="cardType" value="#{testController.selectedId}" style="width:200px;" >
+            <f:selectItems value="#{testController.list}"  var="item" itemValue="#{item.id}" itemLabel="#{item.name}" />
+            <p:ajax   listener="#{testController.promjena}" update="mainForm:test" process="@this"/>  
+        </p:selectOneMenu>
+        
+        <p:commandButton value="Novi tip kartice" icon="ui-icon-circle-plus"  oncomplete="PF('newTypeDialog').show()" actionListener="#{testController.newCardType}" process="@this"/>
+        
+       	
+       	
+        
+ </h:panelGrid>
 
 
+ <p:inputText id="test" value="#{testController.selectedId}" />
 
-  <p:commandButton value="Test"  icon="ui-icon-disk" onclick="test()"/>
- 
-
-
-</h:form>
-
-</h:body>
+      
+       	 <p:dialog id="newTypeDialog" widgetVar="newTypeDialog" modal="true" header="Novi tip kartice" position="center center" width="400" height="100" resizable="false"  appendToBody="true">
+  		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+	   		<p:outputLabel value="Naziv: " />
+			<p:inputText value="#{testController.selectedId}" required="true" requiredMessage="Naziv je obavezan	"/>
+			<p:commandButton value="Spremi" icon="ui-icon-circle-save" actionListener="#{testController.saveCardType}" update="mainForm" ajax="true" process="newTypeDialog"/>
+       </h:panelGrid>
+  </p:dialog>
+      
+      </h:form>
+    </h:body>
+     
 </html>

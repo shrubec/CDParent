@@ -22,15 +22,32 @@
 
 <h:form id="mainForm">
 
+
+<p:outputPanel  id="cardTypePanel">
+        <p:outputLabel for="cardType" value="Tip kartice:" />
+        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{cardDesignerController.selectedCardTypeName}" style="width:200px;">
+        	<f:selectItem itemLabel="Odaberite" />
+            <f:selectItems value="#{cardDesignerController.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
+            <p:ajax   listener="#{cardDesignerController.cardTypeSelected}" update="mainForm" />  
+        </p:selectOneMenu>
+        
+        <p:commandButton value="Novi tip kartice" icon="ui-icon-circle-plus"  oncomplete="PF('newTypeDialog').show()" actionListener="#{cardDesignerController.newCardType}" immediate="true"/>
+       	
+        
+ </p:outputPanel>
+ 
+  <p:inputText id="test" value="#{cardDesignerController.selectedCardType.name}" />
+		
+
 	<p:toolbar>
 		<f:facet name="left">
 			<p:outputLabel id="side1label" value="Prednja strana"></p:outputLabel>
 		</f:facet>
 		<f:facet name="right">
-			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,1)}" update="mainForm" />
-			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,2)}" update="mainForm" />
-			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,3)}" update="mainForm" />
-			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,4)}" update="mainForm" />
+			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,1)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,2)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,3)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,4)}" update="mainForm" process="@this" />
 		</f:facet>
 	</p:toolbar>
 
@@ -49,10 +66,10 @@
 			<p:outputLabel id="side2label" value="Stražnja strana"></p:outputLabel>
 		</f:facet>
 		<f:facet name="right">
-			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,1)}" update="mainForm" />
-			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,2)}" update="mainForm" />
-			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,3)}" update="mainForm" />
-			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,4)}" update="mainForm" />
+			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,1)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,2)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,3)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,4)}" update="mainForm" process="@this"/>
 		</f:facet>
 	</p:toolbar>
 
@@ -211,6 +228,16 @@
   
  <h:inputHidden id="selectedId" value="#{cardDesignerController.selectedId}"></h:inputHidden>
  <h:inputHidden id="elementType" />
+ 
+ 
+ <!-- Dialog za novi tip kartice -->
+ <p:dialog id="newTypeDialog" widgetVar="newTypeDialog" modal="true" header="Novi tip kartice" position="center center" width="400" height="100" resizable="false"  appendToBody="true">
+  		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+	   		<p:outputLabel value="Naziv: " />
+			<p:inputText value="#{cardDesignerController.selectedCardType.name}" required="true" requiredMessage="Naziv je obavezan	"/>
+			<p:commandButton value="Spremi" icon="ui-icon-circle-save" oncomplete="PF('cardTypeSelect').selectValue()" actionListener="#{cardDesignerController.saveCardType}" update="mainForm" />
+       </h:panelGrid>
+  </p:dialog>
 
 </h:form>
 

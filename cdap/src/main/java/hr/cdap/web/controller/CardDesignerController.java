@@ -1,7 +1,8 @@
 package hr.cdap.web.controller;
 
 
-import hr.cdap.entity.TemplateElement;
+import hr.cdap.entity.CardElement;
+import hr.cdap.entity.CardType;
 import hr.cdap.web.object.ElementSessionDO;
 
 import java.math.BigDecimal;
@@ -16,6 +17,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -38,15 +40,59 @@ import org.primefaces.context.RequestContext;
 @SuppressWarnings({"rawtypes","unchecked"})
 public class CardDesignerController {
 	
-	private @Getter @Setter List<TemplateElement> elementList=new ArrayList<TemplateElement>();
+	private @Getter @Setter List<CardElement> elementList=new ArrayList<CardElement>();
 	private @Getter @Setter String selectedId;
 	private @Getter @Setter String ime="";
 	
+	private @Getter @Setter String selectedCardTypeName;
+	private @Getter @Setter CardType selectedCardType=new CardType();
+	private @Getter @Setter List<CardType> cardTypes=new ArrayList<CardType>();
+	
+	private static int tempIdCounter=5;
+	
+	
 	public CardDesignerController() {
-		System.out.println("DesigrController constructor...");
+		System.out.println("DesignController constructor...");
 		createElementMap();
-		elementList=new ArrayList<TemplateElement>();
+		elementList=new ArrayList<CardElement>();
 	}
+	
+	public void newCardType() {
+		selectedCardTypeName=null;
+		selectedCardType=new CardType();
+	}
+	
+	public void saveCardType() {
+		tempIdCounter++;
+		selectedCardType.setId(tempIdCounter);
+		selectedCardTypeName=selectedCardType.getName();
+		cardTypes.add(selectedCardType);
+		
+		System.out.println("Postavljen ");
+		
+	}
+	
+	public void cardTypeSelected() {
+		System.out.println("Card type selected... " + selectedCardTypeName);
+		
+		for (CardType cardType:cardTypes) {
+			if (cardType.getName() != null && selectedCardTypeName.equals(cardType.getName())) {
+				selectedCardType=cardType;
+			}
+		}
+		
+	}
+	
+	
+	
+	public List<SelectItem> getCardTypeItems() {
+		List<SelectItem> list=new ArrayList<SelectItem> ();
+		for (CardType cardType:cardTypes) {
+			list.add(new SelectItem(cardType,cardType.getName()));
+		}
+		return list;
+	}
+	
 	
 	private void createElementMap() {
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
@@ -56,8 +102,8 @@ public class CardDesignerController {
 		session.setAttribute("elementMap", new HashMap<String,String>());
 	}
 	
-	public TemplateElement getSelectedElement() {
-		for (TemplateElement element:elementList) {
+	public CardElement getSelectedElement() {
+		for (CardElement element:elementList) {
 			if (("mainForm:"+element.getFormId()).equals(selectedId)) {
 				return element;
 			}
@@ -67,7 +113,7 @@ public class CardDesignerController {
 	
 	private Integer fetchNumberOfElements(String type) {
 		int count=0;
-		for (TemplateElement element:elementList) {
+		for (CardElement element:elementList) {
 			if (element.getType().equals(type)) {
 				count++;
 			}
@@ -76,22 +122,22 @@ public class CardDesignerController {
 	}
 	
 	public void addNewCardElement(String side,String type) {
-		TemplateElement element=createNewElement(side, type);
+		CardElement element=createNewElement(side, type);
 		elementList.add(element);
 		selectedId=("mainForm:"+element.getFormId());
 		Map map=fetchElementMap();
 		ElementSessionDO elementSessionDO=createSessionElementObject(element);
 		map.put(elementSessionDO.getElementId(), elementSessionDO);
-		for (TemplateElement e:elementList) {
+		for (CardElement e:elementList) {
 			addElementOnForm(e);
 		}
 		executeJS_markElementSelected(element);
 	}
 	
 	
-	private TemplateElement createNewElement(String side,String type) {
+	private CardElement createNewElement(String side,String type) {
 		
-		TemplateElement element=new TemplateElement();
+		CardElement element=new CardElement(null,type.equals(CardElement.ELEMENT_TYPE_LABEL) ? false : true);
 		element.setFormId("cardElement"+String.valueOf(elementList.size()));
 		element.setValue("");
 		element.setType(type);
@@ -99,35 +145,35 @@ public class CardDesignerController {
 		element.setPositionX("5");
 		element.setPositionY("5"); 
 		
-		if (type.equals(TemplateElement.ELEMENT_TYPE_LABEL)) {
+		if (type.equals(CardElement.ELEMENT_TYPE_LABEL)) {
 			element.setName("Labela "+String.valueOf(fetchNumberOfElements(type)));
 		}
-		else if (type.equals(TemplateElement.ELEMENT_TYPE_FIELD)) {
+		else if (type.equals(CardElement.ELEMENT_TYPE_FIELD)) {
 			element.setName("Polje "+String.valueOf(fetchNumberOfElements(type)));
 		}
-		else if (type.equals(TemplateElement.ELEMENT_TYPE_IMAGE)) {
+		else if (type.equals(CardElement.ELEMENT_TYPE_IMAGE)) {
 			element.setName("Slika "+String.valueOf(fetchNumberOfElements(type)));
 		}
-		else if (type.equals(TemplateElement.ELEMENT_TYPE_SIGNATURE)) {
+		else if (type.equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			element.setName("Potpis "+String.valueOf(fetchNumberOfElements(type)));
 		}
 		
-		if (type.equals(TemplateElement.ELEMENT_TYPE_IMAGE)) {
+		if (type.equals(CardElement.ELEMENT_TYPE_IMAGE)) {
 			element.setWidth("25");
 			element.setHeight("25");
 			element.setRequired(true);
 		}
-		else if (type.equals(TemplateElement.ELEMENT_TYPE_SIGNATURE)) {
+		else if (type.equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			element.setWidth("40");
 			element.setHeight("10");
 			element.setRequired(true);
 		}
-		else if (type.equals(TemplateElement.ELEMENT_TYPE_FIELD)) {
+		else if (type.equals(CardElement.ELEMENT_TYPE_FIELD)) {
 			element.setValue("SPECIMEN "+String.valueOf(elementList.size()));
 			element.setStyleValue("SPECIMEN "+String.valueOf(elementList.size()));
 			element.setWidth("40");
 			element.setHeight("8");
-			element.setDataType(TemplateElement.ELEMENT_DATA_TYPE_STRING);
+			element.setDataType(CardElement.ELEMENT_DATA_TYPE_STRING);
 			element.setMinCharLength("3");
 			element.setMaxCharLength("20");
 			element.setRequired(true);
@@ -142,7 +188,7 @@ public class CardDesignerController {
 	}
 	
 	
-	private ElementSessionDO createSessionElementObject(TemplateElement element) {
+	private ElementSessionDO createSessionElementObject(CardElement element) {
 		
 		ElementSessionDO elementSessionDO=new ElementSessionDO();
 		elementSessionDO.setElementId("mainForm:"+element.getFormId());
@@ -158,18 +204,18 @@ public class CardDesignerController {
 			elementSessionDO.setElementRequired(element.getRequired()?"DA":"NE");
 		
 		if (element.getDataType() != null) {
-			if (element.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_STRING)) {
+			if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING)) {
 				elementSessionDO.setElementDataType("Text");
 				elementSessionDO.setElementMinChar(element.getMinCharLength());
 				elementSessionDO.setElementMaxChar(element.getMaxCharLength());
 			}
-			else if (element.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_NUMBER))
+			else if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_NUMBER))
 				elementSessionDO.setElementDataType("Broj");
-			else if (element.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_DATE)) {
+			else if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_DATE)) {
 				elementSessionDO.setElementDataType("Datum");
 				elementSessionDO.setElementDateFormat(element.getDateFormat());
 			}
-			else if (element.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_SERIAL)) {
+			else if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
 				elementSessionDO.setElementDataType("Serijski broj");
 				elementSessionDO.setElementCardNumber(element.getStartSerialNumber());
 			}
@@ -178,7 +224,7 @@ public class CardDesignerController {
 	}
 	
 	
-	private void executeJS_markElementSelected(TemplateElement element) {
+	private void executeJS_markElementSelected(CardElement element) {
 		String selectedSide="frontSide";
 		if (element.getSide().equals("2")) {
 			selectedSide="backSide";
@@ -186,7 +232,7 @@ public class CardDesignerController {
 		RequestContext.getCurrentInstance().execute("selectElement(document.getElementById('mainForm:"+element.getFormId()+"'),'mainForm:"+selectedSide+"')");
 	}
 	
-	private void executeJS_setElementStyleAndValue(TemplateElement element) {
+	private void executeJS_setElementStyleAndValue(CardElement element) {
 		
 		if (element.getWidth() != null && !element.getWidth().isEmpty()) {
 			BigDecimal width=new BigDecimal(element.getWidth());
@@ -198,7 +244,7 @@ public class CardDesignerController {
 		}
 		
 		RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').style.display='inline-block'");
-		if (element.getType().equals(TemplateElement.ELEMENT_TYPE_LABEL) || element.getType().equals(TemplateElement.ELEMENT_TYPE_FIELD)) {
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL) || element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
 			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getValue()+"'");
 		}
 	}
@@ -217,7 +263,7 @@ public class CardDesignerController {
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel4");
 	}
 	
-	public void addElementOnForm(TemplateElement element) {
+	public void addElementOnForm(CardElement element) {
 
 		OutputPanel panel = resolveSide(element.getSide());
 		if (!element.getAddedOnForm()) {
@@ -245,9 +291,9 @@ public class CardDesignerController {
 		executeJS_setElementStyleAndValue(element);
 	}
 	
-	private String createOnClickScript(TemplateElement element) {
+	private String createOnClickScript(CardElement element) {
 		String coordinatesTarget = "this";
-		if (element.getType().equals(TemplateElement.ELEMENT_TYPE_IMAGE) || element.getType().equals(TemplateElement.ELEMENT_TYPE_SIGNATURE)) {
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE) || element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			coordinatesTarget = "this.parentNode";
 		}
 		String oncClickScript;
@@ -260,9 +306,9 @@ public class CardDesignerController {
 	}
 	
 	
-	private void createFormElements(OutputPanel panel,TemplateElement element,String oncClickScript) {
+	private void createFormElements(OutputPanel panel,CardElement element,String oncClickScript) {
 		UIComponent component = null;
-		if (element.getType().equals(TemplateElement.ELEMENT_TYPE_IMAGE)|| element.getType().equals(TemplateElement.ELEMENT_TYPE_SIGNATURE)) {
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)|| element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			OutputPanel imagePanel=createImagePanel(element);
 			GraphicImage graphicImage = createImage(element);
 			graphicImage.setOnclick(oncClickScript);
@@ -283,7 +329,7 @@ public class CardDesignerController {
 		element.setAddedOnForm(true);
 	}
 	
-	private OutputPanel createImagePanel(TemplateElement element) {
+	private OutputPanel createImagePanel(CardElement element) {
 		OutputPanel imagePanel = new OutputPanel();
 		BigDecimal width = new BigDecimal(element.getWidth());
 		BigDecimal height = new BigDecimal(element.getHeight());
@@ -294,12 +340,12 @@ public class CardDesignerController {
 		return imagePanel;
 	}
 	
-	private GraphicImage createImage(TemplateElement element) {
+	private GraphicImage createImage(CardElement element) {
 		GraphicImage graphicImage = new GraphicImage();
-		if (element.getType().equals(TemplateElement.ELEMENT_TYPE_IMAGE)) {
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
 			graphicImage.setValue("images/slika.jpg");
 		}
-		if (element.getType().equals(TemplateElement.ELEMENT_TYPE_SIGNATURE)) {
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			graphicImage.setValue("images/potpis.jpg");
 		}
 		graphicImage.setId(element.getFormId() + "_image");
@@ -308,7 +354,7 @@ public class CardDesignerController {
 		return graphicImage;
 	}
 	
-	private Resizable createResizable(TemplateElement element) {
+	private Resizable createResizable(CardElement element) {
 		Resizable resizableElement = new Resizable();
 		resizableElement.setId("resizableElement_"+ element.getFormId());
 		resizableElement.setFor(element.getFormId());
@@ -317,14 +363,14 @@ public class CardDesignerController {
 		return resizableElement;
 	}
 	
-	private OutputLabel createLabel(TemplateElement element) {
+	private OutputLabel createLabel(CardElement element) {
 		OutputLabel formLabel = new OutputLabel();
 		formLabel.setValue(element.getValue());
 		formLabel.setId(element.getFormId());
 		return formLabel;
 	}
 	
-	private Draggable createDraggable(TemplateElement element) {
+	private Draggable createDraggable(CardElement element) {
 		Draggable draggableElement = new Draggable();
 		draggableElement.setId("draggableElement" + element.getFormId());
 		draggableElement.setFor(element.getFormId());
@@ -373,21 +419,21 @@ public class CardDesignerController {
 	
 	public void changeDataType() {
 		
-		TemplateElement selectedElement=getSelectedElement();
+		CardElement selectedElement=getSelectedElement();
 		selectedElement.setMinCharLength(null);
 		selectedElement.setMaxCharLength(null);
 		selectedElement.setDateFormat(null);
 		selectedElement.setStartSerialNumber(null);
 		selectedElement.setRequired(true);
 		
-		if (selectedElement.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_STRING)) {
+		if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING)) {
 			selectedElement.setMinCharLength("3");
 			selectedElement.setMaxCharLength("20");
 		}
-		else if (selectedElement.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_DATE)) {
+		else if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_DATE)) {
 			selectedElement.setDateFormat("dd.MM.yyyy");
 		}
-		else if (selectedElement.getDataType().equals(TemplateElement.ELEMENT_DATA_TYPE_SERIAL)) {
+		else if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
 			selectedElement.setStartSerialNumber("0000000001");
 			selectedElement.setRequired(null);
 		}
@@ -397,7 +443,7 @@ public class CardDesignerController {
 	
 	public void saveCardTemplate() {
 		
-		for (TemplateElement element:elementList) {
+		for (CardElement element:elementList) {
 			if (element.getStyleValue() != null) {
 				element.setValue(getPlainTextValue(element.getStyleValue()).trim());
 			}
@@ -422,10 +468,10 @@ public class CardDesignerController {
 		validateCardTemplate();
 		
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		List<TemplateElement> savedElementList=new ArrayList<TemplateElement>();
+		List<CardElement> savedElementList=new ArrayList<CardElement>();
 		savedElementList.addAll(elementList);
 		session.setAttribute(ime, savedElementList);
-		elementList=new ArrayList<TemplateElement>();
+		elementList=new ArrayList<CardElement>();
 		OutputPanel front=resolveSide("1");
 		OutputPanel back=resolveSide("2");
 		front.getChildren().clear();
@@ -443,16 +489,16 @@ public class CardDesignerController {
 		back.getChildren().clear();
 		
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		elementList=(List<TemplateElement> ) session.getAttribute(ime);
+		elementList=(List<CardElement> ) session.getAttribute(ime);
 		if (elementList == null) {
-			elementList=new ArrayList<TemplateElement>();
+			elementList=new ArrayList<CardElement>();
 		}
 		
 		HttpServletRequest request=(HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		Map map=(Map) request.getSession().getAttribute("elementMap");
 		map.clear();
 		
-		for (TemplateElement element:elementList) {
+		for (CardElement element:elementList) {
 
 			element.setAddedOnForm(false);
 			ElementSessionDO elementSessionDO=createSessionElementObject(element);
