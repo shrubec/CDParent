@@ -4,6 +4,7 @@ package hr.cdap.web.controller;
 import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.web.object.ElementSessionDO;
+import hr.cdap.web.validator.CardDesignValidator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -42,10 +43,8 @@ public class CardDesignerController {
 	
 	private @Getter @Setter List<CardElement> elementList=new ArrayList<CardElement>();
 	private @Getter @Setter String selectedId;
-	private @Getter @Setter String ime="";
-	
 	private @Getter @Setter String selectedCardTypeName;
-	private @Getter @Setter CardType selectedCardType=new CardType();
+	private @Getter @Setter CardType selectedCardType;
 	private @Getter @Setter List<CardType> cardTypes=new ArrayList<CardType>();
 	
 	private static int tempIdCounter=5;
@@ -67,22 +66,19 @@ public class CardDesignerController {
 		selectedCardType.setId(tempIdCounter);
 		selectedCardTypeName=selectedCardType.getName();
 		cardTypes.add(selectedCardType);
-		
-		System.out.println("Postavljen ");
+		saveTypesIntoSession();
+		loadCardTemplate();
 		
 	}
 	
 	public void cardTypeSelected() {
-		System.out.println("Card type selected... " + selectedCardTypeName);
-		
 		for (CardType cardType:cardTypes) {
 			if (cardType.getName() != null && selectedCardTypeName.equals(cardType.getName())) {
 				selectedCardType=cardType;
 			}
 		}
-		
+		loadCardTemplate();
 	}
-	
 	
 	
 	public List<SelectItem> getCardTypeItems() {
@@ -93,6 +89,20 @@ public class CardDesignerController {
 		return list;
 	}
 	
+	
+	public Boolean getRenderCardPanel() {
+		return selectedCardType != null ? true : false;
+	}
+	
+	private void saveTypesIntoSession() {
+		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+		if (session == null) {
+			session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+		}
+		if (session.getAttribute("cardTypeList") == null) {
+			session.setAttribute("cardTypeList",cardTypes);
+		}
+	}
 	
 	private void createElementMap() {
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
@@ -470,7 +480,7 @@ public class CardDesignerController {
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		List<CardElement> savedElementList=new ArrayList<CardElement>();
 		savedElementList.addAll(elementList);
-		session.setAttribute(ime, savedElementList);
+		session.setAttribute(selectedCardType.getName(), savedElementList);
 		elementList=new ArrayList<CardElement>();
 		OutputPanel front=resolveSide("1");
 		OutputPanel back=resolveSide("2");
@@ -478,6 +488,7 @@ public class CardDesignerController {
 		back.getChildren().clear();
 		session.setAttribute("elementMap", new HashMap<String,String>());
 		RequestContext.getCurrentInstance().execute("clearForm()");
+		loadCardTemplate();
 	}
 	
 	
@@ -489,7 +500,7 @@ public class CardDesignerController {
 		back.getChildren().clear();
 		
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		elementList=(List<CardElement> ) session.getAttribute(ime);
+		elementList=(List<CardElement> ) session.getAttribute(selectedCardType.getName());
 		if (elementList == null) {
 			elementList=new ArrayList<CardElement>();
 		}
@@ -510,14 +521,14 @@ public class CardDesignerController {
 	
 	public void validateCardTemplate() {
 		
-//		List<String> messages=new ArrayList<String>();
-//		for (TemplateElement element:elementList) {
-//			CardDesignValidator.validateCardElement(messages, element);
-//		}
-//		
-//		for (String s:messages) {
-//			System.out.println("Validacija: " + s);
-//		}
+		List<String> messages=new ArrayList<String>();
+		for (CardElement element:elementList) {
+			CardDesignValidator.validateCardElement(messages, element);
+		}
+		
+		for (String s:messages) {
+			System.out.println("Validacija: " + s);
+		}
 		
 	}
 	

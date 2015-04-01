@@ -36,10 +36,10 @@
         
  </p:outputPanel>
  
-  <p:inputText id="test" value="#{cardDesignerController.selectedCardType.name}" />
+  <p:inputText id="test" value="#{cardDesignerController.selectedCardType.name}" rendered="#{cardDesignerController.renderCardPanel}" />
 		
 
-	<p:toolbar>
+	<p:toolbar rendered="#{cardDesignerController.renderCardPanel}">
 		<f:facet name="left">
 			<p:outputLabel id="side1label" value="Prednja strana"></p:outputLabel>
 		</f:facet>
@@ -58,10 +58,11 @@
 	name="frontSide" 
 	layout="block" 
 	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-image: url('images/card_template1.jpg');"
+	rendered="#{cardDesignerController.renderCardPanel}"
 />
 
 
-<p:toolbar>
+<p:toolbar rendered="#{cardDesignerController.renderCardPanel}">
 		<f:facet name="left">
 			<p:outputLabel id="side2label" value="Stražnja strana"></p:outputLabel>
 		</f:facet>
@@ -80,9 +81,10 @@
 	name="backSide"  
 	layout="block" 
 	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;background-image: url('images/card_template2.png');"
+	rendered="#{cardDesignerController.renderCardPanel}"
 />
 
-<p:panel id="elementDataPanel1" header="Osnovni podaci elementa"  >
+<p:panel id="elementDataPanel1" header="Osnovni podaci elementa"  rendered="#{cardDesignerController.renderCardPanel}">
 
 	<!-- Za editor se ne moze dodati p:ajax a valueChangeListener se okida tek nakon submita, zato se koristi remote command -->
 	
@@ -125,7 +127,7 @@
 
 
 
-<p:panel id="elementDataPanel2" header="Statički / inicijalni tekst" >
+<p:panel id="elementDataPanel2" header="Statički / inicijalni tekst" rendered="#{cardDesignerController.renderCardPanel}">
 
 	<p:editor 
 		id="elementEditor"  
@@ -139,7 +141,7 @@
 	
 </p:panel>
 
-<p:panel id="elementDataPanel3" header="Dodatni podaci polja" >
+<p:panel id="elementDataPanel3" header="Dodatni podaci polja" rendered="#{cardDesignerController.renderCardPanel}">
 
 	<!-- Ovo se pokazuje samo ako je element varijabilni - korisnicki unos -->
 	
@@ -206,18 +208,15 @@
 
 </p:panel>
 
-<p:panel id="elementDataPanel4" header="Inicijalna slika / potpis" >
+<p:panel id="elementDataPanel4" header="Inicijalna slika / potpis" rendered="#{cardDesignerController.renderCardPanel}">
 
 </p:panel>
 
 
 
-<p:inputText 
-		id="ime" 
-		value="#{cardDesignerController.ime}" 
-	/>
- <p:commandButton value="Submit"  icon="ui-icon-disk" actionListener="#{cardDesignerController.saveCardTemplate}" update="mainForm" />
- <p:commandButton value="Load"  icon="ui-icon-disk" actionListener="#{cardDesignerController.loadCardTemplate}" update="mainForm" />
+
+ <p:commandButton value="Spremi"  icon="ui-icon-disk" actionListener="#{cardDesignerController.saveCardTemplate}" update="mainForm" />
+ 
  
  <!-- remote komande - javascript -->
  
