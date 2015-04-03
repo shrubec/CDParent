@@ -1,5 +1,6 @@
 package hr.cdap.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -39,10 +40,10 @@ public class CardData {
 	private String valueString;
 	
 	@Column(name="value_int")
-	private String valueInt;
+	private Integer valueInt;
 	
 	@Column(name="value_dec")
-	private String valueDec;
+	private BigDecimal valueDec;
 	
 	@Column(name="value_date")
 	@Temporal(TemporalType.DATE)

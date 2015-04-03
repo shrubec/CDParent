@@ -93,6 +93,9 @@ public class CardElement {
 	@Transient
 	private Boolean addedOnForm=false;
 	
+	@Transient
+	private CardData cardData;
+	
 	
 	public CardElement(CardType cardType,Boolean dynamic) {
 		this.cardType=cardType;

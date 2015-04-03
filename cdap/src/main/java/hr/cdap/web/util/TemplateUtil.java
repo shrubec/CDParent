@@ -96,7 +96,7 @@ public class TemplateUtil {
 	
 	public static OutputLabel createLabel(CardElement element) {
 		OutputLabel formLabel = new OutputLabel();
-		formLabel.setValue(element.getValue());
+		formLabel.setValue(element.getStyleValue());
 		formLabel.setId(element.getFormId());
 		return formLabel;
 	}

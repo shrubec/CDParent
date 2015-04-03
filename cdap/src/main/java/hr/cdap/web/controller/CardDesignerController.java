@@ -244,7 +244,7 @@ public class CardDesignerController {
 		
 		TemplateUtil.executeJS_setElementStyle(element);
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL) || element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
-			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getValue()+"'");
+			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getStyleValue()+"'");
 		}
 	}
 	
@@ -264,7 +264,7 @@ public class CardDesignerController {
 		else {
 			UIComponent formElement = TemplateUtil.fetchElement(panel, element.getFormId());
 			if (formElement instanceof OutputLabel) {
-				((OutputLabel) formElement).setValue(element.getValue());
+				((OutputLabel) formElement).setValue(element.getStyleValue());
 			}
 		}
 
@@ -275,7 +275,10 @@ public class CardDesignerController {
 			element.setPositionY(elementSessionDO.getElementY());
 			element.setWidth(elementSessionDO.getElementWidth());
 			element.setHeight(elementSessionDO.getElementHeight());
-			element.setValue(elementSessionDO.getElementEditor());
+//			element.setValue(elementSessionDO.getElementEditor());
+			if (elementSessionDO.getElementEditor() != null) {
+				element.setValue(getPlainTextValue(elementSessionDO.getElementEditor()).trim());
+			}
 			element.setStyleValue(elementSessionDO.getElementEditor()); 
 		}
 
@@ -340,7 +343,11 @@ public class CardDesignerController {
 			Document doc=Jsoup.parse(styleValue);
 			Elements elements=doc.getAllElements();
 			for (Element element:elements) {
+				System.out.println("ELEMENT NODE NAME: " + element.nodeName());
 				if (element.nodeName().equals("body")) {
+					
+					System.out.println("Vracam plain text value: " + element.text());
+					
 					return element.text();
 				}
 			}
@@ -384,7 +391,7 @@ public class CardDesignerController {
 			element.setPositionY(elementSessionDO.getElementY());
 			element.setWidth(elementSessionDO.getElementWidth());
 			element.setHeight(elementSessionDO.getElementHeight());
-			element.setValue(elementSessionDO.getElementEditor());
+//			element.setValue(elementSessionDO.getElementEditor());
 			element.setStyleValue(elementSessionDO.getElementEditor());
 			if (elementSessionDO.getElementDataType() == null) {
 				element.setDataType(null);
@@ -394,9 +401,12 @@ public class CardDesignerController {
 				element.setMaxCharLength(null);
 				element.setRequired(null);
 			}
+			System.out.println("Spremljena vrijednost: " + element.getValue());
+			System.out.println("Spremljena style vrijednost: " + element.getStyleValue());
 		}
 		
-		validateCardTemplate();
+		
+//		validateCardTemplate();
 		
 		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
 		List<CardElement> savedElementList=new ArrayList<CardElement>();
