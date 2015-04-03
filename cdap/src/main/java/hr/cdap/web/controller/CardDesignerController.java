@@ -4,6 +4,7 @@ package hr.cdap.web.controller;
 import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.web.object.ElementSessionDO;
+import hr.cdap.web.util.TemplateUtil;
 import hr.cdap.web.validator.CardDesignValidator;
 
 import java.math.BigDecimal;
@@ -16,7 +17,6 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
@@ -99,9 +99,7 @@ public class CardDesignerController {
 		if (session == null) {
 			session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 		}
-		if (session.getAttribute("cardTypeList") == null) {
-			session.setAttribute("cardTypeList",cardTypes);
-		}
+		session.setAttribute("cardTypeList",cardTypes);
 	}
 	
 	private void createElementMap() {
@@ -244,29 +242,13 @@ public class CardDesignerController {
 	
 	private void executeJS_setElementStyleAndValue(CardElement element) {
 		
-		if (element.getWidth() != null && !element.getWidth().isEmpty()) {
-			BigDecimal width=new BigDecimal(element.getWidth());
-			BigDecimal height=new BigDecimal(element.getHeight());
-			width=width.divide(new BigDecimal("0.264583333"),0, RoundingMode.HALF_UP);
-			height=height.divide(new BigDecimal("0.264583333"),0, RoundingMode.HALF_UP);
-			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').style.width='"+width+"px'");
-			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').style.height='"+height+"px'");
-		}
-		
-		RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').style.display='inline-block'");
+		TemplateUtil.executeJS_setElementStyle(element);
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL) || element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
 			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getValue()+"'");
 		}
 	}
 	
-	private OutputPanel resolveSide(String side) {
-		UIViewRoot cardForm = FacesContext.getCurrentInstance().getViewRoot();
-		String selectedSide="frontSide";
-		if (side.equals("2")) {
-			selectedSide="backSide";
-		}
-		return (OutputPanel)fetchElement(cardForm,selectedSide);
-	}
+	
 	
 	public void refreshAdditionalForm() {
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel3");
@@ -275,12 +257,12 @@ public class CardDesignerController {
 	
 	public void addElementOnForm(CardElement element) {
 
-		OutputPanel panel = resolveSide(element.getSide());
+		OutputPanel panel = TemplateUtil.resolveSide(element.getSide());
 		if (!element.getAddedOnForm()) {
 			createFormElements(panel, element, createOnClickScript(element));
 		}
 		else {
-			UIComponent formElement = fetchElement(panel, element.getFormId());
+			UIComponent formElement = TemplateUtil.fetchElement(panel, element.getFormId());
 			if (formElement instanceof OutputLabel) {
 				((OutputLabel) formElement).setValue(element.getValue());
 			}
@@ -294,7 +276,7 @@ public class CardDesignerController {
 			element.setWidth(elementSessionDO.getElementWidth());
 			element.setHeight(elementSessionDO.getElementHeight());
 			element.setValue(elementSessionDO.getElementEditor());
-			element.setStyleValue(elementSessionDO.getElementEditor());
+			element.setStyleValue(elementSessionDO.getElementEditor()); 
 		}
 
 		RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:" + panel.getId()+ "','mainForm:" + element.getFormId() + "',"+ element.getPositionX() + "," + element.getPositionY()+ ");");
@@ -319,75 +301,27 @@ public class CardDesignerController {
 	private void createFormElements(OutputPanel panel,CardElement element,String oncClickScript) {
 		UIComponent component = null;
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)|| element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			OutputPanel imagePanel=createImagePanel(element);
-			GraphicImage graphicImage = createImage(element);
+			OutputPanel imagePanel=TemplateUtil.createImagePanel(element);
+			GraphicImage graphicImage = TemplateUtil.createImage(element);
 			graphicImage.setOnclick(oncClickScript);
 			imagePanel.getChildren().add(graphicImage);
 			panel.getChildren().add(imagePanel);
 			component = imagePanel;
-			Resizable resizableElement = createResizable(element);
+			Resizable resizableElement = TemplateUtil.createResizable(element);
 			component.getChildren().add(resizableElement);
 		} else {
-			OutputLabel formLabel = createLabel(element);
+			OutputLabel formLabel = TemplateUtil.createLabel(element);
 			formLabel.setOnclick(oncClickScript);
 			component = formLabel;
 			panel.getChildren().add(formLabel);
 		}
 
-		Draggable draggableElement = createDraggable(element);
+		Draggable draggableElement = TemplateUtil.createDraggable(element);
 		component.getChildren().add(draggableElement);
 		element.setAddedOnForm(true);
 	}
 	
-	private OutputPanel createImagePanel(CardElement element) {
-		OutputPanel imagePanel = new OutputPanel();
-		BigDecimal width = new BigDecimal(element.getWidth());
-		BigDecimal height = new BigDecimal(element.getHeight());
-		width = width.divide(new BigDecimal("0.264583333"), 0,RoundingMode.HALF_UP);
-		height = height.divide(new BigDecimal("0.264583333"), 0,RoundingMode.HALF_UP);
-		imagePanel.setId(element.getFormId());
-		imagePanel.setStyle("width:" + width + "px;height:" + height+ "px;");
-		return imagePanel;
-	}
 	
-	private GraphicImage createImage(CardElement element) {
-		GraphicImage graphicImage = new GraphicImage();
-		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-			graphicImage.setValue("images/slika.jpg");
-		}
-		if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			graphicImage.setValue("images/potpis.jpg");
-		}
-		graphicImage.setId(element.getFormId() + "_image");
-		graphicImage.setWidth("100%");
-		graphicImage.setHeight("100%");
-		return graphicImage;
-	}
-	
-	private Resizable createResizable(CardElement element) {
-		Resizable resizableElement = new Resizable();
-		resizableElement.setId("resizableElement_"+ element.getFormId());
-		resizableElement.setFor(element.getFormId());
-		resizableElement.setAspectRatio(true);
-		resizableElement.setOnResize("resizeImage('mainForm:"+ element.getFormId() + "');");
-		return resizableElement;
-	}
-	
-	private OutputLabel createLabel(CardElement element) {
-		OutputLabel formLabel = new OutputLabel();
-		formLabel.setValue(element.getValue());
-		formLabel.setId(element.getFormId());
-		return formLabel;
-	}
-	
-	private Draggable createDraggable(CardElement element) {
-		Draggable draggableElement = new Draggable();
-		draggableElement.setId("draggableElement" + element.getFormId());
-		draggableElement.setFor(element.getFormId());
-		draggableElement.setContainment("parent");
-		draggableElement.setOpacity(0.3);
-		return draggableElement;
-	}
 	
 	private ElementSessionDO fetchElementMapValues(String formId) {
 		Map map=fetchElementMap();
@@ -400,19 +334,6 @@ public class CardDesignerController {
 		return map;
 	}
 	
-	
-	private UIComponent fetchElement(UIComponent parent,String id) {
-		for (UIComponent child:parent.getChildren()) {
-			if (child.getId().equals(id)) {
-				return child;
-			}
-			else {
-				UIComponent grandChild= fetchElement(child,id);
-				if (grandChild != null) return grandChild;
-			}
-		}
-		return null;
-	}
 	
 	private String getPlainTextValue(String styleValue) {
 		if (styleValue != null) {
@@ -482,8 +403,8 @@ public class CardDesignerController {
 		savedElementList.addAll(elementList);
 		session.setAttribute(selectedCardType.getName(), savedElementList);
 		elementList=new ArrayList<CardElement>();
-		OutputPanel front=resolveSide("1");
-		OutputPanel back=resolveSide("2");
+		OutputPanel front=TemplateUtil.resolveSide("1");
+		OutputPanel back=TemplateUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
 		session.setAttribute("elementMap", new HashMap<String,String>());
@@ -494,8 +415,8 @@ public class CardDesignerController {
 	
 	public void loadCardTemplate() {
 		
-		OutputPanel front=resolveSide("1");
-		OutputPanel back=resolveSide("2");
+		OutputPanel front=TemplateUtil.resolveSide("1");
+		OutputPanel back=TemplateUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
 		

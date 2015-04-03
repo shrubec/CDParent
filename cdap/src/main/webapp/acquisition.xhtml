@@ -21,6 +21,13 @@
 	 	.column1{height:auto; vertical-align:top;}
         .column2{height:auto; vertical-align:top;}
         
+        .ui-widget-content {color:black;} 
+        
+        .ui-state-default .someCssClassName {
+		    background-image: url('images/slika.jpg');
+		}
+		
+		        
 	</h:outputStylesheet>
 
 </h:head>
@@ -29,6 +36,7 @@
 
 <h:form id="mainForm">
 
+ 	 	    	<a href="designer.jsf">Designer</a>
 
 <p:toolbar >
 		<f:facet name="left">
@@ -39,7 +47,7 @@
 	            <f:selectItems value="#{acquisitionController.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
 	            <p:ajax   listener="#{acquisitionController.cardTypeSelected}" update="mainForm" />  
 	        </p:selectOneMenu>
-			<p:commandButton value="Nova kartica" icon="ui-icon-circle-plus"  update="mainForm" process="@this"/>
+			<p:commandButton value="Nova kartica" icon="ui-icon-circle-plus"  update="mainForm"  actionListener="#{acquisitionController.newCard}" immediate="true"/>
 
 		
 		</f:facet>
@@ -48,10 +56,18 @@
 	</p:toolbar>
 
 
+	<p:messages />
 
 	<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="15"  columnClasses="column1,column2" >
 
-		<p:panel id="cardPanel" header="Kartica" style="with:120%;float:left;" >
+		<p:panel id="cardPanel"  style="with:120%;float:left;" >
+		
+		 		<f:facet name="header">
+                 	<p:commandButton value="Spremi" icon="ui-icon-circle-plus"  update="mainForm"  style="float:right;" actionListener="#{acquisitionController.saveCard}" disabled="#{acquisitionController.editPhase == false}" immediate="true"  />
+                    <p:commandButton value="Ažuriraj" icon="ui-icon-circle-plus"  update="mainForm" process="@this" style="float:right;" />
+                    <p:commandButton value="Obriši" icon="ui-icon-circle-plus"  update="mainForm" process="@this" style="float:right;"/>
+                </f:facet> 
+                    
 		
 				<p:outputPanel  
 					id="frontSide" 
@@ -60,12 +76,16 @@
 					style="float:left;width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-image: url('images/card_template1.jpg');"
 				/>
 				
+				
+				
+				
 				<p:outputPanel 
 					id="backSide" 
 					name="backSide"  
 					layout="block" 
 					style="float:left;width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;background-image: url('images/card_template2.png');"
 				/>
+				
 				
 		
 		</p:panel>
@@ -104,6 +124,7 @@
 	</h:panelGrid>
 
 
+	<p:remoteCommand name="test" actionListener="#{acquisitionController.test}"></p:remoteCommand>
 
 
 </h:form>
