@@ -24,7 +24,7 @@ public class GraphicStreamImage extends GraphicImage{
 		this.imageBytes=imageBytes;
 	}
 
-	@Override
+	/*@Override
 	public Object getValue() {
 		
 		System.out.println("Image getter: " + imageBytes);
@@ -43,6 +43,6 @@ public class GraphicStreamImage extends GraphicImage{
 			 return new DefaultStreamedContent(new ByteArrayInputStream(imageBytes), "image/jpg","test.jpg"); 
 		 }
 		
-	}
+	}*/
 	
 }

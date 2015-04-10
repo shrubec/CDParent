@@ -193,7 +193,7 @@ public class WebUtil {
 		
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
 			
-			image.setValue("#{imageDisplayController.imageContent}");
+			image.setValue("ImageGetter");
 			
 			/*
 			System.out.println("Image button data...");
