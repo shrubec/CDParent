@@ -1,9 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
-
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	
+	
 <h:head>
 
  	<f:facet name="first">
@@ -48,7 +49,6 @@
 	            <p:ajax   listener="#{acquisitionController.cardTypeSelected}" update="mainForm" />  
 	        </p:selectOneMenu>
 			<p:commandButton value="Nova kartica" icon="ui-icon-circle-plus"  update="mainForm"  actionListener="#{acquisitionController.newCard}" immediate="true"/>
-
 		
 		</f:facet>
 		<f:facet name="right">
@@ -57,7 +57,7 @@
 
 
 	<p:messages />
-
+	
 	<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="15"  columnClasses="column1,column2" >
 
 		<p:panel id="cardPanel"  style="with:120%;float:left;" >
@@ -74,7 +74,10 @@
 					name="frontSide" 
 					layout="block" 
 					style="float:left;width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-image: url('images/card_template1.jpg');"
-				/>
+				>
+				
+				
+				</p:outputPanel>
 				
 				
 				
@@ -124,10 +127,16 @@
 	</h:panelGrid>
 
 
-	<p:remoteCommand name="test" actionListener="#{acquisitionController.test}"></p:remoteCommand>
-
+	 <p:remoteCommand 
+ 		name="showImageDialog" 
+ 		action="#{acquisitionController.showImageDialog}"  
+ 	/>
+ 
 
 </h:form>
+
+
+
 
 </h:body>
 </html>

@@ -4,7 +4,7 @@ package hr.cdap.web.controller;
 import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.web.object.ElementSessionDO;
-import hr.cdap.web.util.TemplateUtil;
+import hr.cdap.web.util.WebUtil;
 import hr.cdap.web.validator.CardDesignValidator;
 
 import java.math.BigDecimal;
@@ -51,7 +51,7 @@ public class CardDesignerController {
 	
 	
 	public CardDesignerController() {
-		System.out.println("DesignController constructor...");
+		System.out.println("DesignController initialization...");
 		createElementMap();
 		elementList=new ArrayList<CardElement>();
 	}
@@ -145,7 +145,7 @@ public class CardDesignerController {
 	
 	private CardElement createNewElement(String side,String type) {
 		
-		CardElement element=new CardElement(null,type.equals(CardElement.ELEMENT_TYPE_LABEL) ? false : true);
+		CardElement element=new CardElement(selectedCardType,type.equals(CardElement.ELEMENT_TYPE_LABEL) ? false : true);
 		element.setFormId("cardElement"+String.valueOf(elementList.size()));
 		element.setValue("");
 		element.setType(type);
@@ -242,7 +242,7 @@ public class CardDesignerController {
 	
 	private void executeJS_setElementStyleAndValue(CardElement element) {
 		
-		TemplateUtil.executeJS_setElementStyle(element);
+		WebUtil.executeJS_setElementStyle(element);
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL) || element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
 			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getStyleValue()+"'");
 		}
@@ -257,12 +257,12 @@ public class CardDesignerController {
 	
 	public void addElementOnForm(CardElement element) {
 
-		OutputPanel panel = TemplateUtil.resolveSide(element.getSide());
+		OutputPanel panel = WebUtil.resolveSide(element.getSide());
 		if (!element.getAddedOnForm()) {
 			createFormElements(panel, element, createOnClickScript(element));
 		}
 		else {
-			UIComponent formElement = TemplateUtil.fetchElement(panel, element.getFormId());
+			UIComponent formElement = WebUtil.fetchElement(panel, element.getFormId());
 			if (formElement instanceof OutputLabel) {
 				((OutputLabel) formElement).setValue(element.getStyleValue());
 			}
@@ -304,22 +304,22 @@ public class CardDesignerController {
 	private void createFormElements(OutputPanel panel,CardElement element,String oncClickScript) {
 		UIComponent component = null;
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)|| element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			OutputPanel imagePanel=TemplateUtil.createImagePanel(element);
-			GraphicImage graphicImage = TemplateUtil.createImage(element);
+			OutputPanel imagePanel=WebUtil.createImagePanel(element);
+			GraphicImage graphicImage = WebUtil.createImage(element);
 			graphicImage.setOnclick(oncClickScript);
 			imagePanel.getChildren().add(graphicImage);
 			panel.getChildren().add(imagePanel);
 			component = imagePanel;
-			Resizable resizableElement = TemplateUtil.createResizable(element);
+			Resizable resizableElement = WebUtil.createResizable(element);
 			component.getChildren().add(resizableElement);
 		} else {
-			OutputLabel formLabel = TemplateUtil.createLabel(element);
+			OutputLabel formLabel = WebUtil.createLabel(element);
 			formLabel.setOnclick(oncClickScript);
 			component = formLabel;
 			panel.getChildren().add(formLabel);
 		}
 
-		Draggable draggableElement = TemplateUtil.createDraggable(element);
+		Draggable draggableElement = WebUtil.createDraggable(element);
 		component.getChildren().add(draggableElement);
 		element.setAddedOnForm(true);
 	}
@@ -413,8 +413,8 @@ public class CardDesignerController {
 		savedElementList.addAll(elementList);
 		session.setAttribute(selectedCardType.getName(), savedElementList);
 		elementList=new ArrayList<CardElement>();
-		OutputPanel front=TemplateUtil.resolveSide("1");
-		OutputPanel back=TemplateUtil.resolveSide("2");
+		OutputPanel front=WebUtil.resolveSide("1");
+		OutputPanel back=WebUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
 		session.setAttribute("elementMap", new HashMap<String,String>());
@@ -425,8 +425,8 @@ public class CardDesignerController {
 	
 	public void loadCardTemplate() {
 		
-		OutputPanel front=TemplateUtil.resolveSide("1");
-		OutputPanel back=TemplateUtil.resolveSide("2");
+		OutputPanel front=WebUtil.resolveSide("1");
+		OutputPanel back=WebUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
 		

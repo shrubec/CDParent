@@ -4,6 +4,24 @@ var currentlySelected;
 var currentlySelectedPanel;
 
 
+function selectImageForUpload(cardTypeName,elementId) {
+	var xmlhttp;
+	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			showImageDialog();
+		}
+	};
+	
+	console.log(cardTypeName+', ' + elementId);
+	xmlhttp.open("GET", "ImageSelector?cardTypeName=" + cardTypeName + "&elementId=" + elementId + "&random=" + Math.random(), true);
+	xmlhttp.send();
+}
+
 function callUpdater(id, x, y, name, width, height, editor) {
 	var xmlhttp;
 	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari

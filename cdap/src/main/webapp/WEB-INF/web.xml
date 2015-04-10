@@ -1,18 +1,33 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
-<web-app>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
   <display-name>Archetype Created Web Application</display-name>
-  <servlet>
-  	<servlet-name>Fetcher</servlet-name>
-  	<display-name>Fetcher</display-name>
-  	<description></description>
-  	<servlet-class>hr.cdap.web.servlet.Fetcher</servlet-class>
-  </servlet>
-  <servlet-mapping>
-  	<servlet-name>Fetcher</servlet-name>
-  	<url-pattern>/Fetcher</url-pattern>
-  </servlet-mapping>
   
+  <context-param>
+	<param-name>primefaces.UPLOADER</param-name>
+	<param-value>commons</param-value>
+</context-param>
+
+
+<filter>
+	<filter-name>PrimeFaces FileUpload Filter</filter-name>
+	<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+</filter>
+<filter-mapping>
+	<filter-name>PrimeFaces FileUpload Filter</filter-name>
+	<servlet-name>Faces Servlet</servlet-name>
+</filter-mapping>
+<servlet>
+	<servlet-name>ImageGetter</servlet-name>
+	<display-name>ImageGetter</display-name>
+	<description></description>
+	<servlet-class>hr.cdap.web.servlet.ImageGetter</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>ImageGetter</servlet-name>
+	<url-pattern>/ImageGetter</url-pattern>
+</servlet-mapping>
+
+
 </web-app>

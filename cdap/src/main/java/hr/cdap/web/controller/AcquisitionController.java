@@ -1,24 +1,21 @@
 package hr.cdap.web.controller;
 
-import hr.cdap.entity.Card;
 import hr.cdap.entity.CardData;
 import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.service.AcquisitionService;
-import hr.cdap.web.util.TemplateUtil;
+import hr.cdap.web.util.WebUtil;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpSession;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +29,8 @@ import org.primefaces.component.outputpanel.OutputPanel;
 import org.primefaces.context.RequestContext;
 
 @ManagedBean
-@ViewScoped
+//@ViewScoped
+@SessionScoped
 @SuppressWarnings({"rawtypes","unchecked"})
 public class AcquisitionController {
 	
@@ -42,15 +40,32 @@ public class AcquisitionController {
 	List<CardElement> elementList;
 	private @Getter @Setter Boolean editPhase=false;
 	
+	private UIViewRoot savedViewRoot;
+	
 	public AcquisitionController() {
+		System.out.println("AcquisitionController initialization...");
 		loadTypesFromSession();
 	}
 	
+	
+	public void showImageDialog() {
+//		WebUtil.getSession().setAttribute("acquisitionController", this);
+		
+//		FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put("acquisitionController", this);
+//		System.out.println("Acq stavlje u request...");
+		
+		RequestContext.getCurrentInstance().openDialog("uploadImage");
+		 
+//		System.out.println("Provjera: "+FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get("acquisitionController"));
+		
+		savedViewRoot = FacesContext.getCurrentInstance().getViewRoot();
+		System.out.println("CURRENT VIEW ROOT: " + savedViewRoot);
+	}
+	
+	
 	public void newCard() {
-		System.out.println("kreiram novu karticu...");
 		editPhase=true;
 		loadCardTemplate(true);
-		System.out.println("nova kartica...");
 	}
 	
 	public void cardTypeSelected() {
@@ -59,7 +74,6 @@ public class AcquisitionController {
 				selectedCardType=cardType;
 			}
 		}
-		System.out.println("Odabrani: " + selectedCardType.getName());
 		loadCardTemplate(false);
 	}
 	
@@ -75,12 +89,7 @@ public class AcquisitionController {
 	
 	
 	private void loadTypesFromSession() {
-		HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-		if (session == null) {
-			session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-		}
-		
-		List<CardType> list=(List<CardType>)session.getAttribute("cardTypeList");
+		List<CardType> list=(List<CardType>)WebUtil.getSession().getAttribute("cardTypeList");
 		if (list == null) {
 			cardTypes=new ArrayList<CardType>();
 			System.out.println("Nema liste u sessionu");
@@ -90,18 +99,16 @@ public class AcquisitionController {
 			System.out.println("Ucitana lista iz sessiona: " + cardTypes.size());
 		}
 		
-		
 	}
-	
 	
 	
 	
 	public void addElementOnForm(CardElement element) {
 
-		OutputPanel panel = TemplateUtil.resolveSide(element.getSide());
+		OutputPanel panel = WebUtil.resolveSide(element.getSide());
 		createFormElements(panel, element);
 		RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:" + panel.getId()+ "','mainForm:" + element.getFormId() + "',"+ element.getPositionX() + "," + element.getPositionY()+ ");");
-		TemplateUtil.executeJS_setElementStyle(element);
+		WebUtil.executeJS_setElementStyle(element);
 		
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL)) {
 			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getStyleValue()+"'");
@@ -150,19 +157,19 @@ public class AcquisitionController {
 	private void createFormElements(OutputPanel panel,CardElement element) {
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE) || element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			if (!editPhase) {
-				OutputPanel imagePanel=TemplateUtil.createImagePanel(element);
-				GraphicImage graphicImage = TemplateUtil.createImage(element);
+				OutputPanel imagePanel=WebUtil.createImagePanel(element);
+				GraphicImage graphicImage = WebUtil.createImage(element);
 				imagePanel.getChildren().add(graphicImage);
 				panel.getChildren().add(imagePanel);
 			}
 			else {
 				
 				if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-					CommandLink imageBtn=TemplateUtil.createImagBtn(element); 
+					CommandLink imageBtn=WebUtil.createImagBtn(element); 
 					panel.getChildren().add(imageBtn);
 				}
 				else if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-					CommandLink signatureBtn=TemplateUtil.createSignatureBtn(element); 
+					CommandLink signatureBtn=WebUtil.createSignatureBtn(element); 
 					panel.getChildren().add(signatureBtn);
 				}
 				
@@ -171,7 +178,7 @@ public class AcquisitionController {
 		} else {
 			
 			if (!editPhase) {
-				OutputLabel formLabel = TemplateUtil.createLabel(element);
+				OutputLabel formLabel = WebUtil.createLabel(element);
 				if (element.getCardData() != null) {
 					
 					if (element.getCardData().getValueString() != null) {
@@ -195,7 +202,7 @@ public class AcquisitionController {
 				if (element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
 					
 					if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING) || element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_NUMBER)) {
-						InputText formField=TemplateUtil.createField(element);
+						InputText formField=WebUtil.createField(element);
 						
 						if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING)) {
 							formField.setValue(element.getCardData().getValueString());
@@ -209,7 +216,7 @@ public class AcquisitionController {
 						panel.getChildren().add(formField);
 					}
 					else {
-						Calendar calField=TemplateUtil.createCalendar(element);
+						Calendar calField=WebUtil.createCalendar(element);
 						if (element.getCardData().getValueDate() != null) {
 							calField.setValue(element.getCardData().getValueDate());
 						}
@@ -218,7 +225,7 @@ public class AcquisitionController {
 					
 				}
 				else {
-					OutputLabel formLabel = TemplateUtil.createLabel(element);
+					OutputLabel formLabel = WebUtil.createLabel(element);
 					panel.getChildren().add(formLabel);
 				}
 			}
@@ -235,7 +242,7 @@ public class AcquisitionController {
 		System.out.println("Spremam karticu...");
 		
 		for (CardElement element:elementList) {
-			Object obj=TemplateUtil.fetchElement(TemplateUtil.resolveSide(element.getSide()), element.getFormId());
+			Object obj=WebUtil.fetchElement(WebUtil.resolveSide(element.getSide()), element.getFormId());
 			System.out.println("Pronadjen objekt na formi: " + obj);
 			Object value=null;
 			if (obj instanceof InputText) {
@@ -292,34 +299,30 @@ public class AcquisitionController {
 			for (CardData data:dataList) {
 				if (data.getCardElement().equals(element)) {
 					element.setCardData(data);
-					
-					System.out.println("POSTAVLJEN TRANS CARD DATA NA ELEMENT!!!!");
-					
 				}
 			}
 		}
-		
-		System.out.println("Kraj mapiranja...");
 	}
 	
 	
 	
 	public void loadCardTemplate(boolean isNewCard) {
 		
-		OutputPanel front=TemplateUtil.resolveSide("1");
-		OutputPanel back=TemplateUtil.resolveSide("2");
+		OutputPanel front=WebUtil.resolveSide("1");
+		OutputPanel back=WebUtil.resolveSide("2");
+		
+		
+		System.out.println("FRONT element: " + front);
+		
 		front.getChildren().clear();
 		back.getChildren().clear();
 		
-		System.out.println("Load attempt...");
 		if (selectedCardType != null) {
-			HttpSession session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-			elementList=(List<CardElement> ) session.getAttribute(selectedCardType.getName());
+			elementList=(List<CardElement> ) WebUtil.getSession().getAttribute(selectedCardType.getName());
 			if (elementList == null) {
 				elementList=new ArrayList<CardElement>();
 			}
 			
-			System.out.println("Loadam template, element list: " +elementList.size() + ", " +  selectedCardType.getName());
 			if (isNewCard) {
 				mapCardDataToCardElement(AcquisitionService.prepareNewCardData(elementList));
 			}
@@ -328,10 +331,18 @@ public class AcquisitionController {
 				System.out.println("Inicijalno dohvacanje style vrijednosti: " + element.getStyleValue());
 				addElementOnForm(element);
 			}
-			
 		}
-		
-		
 	}
 	
+	
+	public void displayUploadedImage() {
+		
+		FacesContext.getCurrentInstance().setViewRoot(savedViewRoot);
+		System.out.println("CURRENT VIEW ROOT: " + savedViewRoot);
+		System.out.println("Forma refreshana... " + selectedCardType + ", " + selectedCardTypeName+", " + elementList);
+		loadCardTemplate(false);
+		RequestContext.getCurrentInstance().update("mainForm");
+	}
+
+
 }

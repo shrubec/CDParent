@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+		 <h:head>
+	        <title>Slika / potpis</title>
+	        <h:outputScript library="js" name="script.js" />
+	    </h:head>
+	    
+	     <h:body>
+
+			<h:form id="imageForm" enctype="multipart/form-data" prependId="false">
+				<!-- prikaz slike preko vlastitog controllera!!!! -->
+				<p:graphicImage id="slikaNositelja" value="#{imageDisplayController.imageContent}"  width="#{imageDisplayController.width}" height="#{imageDisplayController.height}"  cache="false" ></p:graphicImage>
+			
+				<p:graphicImage id="slikaNositelja2" value="ImageGetter"  width="50" height="50"  cache="false" ></p:graphicImage>
+			
+				<h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="15"  >
+						<h:inputFile id="file" value="#{imageController.file}"  />
+						<p:commandButton value="Učitaj"  actionListener="#{imageController.upload}"  ajax="false" update="imageForm"/>
+						<p:commandButton value="Spremi"  actionListener="#{imageController.saveImage}"  ajax="false" />
+				</h:panelGrid>
+
+			</h:form>
+		</h:body>
+		
+</html>

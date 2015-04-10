@@ -8,6 +8,7 @@ import java.math.RoundingMode;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import org.primefaces.component.calendar.Calendar;
 import org.primefaces.component.commandlink.CommandLink;
@@ -21,8 +22,17 @@ import org.primefaces.context.RequestContext;
 
 
 
-public class TemplateUtil {
+public class WebUtil {
 
+	public static HttpSession getSession() {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		HttpSession session=(HttpSession)fc.getExternalContext().getSession(false);
+		if (session == null) {
+			session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+		}
+		return session;
+	}
+	
 	public static  OutputPanel resolveSide(String side) {
 		UIViewRoot cardForm = FacesContext.getCurrentInstance().getViewRoot();
 		String selectedSide="frontSide";
@@ -72,9 +82,11 @@ public class TemplateUtil {
 	}
 	
 	public static GraphicImage createImage(CardElement element) {
+		
+		/*
 		GraphicImage graphicImage = new GraphicImage();
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-			graphicImage.setValue("images/slika.jpg");
+//			graphicImage.setValue("images/slika.jpg");
 		}
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			graphicImage.setValue("images/potpis.jpg");
@@ -83,6 +95,40 @@ public class TemplateUtil {
 		graphicImage.setWidth("100%");
 		graphicImage.setHeight("100%");
 		return graphicImage;
+		*/
+		
+		
+		GraphicStreamImage graphicImage = new GraphicStreamImage(null);
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
+
+			System.out.println("Image data...");
+			
+			
+			/*
+			if (element.getCardData() != null) {
+				System.out.println("IMAGE DATA: " + element.getCardData().getValueBlob());
+				
+				((GraphicStreamImage)graphicImage).setImageBytes(element.getCardData().getValueBlob());
+				
+//				graphicImage.setValue(element.getCardData().getValueBlob());
+			}
+			else {
+//				graphicImage.setValue("images/slika.jpg");
+			} 
+			
+			*/
+		}
+		
+		
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
+			graphicImage.setValue("images/potpis.jpg");
+		}
+		graphicImage.setId(element.getFormId() + "_image");
+		graphicImage.setWidth("100%");
+		graphicImage.setHeight("100%");
+		return graphicImage;
+		
+		
 	}
 	
 	public static Resizable createResizable(CardElement element) {
@@ -135,9 +181,43 @@ public class TemplateUtil {
 	
 	public static CommandLink createImagBtn(CardElement element) {
 		CommandLink imageLink=new CommandLink();
-		GraphicImage image=new GraphicImage();
-		image.setValue("images/slika.jpg");
+		
+		
+//		GraphicImage image=new GraphicImage();
+//		image.setValue("images/slika.jpg");
+//		image.setId(element.getFormId());
+		
+		GraphicStreamImage image = new GraphicStreamImage(null);
 		image.setId(element.getFormId());
+		
+		
+		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
+			
+			image.setValue("#{imageDisplayController.imageContent}");
+			
+			/*
+			System.out.println("Image button data...");
+			
+			if (element.getCardData() != null) {
+				
+				System.out.println("IMAGE BUTTON DATA: " + element.getCardData().getValueBlob());
+				
+//				image.setValue(element.getCardData().getValueBlob());
+				((GraphicStreamImage)image).setImageBytes(element.getCardData().getValueBlob());
+				
+				
+			}
+			else {
+//				image.setValue("images/potpis.jpg");
+			} 
+			
+			*/
+			
+		}
+		
+		
+		
+		imageLink.setOnclick("selectImageForUpload('"+element.getCardType().getName()+"','"+element.getFormId()+"')");
 		imageLink.getChildren().add(image);
 		return imageLink;
 	}
@@ -147,6 +227,7 @@ public class TemplateUtil {
 		GraphicImage image=new GraphicImage();
 		image.setValue("images/potpis.jpg");
 		image.setId(element.getFormId());
+		imageLink.setOnclick("selectImageForUpload('"+element.getCardType().getName()+"','"+element.getFormId()+"')");
 		imageLink.getChildren().add(image);
 		return imageLink;
 	}
