@@ -18,16 +18,5 @@
 	<filter-name>PrimeFaces FileUpload Filter</filter-name>
 	<servlet-name>Faces Servlet</servlet-name>
 </filter-mapping>
-<servlet>
-	<servlet-name>ImageGetter</servlet-name>
-	<display-name>ImageGetter</display-name>
-	<description></description>
-	<servlet-class>hr.cdap.web.servlet.ImageGetter</servlet-class>
-</servlet>
-<servlet-mapping>
-	<servlet-name>ImageGetter</servlet-name>
-	<url-pattern>/ImageGetter</url-pattern>
-</servlet-mapping>
-
 
 </web-app>

@@ -35,6 +35,7 @@
 
 <h:body>
 
+
 <h:form id="mainForm">
 
  	 	    	<a href="designer.jsf">Designer</a>
@@ -68,19 +69,12 @@
                     <p:commandButton value="Obriši" icon="ui-icon-circle-plus"  update="mainForm" process="@this" style="float:right;"/>
                 </f:facet> 
                     
-		
 				<p:outputPanel  
 					id="frontSide" 
 					name="frontSide" 
 					layout="block" 
 					style="float:left;width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-image: url('images/card_template1.jpg');"
-				>
-				
-				
-				</p:outputPanel>
-				
-				
-				
+				/>
 				
 				<p:outputPanel 
 					id="backSide" 
@@ -88,8 +82,6 @@
 					layout="block" 
 					style="float:left;width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;background-image: url('images/card_template2.png');"
 				/>
-				
-				
 		
 		</p:panel>
 
@@ -117,24 +109,26 @@
 		    </p:column>
 		    
 		    
-		 
 		   
 		</p:dataTable>	
-		
-		
 		
 	
 	</h:panelGrid>
 
 
+	<!-- dummy Dialog button - samo zbog ajax listenera koji ce uhvatiti gasenje dialoga a koji se ne moze attachati na remote command nego mora bas na button -->
+	<p:commandButton id="dummyDialogButton" widgetVar="dummyDialogButton" actionListener="#{acquisitionController.showImageDialog}" style="display:none">
+	    <p:ajax event="dialogReturn" listener="#{acquisitionController.returnImageDialog}" />
+	</p:commandButton>
+
 	 <p:remoteCommand 
  		name="showImageDialog" 
- 		action="#{acquisitionController.showImageDialog}"  
+ 		onstart="document.getElementById('mainForm:dummyDialogButton').click();"
  	/>
- 
+ 	
+
 
 </h:form>
-
 
 
 

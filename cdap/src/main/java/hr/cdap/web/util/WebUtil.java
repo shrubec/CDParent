@@ -82,46 +82,22 @@ public class WebUtil {
 	}
 	
 	public static GraphicImage createImage(CardElement element) {
-		
-		/*
 		GraphicImage graphicImage = new GraphicImage();
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-//			graphicImage.setValue("images/slika.jpg");
-		}
-		if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			graphicImage.setValue("images/potpis.jpg");
-		}
-		graphicImage.setId(element.getFormId() + "_image");
-		graphicImage.setWidth("100%");
-		graphicImage.setHeight("100%");
-		return graphicImage;
-		*/
-		
-		
-		GraphicStreamImage graphicImage = new GraphicStreamImage(null);
-		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-
-			System.out.println("Image data...");
-			
-			
-			/*
-			if (element.getCardData() != null) {
-				System.out.println("IMAGE DATA: " + element.getCardData().getValueBlob());
-				
-				((GraphicStreamImage)graphicImage).setImageBytes(element.getCardData().getValueBlob());
-				
-//				graphicImage.setValue(element.getCardData().getValueBlob());
+			if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+				graphicImage.setValue("images/person.png");
 			}
 			else {
-//				graphicImage.setValue("images/slika.jpg");
-			} 
-			
-			*/
+				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+			}
 		}
-		
-		
-		if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			graphicImage.setValue("images/potpis.jpg");
+		else if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
+			if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+				graphicImage.setValue("images/signature.png");
+			}
+			else {
+				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+			}
 		}
 		graphicImage.setId(element.getFormId() + "_image");
 		graphicImage.setWidth("100%");
@@ -181,52 +157,30 @@ public class WebUtil {
 	
 	public static CommandLink createImagBtn(CardElement element) {
 		CommandLink imageLink=new CommandLink();
-		
-		
-//		GraphicImage image=new GraphicImage();
-//		image.setValue("images/slika.jpg");
-//		image.setId(element.getFormId());
-		
-		GraphicStreamImage image = new GraphicStreamImage(null);
+		GraphicImage image = new GraphicImage();
 		image.setId(element.getFormId());
-		
-		
-		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-			
-			image.setValue("ImageGetter");
-			
-			/*
-			System.out.println("Image button data...");
-			
-			if (element.getCardData() != null) {
-				
-				System.out.println("IMAGE BUTTON DATA: " + element.getCardData().getValueBlob());
-				
-//				image.setValue(element.getCardData().getValueBlob());
-				((GraphicStreamImage)image).setImageBytes(element.getCardData().getValueBlob());
-				
-				
-			}
-			else {
-//				image.setValue("images/potpis.jpg");
-			} 
-			
-			*/
-			
+		if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+			image.setValue("images/person.png");
 		}
-		
-		
-		
+		else {
+			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+		}
 		imageLink.setOnclick("selectImageForUpload('"+element.getCardType().getName()+"','"+element.getFormId()+"')");
 		imageLink.getChildren().add(image);
+		imageLink.setId(element.getFormId()+"_link");
 		return imageLink;
 	}
 	
 	public static CommandLink createSignatureBtn(CardElement element) {
 		CommandLink imageLink=new CommandLink();
 		GraphicImage image=new GraphicImage();
-		image.setValue("images/potpis.jpg");
 		image.setId(element.getFormId());
+		if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+			image.setValue("images/signature.png");
+		}
+		else {
+			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+		}
 		imageLink.setOnclick("selectImageForUpload('"+element.getCardType().getName()+"','"+element.getFormId()+"')");
 		imageLink.getChildren().add(image);
 		return imageLink;

@@ -24,11 +24,16 @@ public class ImageDisplayController  {
 		String cardTypeName= (String) WebUtil.getSession() .getAttribute("imageCardTypeName");
 		String selectedFormId= (String) WebUtil.getSession() .getAttribute("imageElementId");
 		List<CardElement> elementList=(List<CardElement> ) WebUtil.getSession() .getAttribute(cardTypeName);
-		for (CardElement element:elementList) {
-			if (element.getFormId().equals(selectedFormId)) {
-				return element.getType();
+		
+		if (elementList != null) {
+			for (CardElement element:elementList) {
+				if (element.getFormId().equals(selectedFormId)) {
+					return element.getType();
+				}
 			}
 		}
+		
+		
 		return null;
 	}
 	
