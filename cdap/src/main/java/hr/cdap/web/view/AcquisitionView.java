@@ -1,10 +1,11 @@
-package hr.cdap.web.controller;
+package hr.cdap.web.view;
 
 import hr.cdap.entity.Card;
 import hr.cdap.entity.CardData;
 import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.service.AcquisitionService;
+import hr.cdap.service.DesignService;
 import hr.cdap.web.util.WebUtil;
 
 import java.text.ParseException;
@@ -31,8 +32,7 @@ import org.primefaces.context.RequestContext;
 
 @ManagedBean
 @ViewScoped
-@SuppressWarnings({"rawtypes","unchecked"})
-public class AcquisitionController {
+public class AcquisitionView {
 	
 	private @Getter @Setter String selectedCardTypeName;
 	private @Getter @Setter CardType selectedCardType;
@@ -41,16 +41,11 @@ public class AcquisitionController {
 	private @Getter @Setter Card selectedCard; //ovo je samo za prikaz
 	private @Getter @Setter Card activeCard;
 	private @Getter @Setter Boolean editPhase=false;
-	private List<CardElement> elementList;
-	 
+	
 	@PostConstruct
-	private void loadTypesFromSession() {
+	private void loadCardTypes() {
 		WebUtil.getSession().removeAttribute("activeCard");
-		List<CardType> list=(List<CardType>)WebUtil.getSession().getAttribute("cardTypeList");
-		if (list == null) 
-			cardTypes=new ArrayList<CardType>();
-		else 
-			cardTypes=list;
+		cardTypes=DesignService.fetchCardTypes();
 	}
 	
 	public void showImageDialog() {
@@ -59,22 +54,15 @@ public class AcquisitionController {
 	
 	public void returnImageDialog() {
 		RequestContext.getCurrentInstance().update("mainForm");
-//		String selectedFormId= (String) WebUtil.getSession().getAttribute("imageElementId");
-		for (CardElement element:elementList) {
+		for (CardElement element:selectedCardType.getElementList()) {
 			OutputPanel panel = WebUtil.resolveSide(element.getSide());
-			
-//			if (element.getFormId().equals(selectedFormId)) {
-//				GraphicImage image=(GraphicImage)WebUtil.fetchElement(panel, element.getFormId());
-//				image.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
-//			}
-//			
 			if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE) || element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-				if (element.getCardData() != null && element.getCardData().getValueBlob() != null) {
+				CardData data=WebUtil.fetchDataForElement(element, activeCard);
+				if (data != null && data.getValueBlob() != null) {
 					GraphicImage image=(GraphicImage)WebUtil.fetchElement(panel, element.getFormId());
-					image.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+					image.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
 				}
 			}
-			
 			RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:" + panel.getId()+ "','mainForm:" + element.getFormId() + "',"+ element.getPositionX() + "," + element.getPositionY()+ ");");
 			WebUtil.executeJS_setElementStyle(element);
 		}
@@ -85,27 +73,21 @@ public class AcquisitionController {
 		activeCard=new Card();
 		activeCard.setDateCreated(new Date());
 		activeCard.setCardType(selectedCardType);
-		AcquisitionService.prepareNewCardData(activeCard,elementList);
-		
+		selectedCardType.getElementList().clear();
+		selectedCardType.getElementList().addAll(DesignService.fetchElementsForCardType(selectedCardType));
+		activeCard.setDataList(AcquisitionService.prepareNewCardData(activeCard,selectedCardType.getElementList()));
 		WebUtil.getSession().setAttribute("activeCard", activeCard);
-		
-//		
-//		for (CardElement element:elementList) {
-//			if (element.getCardData() != null)
-//				activeCard.getData().add(element.getCardData());
-//		}
-		
-		
-		loadCardTemplate(true);
+		loadCardTemplate();
 	}
 	
 	public void cardTypeSelected() {
+		activeCard=null;
+		WebUtil.getSession().removeAttribute("activeCard");
 		for (CardType cardType:cardTypes) {
 			if (cardType.getName() != null && selectedCardTypeName.equals(cardType.getName())) 
 				selectedCardType=cardType;
 		}
-		loadCardTemplate(false);
-		System.out.println("Odabrana kartica " + selectedCardTypeName);
+		loadCardTemplate();
 		cardList.clear();
 		cardList.addAll(AcquisitionService.fetchCardByType(selectedCardType));
 	}
@@ -129,17 +111,18 @@ public class AcquisitionController {
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL)) 
 			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getStyleValue()+"'");
 		else if (element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
-			if (element.getCardData() != null) {
+			CardData data=WebUtil.fetchDataForElement(element, activeCard);
+			if (data != null) {
 				String value="";
-				if (element.getCardData().getValueString() != null) 
-					value=element.getCardData().getValueString();
-				else if (element.getCardData().getValueInt() != null) 
-					value=String.valueOf(element.getCardData().getValueInt());
-				else if (element.getCardData().getValueDec() != null) 
-					value=String.valueOf(element.getCardData().getValueDec());
-				else if (element.getCardData().getValueDate() != null) {
+				if (data.getValueString() != null) 
+					value=data.getValueString();
+				else if (data.getValueInt() != null) 
+					value=String.valueOf(data.getValueInt());
+				else if (data.getValueDec() != null) 
+					value=String.valueOf(data.getValueDec());
+				else if (data.getValueDate() != null) {
 					SimpleDateFormat sdf=new SimpleDateFormat(element.getDateFormat());
-					value=sdf.format(element.getCardData().getValueDate()); 
+					value=sdf.format(data.getValueDate()); 
 				}
 				if (value != null && !value.isEmpty()) {
 					String styleValue=element.getStyleValue().replace(element.getValue(), value);
@@ -160,28 +143,31 @@ public class AcquisitionController {
 	
 	private void createElementForEditPhase(OutputPanel panel,CardElement element) {
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-			CommandLink imageBtn=WebUtil.createImagBtn(element); 
+			CardData data=WebUtil.fetchDataForElement(element, activeCard);
+			CommandLink imageBtn=WebUtil.createImagBtn(element,data); 
 			panel.getChildren().add(imageBtn);
 		}
 		else if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			CommandLink signatureBtn=WebUtil.createSignatureBtn(element); 
+			CardData data=WebUtil.fetchDataForElement(element, activeCard);
+			CommandLink signatureBtn=WebUtil.createSignatureBtn(element,data); 
 			panel.getChildren().add(signatureBtn);
 		}
 		else if (element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
+			CardData data=WebUtil.fetchDataForElement(element, activeCard);
 			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING)) {
 				InputText formField=WebUtil.createField(element);
-				formField.setValue(element.getCardData().getValueString());
+				formField.setValue(data.getValueString());
 				panel.getChildren().add(formField);
 			}
 			else if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_NUMBER)) {
 				InputText formField=WebUtil.createField(element);
-				formField.setValue(element.getCardData().getValueInt());
+				formField.setValue(data.getValueInt());
 				panel.getChildren().add(formField);
 			}
 			else if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_DATE)) {
 				Calendar calField=WebUtil.createCalendar(element);
-				if (element.getCardData().getValueDate() != null) 
-					calField.setValue(element.getCardData().getValueDate());
+				if (data.getValueDate() != null) 
+					calField.setValue(data.getValueDate());
 				panel.getChildren().add(calField);
 			}
 		}
@@ -194,23 +180,25 @@ public class AcquisitionController {
 	private void createElementForDisplayPhase(OutputPanel panel,CardElement element) {
 		
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE) || element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
+			CardData data=WebUtil.fetchDataForElement(element, activeCard);
 			OutputPanel imagePanel=WebUtil.createImagePanel(element);
-			GraphicImage graphicImage = WebUtil.createImage(element);
+			GraphicImage graphicImage = WebUtil.createImage(element,data);
 			imagePanel.getChildren().add(graphicImage);
 			panel.getChildren().add(imagePanel);
 		}
 		else {
 			OutputLabel formLabel = WebUtil.createLabel(element);
-			if (element.getCardData() != null) {
-				if (element.getCardData().getValueString() != null) 
-					formLabel.setValue(element.getCardData().getValueString());
-				else if (element.getCardData().getValueInt() != null) 
-					formLabel.setValue(element.getCardData().getValueInt());
-				else if (element.getCardData().getValueDec() != null) 
-					formLabel.setValue(element.getCardData().getValueDec());
-				else if (element.getCardData().getValueDate() != null) {
+			CardData data=WebUtil.fetchDataForElement(element, activeCard);
+			if (data != null) {
+				if (data.getValueString() != null) 
+					formLabel.setValue(data.getValueString());
+				else if (data.getValueInt() != null) 
+					formLabel.setValue(data.getValueInt());
+				else if (data.getValueDec() != null) 
+					formLabel.setValue(data.getValueDec());
+				else if (data.getValueDate() != null) {
 					SimpleDateFormat sdf=new SimpleDateFormat(element.getDateFormat());
-					formLabel.setValue(sdf.format(element.getCardData().getValueDate()));
+					formLabel.setValue(sdf.format(data.getValueDate()));
 				}
 			}
 			panel.getChildren().add(formLabel);
@@ -219,14 +207,15 @@ public class AcquisitionController {
 	
 	public void selectCard() {
 		editPhase=false;
-//		WebUtil.getSession().setAttribute("selectedCard", selectedCard);
-		loadExistingCard(selectedCard);
 		activeCard=selectedCard;
+		WebUtil.getSession().setAttribute("activeCard", activeCard); 
+		activeCard.setDataList(AcquisitionService.fetchDataForCard(activeCard));
+		loadExistingCard(activeCard);
 		RequestContext.getCurrentInstance().update("mainForm");
 	}
 	
 	public void saveCard() {
-		for (CardElement element:elementList) {
+		for (CardElement element:selectedCardType.getElementList()) {
 			Object obj=WebUtil.fetchElement(WebUtil.resolveSide(element.getSide()), element.getFormId());
 			Object value=null;
 			if (obj instanceof InputText) 
@@ -238,30 +227,27 @@ public class AcquisitionController {
 			
 			if (!element.getType().equals(CardElement.ELEMENT_TYPE_LABEL)) 
 				applyFormDataToCard(element, value);
-		}
-		
-		
+		} 
 		AcquisitionService.saveCard(activeCard);
 		cardList.clear();
 		cardList.addAll(AcquisitionService.fetchCardByType(selectedCardType));
-		
-		WebUtil.infoMessage("Kartica " + activeCard.getCardNumber() + " uspješno spremljena");
-		
 		editPhase=false;
-		loadCardTemplate(false);
+		loadCardTemplate();
+		WebUtil.infoMessage("Kartica " + activeCard.getCardNumber() + " uspješno spremljena");
 	}
 	
 	 
 	private void applyFormDataToCard(CardElement element,Object value) {
 		if (element.getDataType() != null) {
+			CardData data=WebUtil.fetchDataForElement(element, activeCard);
 			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING))
-				element.getCardData().setValueString((String)value);
+				data.setValueString((String)value);
 			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_NUMBER))
-				element.getCardData().setValueInt(Integer.valueOf((String)value));
+				data.setValueInt(Integer.valueOf((String)value));
 			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_DATE)) {
 				SimpleDateFormat sdf=new SimpleDateFormat(element.getDateFormat());
 				try {
-					element.getCardData().setValueDate(sdf.parse((String)value));
+					data.setValueDate(sdf.parse((String)value));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
@@ -269,56 +255,25 @@ public class AcquisitionController {
 		}
 	}
 	
-	private void mapCardDataToCardElement(List<CardData> dataList) {
-		for (CardElement element:elementList) {
-			for (CardData data:dataList) {
-				if (data.getCardElement().equals(element)) 
-					element.setCardData(data);
-			}
-		}
-	}
 	
-	
-	public void loadCardTemplate(boolean isNewCard) {
-		
+	public void loadCardTemplate() {
 		OutputPanel front=WebUtil.resolveSide("1");
 		OutputPanel back=WebUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
-		
 		if (selectedCardType != null) {
-			elementList=(List<CardElement>) WebUtil.getSession().getAttribute(selectedCardType.getName());
-			if (elementList == null) 
-				elementList=new ArrayList<CardElement>();
-			
-//			if (isNewCard) 
-//				mapCardDataToCardElement(AcquisitionService.prepareNewCardData(elementList));
-//			
-			if (activeCard != null)
-				mapCardDataToCardElement(AcquisitionService.fetchDataForCard(activeCard));
-			
-			for (CardElement element:elementList) {
+			for (CardElement element:selectedCardType.getElementList()) {
 				addElementOnForm(element);
 			}
 		}
 	}
 	
 	public void loadExistingCard(Card card) {
-		
 		OutputPanel front=WebUtil.resolveSide("1");
 		OutputPanel back=WebUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
-		elementList.clear();
-		elementList.addAll(card.getCardType().getElements());
-		
-		List<CardData> data=AcquisitionService.fetchDataForCard(card);
-		
-		System.out.println("Loadam karticu " + card.getCardNumber() +", " + data.size());
-		
-		
-		mapCardDataToCardElement(data);
-		for (CardElement element:elementList) {
+		for (CardElement element:card.getCardType().getElementList()) {
 			addElementOnForm(element);
 		}
 	}

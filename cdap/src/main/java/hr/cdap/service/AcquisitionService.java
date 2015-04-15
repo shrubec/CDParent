@@ -11,32 +11,20 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-
+@SuppressWarnings("unchecked")
 public class AcquisitionService {
 
-	
-	
-	public static void prepareNewCardData(Card card,List<CardElement> elementList) {
-		
-		List<CardData> dataList=(List<CardData>)WebUtil.getSession().getAttribute("dataList");
-		if (dataList == null) {
-			dataList=new ArrayList<CardData>();
-			WebUtil.getSession().setAttribute("dataList",dataList);
-		}
-		
+	public static List<CardData> prepareNewCardData(Card card,List<CardElement> elementList) {
 		List<CardData> list=new ArrayList<CardData>();
 		for (CardElement element:elementList) {
 			if (!element.getType().equals(CardElement.ELEMENT_TYPE_LABEL)) {
 				CardData data=new CardData();
-				data.setId(dataList.size()+1);
 				data.setCardElement(element);
 				data.setCard(card);
 				list.add(data);
-				dataList.add(data);
 			}
 		}
-		
-		
+		return list;
 	}
 	
 	public static List<CardData> fetchDataForCard(Card card) {
@@ -83,6 +71,17 @@ public class AcquisitionService {
 		card.setId(list.size()+1);
 		card.setCardNumber("000000"+String.valueOf(card.getId()));
 		list.add(card);
+		
+		
+		List<CardData> dataList=(List<CardData>)WebUtil.getSession().getAttribute("dataList");
+		if (dataList == null) {
+			dataList=new ArrayList<CardData>();
+			WebUtil.getSession().setAttribute("dataList",dataList);
+		}
+		for (CardData data:card.getDataList()) {
+			data.setId(dataList.size()+1);
+		}
+		dataList.addAll(card.getDataList());
 	}
 	
 	

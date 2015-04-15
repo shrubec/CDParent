@@ -28,5 +28,5 @@ public class CardType {
 	private String name;
 	
 	@Transient
-	private List<CardElement> elements=new ArrayList<CardElement>();
+	private List<CardElement> elementList=new ArrayList<CardElement>();
 }

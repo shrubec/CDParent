@@ -1,12 +1,12 @@
-package hr.cdap.web.controller;
+package hr.cdap.web.view;
 
+import hr.cdap.entity.Card;
+import hr.cdap.entity.CardData;
 import hr.cdap.entity.CardElement;
 import hr.cdap.web.util.WebUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -23,13 +23,11 @@ import org.primefaces.model.StreamedContent;
 
 @ManagedBean
 @ViewScoped
-@SuppressWarnings("unchecked")
-public class ImageController {
+public class ImageUploadView {
 
 	private byte[] bytes;
 	private @Getter @Setter Part file;
 	private @Setter StreamedContent imageContent;
-	private List<CardElement> elementList;
 	
 	@PostConstruct
     public void init() {
@@ -53,20 +51,12 @@ public class ImageController {
 	}
 	
 	public void saveImage() {
-		String cardTypeName= (String) WebUtil.getSession().getAttribute("imageCardTypeName");
+		Card activeCard=(Card)WebUtil.getSession().getAttribute("activeCard");
 		String selectedFormId= (String) WebUtil.getSession().getAttribute("imageElementId");
-		try {
-			cardTypeName=new String(cardTypeName.getBytes("ISO-8859-1"),"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		elementList=(List<CardElement> ) WebUtil.getSession().getAttribute(cardTypeName);
-		
-		System.out.println("ELEMENT LIST: " + elementList + " za " + cardTypeName);
-		
-		for (CardElement element:elementList) {
+		for (CardElement element:activeCard.getCardType().getElementList()) {
 			if (element.getFormId().equals(selectedFormId)) {
-				element.getCardData().setValueBlob(bytes);
+				CardData data=WebUtil.fetchDataForElement(element, activeCard);
+				data.setValueBlob(bytes);
 			}
 		}
 		RequestContext.getCurrentInstance().closeDialog(0);

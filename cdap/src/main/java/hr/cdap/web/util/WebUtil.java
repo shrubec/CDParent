@@ -1,5 +1,7 @@
 package hr.cdap.web.util;
 
+import hr.cdap.entity.Card;
+import hr.cdap.entity.CardData;
 import hr.cdap.entity.CardElement;
 
 import java.math.BigDecimal;
@@ -98,22 +100,22 @@ public class WebUtil {
 		return imagePanel;
 	}
 	
-	public static GraphicImage createImage(CardElement element) {
+	public static GraphicImage createImage(CardElement element,CardData data) {
 		GraphicImage graphicImage = new GraphicImage();
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-			if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+			if (data == null || data.getValueBlob() == null) {
 				graphicImage.setValue("images/person.png");
 			}
 			else {
-				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
 			}
 		}
 		else if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+			if (data == null || data.getValueBlob() == null) {
 				graphicImage.setValue("images/signature.png");
 			}
 			else {
-				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
 			}
 		}
 		graphicImage.setId(element.getFormId() + "_image");
@@ -172,15 +174,15 @@ public class WebUtil {
 	} 
 	
 	
-	public static CommandLink createImagBtn(CardElement element) {
+	public static CommandLink createImagBtn(CardElement element,CardData data) {
 		CommandLink imageLink=new CommandLink();
 		GraphicImage image = new GraphicImage();
 		image.setId(element.getFormId());
-		if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+		if (data == null || data.getValueBlob() == null) {
 			image.setValue("images/person.png");
 		}
 		else {
-			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
 		}
 		imageLink.setOnclick("selectImageForUpload('"+element.getCardType().getName()+"','"+element.getFormId()+"')");
 		imageLink.getChildren().add(image);
@@ -188,18 +190,30 @@ public class WebUtil {
 		return imageLink;
 	}
 	
-	public static CommandLink createSignatureBtn(CardElement element) {
+	public static CommandLink createSignatureBtn(CardElement element,CardData data) {
 		CommandLink imageLink=new CommandLink();
 		GraphicImage image=new GraphicImage();
 		image.setId(element.getFormId());
-		if (element.getCardData() == null || element.getCardData().getValueBlob() == null) {
+		if (data == null || data.getValueBlob() == null) {
 			image.setValue("images/signature.png");
 		}
 		else {
-			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId());
+			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
 		}
 		imageLink.setOnclick("selectImageForUpload('"+element.getCardType().getName()+"','"+element.getFormId()+"')");
 		imageLink.getChildren().add(image);
 		return imageLink;
 	}
+	
+	
+	public static CardData fetchDataForElement(CardElement element,Card card) {
+		if (card != null) {
+			for (CardData data:card.getDataList()) {
+				if (data.getCardElement().equals(element))
+					return data;
+			}
+		}
+		return null;
+	}
+	
 }

@@ -25,31 +25,31 @@
 
 <p:outputPanel  id="cardTypePanel">
         <p:outputLabel for="cardType" value="Tip kartice:" />
-        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{cardDesignerController.selectedCardTypeName}" style="width:200px;">
+        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{designView.selectedCardTypeName}" style="width:200px;">
         	<f:selectItem itemLabel="Odaberite" />
-            <f:selectItems value="#{cardDesignerController.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
-            <p:ajax   listener="#{cardDesignerController.cardTypeSelected}" update="mainForm" />  
+            <f:selectItems value="#{designView.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
+            <p:ajax   listener="#{designView.cardTypeSelected}" update="mainForm" />  
         </p:selectOneMenu>
         
-        <p:commandButton value="Novi tip kartice" icon="ui-icon-circle-plus"  oncomplete="PF('newTypeDialog').show()" actionListener="#{cardDesignerController.newCardType}" immediate="true"/>
+        <p:commandButton value="Novi tip kartice" icon="ui-icon-circle-plus"  oncomplete="PF('newTypeDialog').show()" actionListener="#{designView.newCardType}" immediate="true"/>
        	
        	
        	<a href="acquisition.jsf">Acquisition</a>
         
  </p:outputPanel>
  
-  <p:inputText id="test" value="#{cardDesignerController.selectedCardType.name}" rendered="#{cardDesignerController.renderCardPanel}" />
+  <p:inputText id="test" value="#{designView.selectedCardType.name}" rendered="#{designView.renderCardPanel}" />
 		
 
-	<p:toolbar rendered="#{cardDesignerController.renderCardPanel}">
+	<p:toolbar rendered="#{designView.renderCardPanel}">
 		<f:facet name="left">
 			<p:outputLabel id="side1label" value="Prednja strana"></p:outputLabel>
 		</f:facet>
 		<f:facet name="right">
-			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,1)}" update="mainForm" process="@this"/>
-			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,2)}" update="mainForm" process="@this"/>
-			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,3)}" update="mainForm" process="@this"/>
-			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(1,4)}" update="mainForm" process="@this" />
+			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(1,1)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(1,2)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(1,3)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(1,4)}" update="mainForm" process="@this" />
 		</f:facet>
 	</p:toolbar>
 
@@ -60,19 +60,19 @@
 	name="frontSide" 
 	layout="block" 
 	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-image: url('images/card_template1.jpg');"
-	rendered="#{cardDesignerController.renderCardPanel}"
+	rendered="#{designView.renderCardPanel}"
 />
 
 
-<p:toolbar rendered="#{cardDesignerController.renderCardPanel}">
+<p:toolbar rendered="#{designView.renderCardPanel}">
 		<f:facet name="left">
 			<p:outputLabel id="side2label" value="Stražnja strana"></p:outputLabel>
 		</f:facet>
 		<f:facet name="right">
-			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,1)}" update="mainForm" process="@this"/>
-			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,2)}" update="mainForm" process="@this"/>
-			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,3)}" update="mainForm" process="@this"/>
-			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{cardDesignerController.addNewCardElement(2,4)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(2,1)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Polje" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(2,2)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Slika" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(2,3)}" update="mainForm" process="@this"/>
+			<p:commandButton value="Potpis" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(2,4)}" update="mainForm" process="@this"/>
 		</f:facet>
 	</p:toolbar>
 
@@ -83,10 +83,10 @@
 	name="backSide"  
 	layout="block" 
 	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;background-image: url('images/card_template2.png');"
-	rendered="#{cardDesignerController.renderCardPanel}"
+	rendered="#{designView.renderCardPanel}"
 />
 
-<p:panel id="elementDataPanel1" header="Osnovni podaci elementa"  rendered="#{cardDesignerController.renderCardPanel}">
+<p:panel id="elementDataPanel1" header="Osnovni podaci elementa"  rendered="#{designView.renderCardPanel}">
 
 	<!-- Za editor se ne moze dodati p:ajax a valueChangeListener se okida tek nakon submita, zato se koristi remote command -->
 	
@@ -94,42 +94,42 @@
 	<p:inputText 
 		id="elementName" 
 		onchange="updateElementMap()" 
-		disabled="#{cardDesignerController.selectedElement.type == null}"
+		disabled="#{designView.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Pozicija X" />
 	<p:inputText 
 		id="elementPositionX" 
 		onchange="updateElementMap()" 
-		disabled="#{cardDesignerController.selectedElement.type == null}"
+		disabled="#{designView.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Pozicija Y" />
 	<p:inputText 
 		id="elementPositionY" 
 		onchange="updateElementMap()" 
-		disabled="#{cardDesignerController.selectedElement.type == null}"
+		disabled="#{designView.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Širina polja u mm" />
 	<p:inputText 
 		id="elementWidth" 
 		onchange="updateElementMap()" 
-		disabled="#{cardDesignerController.selectedElement.type == null}"
+		disabled="#{designView.selectedElement.type == null}"
 	/>
 	
 	<p:outputLabel value="Visina polja u mm" />
 	<p:inputText 
 		id="elementHeight" 
 		onchange="updateElementMap()" 
-		disabled="#{cardDesignerController.selectedElement.type == null}"
+		disabled="#{designView.selectedElement.type == null}"
 	/>
 
 </p:panel>
 
 
 
-<p:panel id="elementDataPanel2" header="Statički / inicijalni tekst" rendered="#{cardDesignerController.renderCardPanel}">
+<p:panel id="elementDataPanel2" header="Statički / inicijalni tekst" rendered="#{designView.renderCardPanel}">
 
 	<p:editor 
 		id="elementEditor"  
@@ -138,20 +138,20 @@
 		controls="bold italic underline font size color undo redo"
 		widgetVar="elementEditorWidgetVar" 
 		onchange="updateElementEditorMap()"
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type == 3 or cardDesignerController.selectedElement.type == 4}"   
+		disabled="#{designView.selectedElement.type == null or designView.selectedElement.type == 3 or designView.selectedElement.type == 4}"   
 	/>
 	
 </p:panel>
 
-<p:panel id="elementDataPanel3" header="Dodatni podaci polja" rendered="#{cardDesignerController.renderCardPanel}">
+<p:panel id="elementDataPanel3" header="Dodatni podaci polja" rendered="#{designView.renderCardPanel}">
 
 	<!-- Ovo se pokazuje samo ako je element varijabilni - korisnicki unos -->
 	
 	<p:outputLabel value="Tip podatka" />
 	<p:selectOneMenu 
 		id="elementDataType" 
-		value="#{cardDesignerController.selectedElement.dataType}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2}"   > 
+		value="#{designView.selectedElement.dataType}" 
+		disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2}"   > 
 			<f:selectItem itemLabel="Tekst" itemValue="1" />
 			<f:selectItem itemLabel="Broj" itemValue="2" />
 			<f:selectItem itemLabel="Datum" itemValue="3" />
@@ -159,7 +159,7 @@
 			<p:ajax 
 				event="change" 
 				process="@this" 
-				listener="#{cardDesignerController.changeDataType}" 
+				listener="#{designView.changeDataType}" 
 				update="mainForm:elementMinimumLength, mainForm:elementMaximumLength, mainForm:dateFormat, mainForm:startCardNumber, mainForm:elementRequired"
 			/>
 	</p:selectOneMenu>
@@ -171,63 +171,63 @@
 
 	<p:inputText 
 		id="elementMinimumLength" 
-		value="#{cardDesignerController.selectedElement.minCharLength}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 1}" 
+		value="#{designView.selectedElement.minCharLength}" 
+		disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType != 1}" 
 	/>
 	
 	<p:outputLabel value="Maksimalni broj znakova" />
 	<p:inputText 
 		id="elementMaximumLength" 
-		value="#{cardDesignerController.selectedElement.maxCharLength}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 1}" 
+		value="#{designView.selectedElement.maxCharLength}" 
+		disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType != 1}" 
 	/>
 	
 	<!-- samo za datumska polja  -->
 	<p:outputLabel value="Format datuma" />
 	<p:inputText 
 		id="dateFormat" 
-		value="#{cardDesignerController.selectedElement.dateFormat}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 3}" 
+		value="#{designView.selectedElement.dateFormat}" 
+		disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType != 3}" 
 	/>
 	
 	<!-- samo za serijski broj -->
 	<p:outputLabel value="Početni serijski broj kartice" />
 	<p:inputText 
 		id="startCardNumber" 
-		value="#{cardDesignerController.selectedElement.startSerialNumber}" 
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType != 4}" 
+		value="#{designView.selectedElement.startSerialNumber}" 
+		disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType != 4}" 
 	/>
 	
 	
 	<p:outputLabel value="Podatak obavezan" />
 	<p:selectOneMenu 
 		id="elementRequired" 
-		value="#{cardDesignerController.selectedElement.required}"  
-		disabled="#{cardDesignerController.selectedElement.type == null or cardDesignerController.selectedElement.type != 2 or cardDesignerController.selectedElement.dataType == 4}" >
+		value="#{designView.selectedElement.required}"  
+		disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType == 4}" >
 			<f:selectItem itemLabel="DA" itemValue="true" />
 			<f:selectItem itemLabel="NE" itemValue="false" />
 	</p:selectOneMenu>
 
 </p:panel>
 
-<p:panel id="elementDataPanel4" header="Inicijalna slika / potpis" rendered="#{cardDesignerController.renderCardPanel}">
+<p:panel id="elementDataPanel4" header="Inicijalna slika / potpis" rendered="#{designView.renderCardPanel}">
 
 </p:panel>
 
 
 
 
- <p:commandButton value="Spremi"  icon="ui-icon-disk" actionListener="#{cardDesignerController.saveCardTemplate}" update="mainForm" />
+ <p:commandButton value="Spremi"  icon="ui-icon-disk" actionListener="#{designView.saveCardTemplate}" update="mainForm" />
  
  
  <!-- remote komande - javascript -->
  
  <p:remoteCommand 
  	name="refreshAdditionalForm" 
- 	action="#{cardDesignerController.refreshAdditionalForm}"  
+ 	action="#{designView.refreshAdditionalForm}"  
  />
   
- <h:inputHidden id="selectedId" value="#{cardDesignerController.selectedId}"></h:inputHidden>
+ <h:inputHidden id="selectedId" value="#{designView.selectedId}"></h:inputHidden>
  <h:inputHidden id="elementType" />
  
  
@@ -235,8 +235,8 @@
  <p:dialog id="newTypeDialog" widgetVar="newTypeDialog" modal="true" header="Novi tip kartice" position="center center" width="400" height="100" resizable="false"  appendToBody="true">
   		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
 	   		<p:outputLabel value="Naziv: " />
-			<p:inputText value="#{cardDesignerController.selectedCardType.name}" required="true" requiredMessage="Naziv je obavezan	"/>
-			<p:commandButton value="Spremi" icon="ui-icon-circle-save" oncomplete="PF('cardTypeSelect').selectValue()" actionListener="#{cardDesignerController.saveCardType}" update="mainForm" />
+			<p:inputText value="#{designView.selectedCardType.name}" required="true" requiredMessage="Naziv je obavezan	"/>
+			<p:commandButton value="Spremi" icon="ui-icon-circle-save" oncomplete="PF('cardTypeSelect').selectValue()" actionListener="#{designView.saveCardType}" update="mainForm" />
        </h:panelGrid>
   </p:dialog>
 

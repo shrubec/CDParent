@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter @Setter
 @Entity
@@ -93,8 +92,8 @@ public class CardElement {
 	@Transient
 	private Boolean addedOnForm=false;
 	
-	@Transient
-	private CardData cardData;
+//	@Transient
+//	private CardData cardData;
 	
 	
 	public CardElement(CardType cardType,Boolean dynamic) {
