@@ -7,13 +7,12 @@ import hr.cdap.web.object.ElementSessionDO;
 import hr.cdap.web.util.WebUtil;
 import hr.cdap.web.validator.CardDesignValidator;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
@@ -50,8 +49,8 @@ public class CardDesignerController {
 	private static int tempIdCounter=5;
 	
 	
-	public CardDesignerController() {
-		System.out.println("DesignController initialization...");
+	@PostConstruct
+	public void init() {
 		createElementMap();
 		elementList=new ArrayList<CardElement>();
 	}
@@ -62,13 +61,13 @@ public class CardDesignerController {
 	}
 	
 	public void saveCardType() {
+		
 		tempIdCounter++;
 		selectedCardType.setId(tempIdCounter);
 		selectedCardTypeName=selectedCardType.getName();
 		cardTypes.add(selectedCardType);
 		saveTypesIntoSession();
 		loadCardTemplate();
-		
 	}
 	
 	public void cardTypeSelected() {
@@ -99,7 +98,20 @@ public class CardDesignerController {
 		if (session == null) {
 			session=(HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 		}
-		session.setAttribute("cardTypeList",cardTypes);
+		
+		if (session.getAttribute("cardTypeList") != null) {
+			List<CardType> sessionList=(List<CardType>)session.getAttribute("cardTypeList");
+			for (CardType type:cardTypes) {
+				if (!sessionList.contains(type))
+					sessionList.add(type);
+			}
+		}
+		else {
+			List<CardType> sessionList=new ArrayList<CardType> ();
+			sessionList.addAll(cardTypes);
+			session.setAttribute("cardTypeList",sessionList);
+		}
+		
 	}
 	
 	private void createElementMap() {
@@ -412,6 +424,9 @@ public class CardDesignerController {
 		List<CardElement> savedElementList=new ArrayList<CardElement>();
 		savedElementList.addAll(elementList);
 		session.setAttribute(selectedCardType.getName(), savedElementList);
+		
+		selectedCardType.getElements().addAll(elementList);
+		
 		elementList=new ArrayList<CardElement>();
 		OutputPanel front=WebUtil.resolveSide("1");
 		OutputPanel back=WebUtil.resolveSide("2");

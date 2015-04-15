@@ -57,7 +57,6 @@
 	</p:toolbar>
 
 
-	<p:messages />
 	
 	<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="15"  columnClasses="column1,column2" >
 
@@ -85,35 +84,25 @@
 		
 		</p:panel>
 
-		<p:dataTable var="card" >
-		    <p:column headerText="Id">
-		        <h:outputText value="#{card.id}" />
-		    </p:column>
-		 
-		    <p:column headerText="Tip kartice">
-		        <h:outputText value="#{card.type}" />
-		    </p:column>
-		 
-		   <p:column headerText="Serijski broj">
-		        <h:outputText value="" />
-		    </p:column>
-		    
-		    <p:column headerText="Datum kreiranja">
-		        <h:outputText value="#{card.dateCreated}" >
-		        	<f:convertDateTime pattern="dd.MM.yyyy"/>
-		        </h:outputText>
-		    </p:column>
-		    
-		     <p:column headerText="Kreirao korisnik">
-		        <h:outputText value="" />
-		    </p:column>
-		    
-		    
-		   
+		<p:dataTable 
+			var="card" 
+			value="#{acquisitionController.cardList}" 
+			selectionMode="single" 
+			selection="#{acquisitionController.selectedCard}" 
+			rowKey="#{card.id}">
+				<p:ajax event="rowSelect" listener="#{acquisitionController.selectCard}"  />
+			    <p:column headerText="Id"><h:outputText value="#{card.id}" /> </p:column>
+			    <p:column headerText="Tip kartice"> <h:outputText value="#{card.cardType.name}" /></p:column>
+			    <p:column headerText="Serijski broj"> <h:outputText value="#{card.cardNumber}" /> </p:column>
+			    <p:column headerText="Datum kreiranja">
+			        <h:outputText value="#{card.dateCreated}" >
+			        	<f:convertDateTime pattern="dd.MM.yyyy HH:mm"/>
+			        </h:outputText>
+			    </p:column>
 		</p:dataTable>	
-		
-	
 	</h:panelGrid>
+
+ 	<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 
 
 	<!-- dummy Dialog button - samo zbog ajax listenera koji ce uhvatiti gasenje dialoga a koji se ne moze attachati na remote command nego mora bas na button -->

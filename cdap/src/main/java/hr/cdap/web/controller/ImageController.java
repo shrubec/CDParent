@@ -5,6 +5,7 @@ import hr.cdap.web.util.WebUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -54,7 +55,15 @@ public class ImageController {
 	public void saveImage() {
 		String cardTypeName= (String) WebUtil.getSession().getAttribute("imageCardTypeName");
 		String selectedFormId= (String) WebUtil.getSession().getAttribute("imageElementId");
+		try {
+			cardTypeName=new String(cardTypeName.getBytes("ISO-8859-1"),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		elementList=(List<CardElement> ) WebUtil.getSession().getAttribute(cardTypeName);
+		
+		System.out.println("ELEMENT LIST: " + elementList + " za " + cardTypeName);
+		
 		for (CardElement element:elementList) {
 			if (element.getFormId().equals(selectedFormId)) {
 				element.getCardData().setValueBlob(bytes);

@@ -5,6 +5,7 @@ import hr.cdap.entity.CardElement;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -23,6 +24,22 @@ import org.primefaces.context.RequestContext;
 
 
 public class WebUtil {
+	
+	public static void infoMessage(String message) {
+		FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",message));
+	}
+
+	public static void warnMessage(String message) {
+		FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning",message));
+	}
+
+	public static void errorMessage(String message) {
+		FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",message));
+	}
+
+	public static void fatalMessage(String message) {
+		FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_FATAL, "Fatal",message));
+	}
 
 	public static HttpSession getSession() {
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -152,7 +169,7 @@ public class WebUtil {
 		calField.setPattern(element.getDateFormat());
 		calField.setSize(8);
 		return calField;
-	}
+	} 
 	
 	
 	public static CommandLink createImagBtn(CardElement element) {

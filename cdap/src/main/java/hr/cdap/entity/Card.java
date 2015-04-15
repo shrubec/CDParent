@@ -31,12 +31,10 @@ public class Card {
 	private CardType cardType;
 	
 	@Column(name = "card_number")
-	private String card_number;
+	private String cardNumber;
 	
 	@Column(name = "date_created")
 	@Temporal(TemporalType.DATE)
 	private Date dateCreated;
-	
-	
 	
 }
