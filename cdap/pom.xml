@@ -20,21 +20,30 @@
 <!-- 		</dependency> -->
 		
 		
-		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-api</artifactId>
-			<version>2.2.10</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-impl</artifactId>
-			<version>2.2.10</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.sun.faces</groupId> -->
+<!-- 			<artifactId>jsf-api</artifactId> -->
+<!-- 			<version>2.2.10</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.sun.faces</groupId> -->
+<!-- 			<artifactId>jsf-impl</artifactId> -->
+<!-- 			<version>2.2.10</version> -->
+<!-- 		</dependency> -->
 		
+		
+		
+		<dependency>
+		  <groupId>org.glassfish</groupId>
+		  <artifactId>javax.faces</artifactId>
+		  <version>2.2.10</version>
+		</dependency>
+
+  
 		<dependency>  
 	        <groupId>org.primefaces</groupId>  
 	        <artifactId>primefaces</artifactId>  
-	        <version>5.1</version>  
+	        <version>5.2</version>  
 	    </dependency>  
 
 		<dependency>  

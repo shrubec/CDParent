@@ -3,6 +3,9 @@ var disableEditorUpdate=false;
 var currentlySelected;
 var currentlySelectedPanel;
 
+function markSelectedImage(image) {
+	selectBackground([{name:'image', value:image}]);
+}
 
 function selectImageForUpload(cardTypeName,elementId) {
 	var xmlhttp;

@@ -32,6 +32,7 @@ import org.primefaces.component.outputlabel.OutputLabel;
 import org.primefaces.component.outputpanel.OutputPanel;
 import org.primefaces.component.resizable.Resizable;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean
 @ViewScoped
@@ -48,6 +49,25 @@ public class DesignView {
 		createElementMap();
 		cardTypes=DesignService.fetchCardTypes();
 	}
+	
+	public void showSelectBackgroundDialog() {
+		Map<String, Object> options = new HashMap<String, Object>();
+		options.put("modal", true);
+		options.put("contentHeight", 450);
+		options.put("contentWidth", 1300);
+		RequestContext.getCurrentInstance().openDialog("selectBackground",options, null);
+	}
+	
+	public void returnBackgroundDialogFront(SelectEvent event) {
+		System.out.println("return background dialog front " + event.getObject());
+		
+	}
+	
+	public void returnBackgroundDialogBack(SelectEvent event) {
+		System.out.println("return background dialog back " + event.getObject());
+		
+	}
+	
 	
 	public void newCardType() {
 		selectedCardTypeName=null;
@@ -230,6 +250,7 @@ public class DesignView {
 	
 	
 	public void refreshAdditionalForm() {
+		System.out.println("Refresh additional forme...");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel3");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel4");
 	}

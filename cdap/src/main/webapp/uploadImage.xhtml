@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -7,25 +8,30 @@
 		 <h:head>
 	        <title>Slika / potpis</title>
 	        <h:outputScript library="js" name="script.js" />
+	        
+	        	<h:outputStylesheet>
+	        	
+	        	.ui-fileupload-content { 
+					    display: none;
+				}
+				
+					
+	        	</h:outputStylesheet>
+	        
 	    </h:head>
 	    
 	     <h:body>
-		
-		
-			<h:form id="imageForm" enctype="multipart/form-data" prependId="false" >
+			<h:form id="imageForm" enctype="multipart/form-data" prependId="false"  >
 				<!-- prikaz slike preko vlastitog controllera!!!! -->
-				<p:graphicImage id="image" value="#{imageDisplayView.imageContent}"  width="#{imageDisplayView.width}" height="#{imageDisplayView.height}"  cache="false" ></p:graphicImage>
-			
-			
-				<h:panelGrid columns="3" style="margin-bottom:10px" cellpadding="15"  >
-						<h:inputFile id="file" value="#{imageUploadView.file}"  />
-						<p:commandButton value="Učitaj"  actionListener="#{imageUploadView.upload}"  ajax="false" update="imageForm"/>
+				
+				<p:outputPanel style="width:450px;height:350px;">
+						<p:graphicImage id="image" value="#{imageDisplayView.imageContent}"  width="#{imageDisplayView.width}" height="#{imageDisplayView.height}"  cache="false" ></p:graphicImage>
+				</p:outputPanel>
+					<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="15"  >
+						<p:fileUpload  fileUploadListener="#{imageUploadView.handleFileUpload}"  auto="true" mode="advanced" update="imageForm" previewWidth="150"/>
 						<p:commandButton value="Spremi"  actionListener="#{imageUploadView.saveImage}"  ajax="false" immediate="true"/>
-				</h:panelGrid>
-
+					</h:panelGrid>
 			</h:form>
-			
-			
 		</h:body>
 		
 </html>
