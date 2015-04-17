@@ -104,7 +104,7 @@ public class WebUtil {
 		GraphicImage graphicImage = new GraphicImage();
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
 			if (data == null || data.getValueBlob() == null) {
-				graphicImage.setValue("images/person.png");
+				graphicImage.setValue("resources/images/person.png");
 			}
 			else {
 				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
@@ -112,7 +112,7 @@ public class WebUtil {
 		}
 		else if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
 			if (data == null || data.getValueBlob() == null) {
-				graphicImage.setValue("images/signature.png");
+				graphicImage.setValue("resources/images/signature.png");
 			}
 			else {
 				graphicImage.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
@@ -179,7 +179,7 @@ public class WebUtil {
 		GraphicImage image = new GraphicImage();
 		image.setId(element.getFormId());
 		if (data == null || data.getValueBlob() == null) {
-			image.setValue("images/person.png");
+			image.setValue("resources/images/person.png");
 		}
 		else {
 			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
@@ -195,7 +195,7 @@ public class WebUtil {
 		GraphicImage image=new GraphicImage();
 		image.setId(element.getFormId());
 		if (data == null || data.getValueBlob() == null) {
-			image.setValue("images/signature.png");
+			image.setValue("resources/images/signature.png");
 		}
 		else {
 			image.setValue("ImageGetter?elementImageObjectId="+element.getFormId()+"&random="+String.valueOf(Math.random()));
