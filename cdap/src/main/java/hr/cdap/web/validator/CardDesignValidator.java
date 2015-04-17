@@ -38,10 +38,6 @@ public class CardDesignValidator {
 				validateFieldRequired(messages, element.getFormId(), element.getName(), "Format datuma",  element.getDateFormat());
 				validateDateFormat(messages, element.getFormId(), element.getName(), "Format datuma",  element.getDateFormat());
 			}
-			else if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
-				validateFieldRequired(messages, element.getFormId(), element.getName(), "Poèetni serijski broj",  element.getStartSerialNumber());
-				validateDateFormat(messages, element.getFormId(), element.getName(), "Poèetni serijski broj",  element.getStartSerialNumber());
-			}
 		}
 	}
 	

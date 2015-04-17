@@ -225,10 +225,10 @@ public class DesignView extends AbstractView {
 				elementSessionDO.setElementDataType("Datum");
 				elementSessionDO.setElementDateFormat(element.getDateFormat());
 			}
-			else if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
-				elementSessionDO.setElementDataType("Serijski broj");
-				elementSessionDO.setElementCardNumber(element.getStartSerialNumber());
-			}
+//			else if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
+//				elementSessionDO.setElementDataType("Serijski broj");
+//				elementSessionDO.setElementCardNumber(element.getStartSerialNumber());
+//			}
 		}
 		return elementSessionDO;
 	}
@@ -355,7 +355,7 @@ public class DesignView extends AbstractView {
 		selectedElement.setMinCharLength(null);
 		selectedElement.setMaxCharLength(null);
 		selectedElement.setDateFormat(null);
-		selectedElement.setStartSerialNumber(null);
+//		selectedElement.setStartSerialNumber(null);
 		selectedElement.setRequired(true);
 		
 		if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING)) {
@@ -365,10 +365,10 @@ public class DesignView extends AbstractView {
 		else if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_DATE)) {
 			selectedElement.setDateFormat("dd.MM.yyyy");
 		}
-		else if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
-			selectedElement.setStartSerialNumber("0000000001");
-			selectedElement.setRequired(null);
-		}
+//		else if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
+//			selectedElement.setStartSerialNumber("0000000001");
+//			selectedElement.setRequired(null);
+//		}
 		executeJS_markElementSelected(selectedElement);
 	}
 	
@@ -389,7 +389,7 @@ public class DesignView extends AbstractView {
 			if (elementSessionDO.getElementDataType() == null) {
 				element.setDataType(null);
 				element.setDateFormat(null);
-				element.setStartSerialNumber(null);
+//				element.setStartSerialNumber(null);
 				element.setMinCharLength(null);
 				element.setMaxCharLength(null);
 				element.setRequired(null);

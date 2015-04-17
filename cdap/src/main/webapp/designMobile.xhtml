@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pm="http://primefaces.org/mobile">
+
+	 <f:view renderKitId="PRIMEFACES_MOBILE" />
+	 
+<h:head>
+
+ 	<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+          <title>Mobile Card Designer</title>
+       </f:facet>
+
+	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
+
+</h:head>
+
+<h:body>
+
+	<h:form id="mainForm">
+	 <pm:page>
+            <pm:header title="Title"></pm:header>
+             
+            <pm:content>
+                
+                <p:panel>
+                
+                <p:outputLabel id="testLabela" value="Test labela"/>
+                <p:draggable for="testLabela" containment="parent" />
+                
+              </p:panel>
+                
+            </pm:content>
+ 
+            <pm:footer title="Footer"></pm:footer>
+        </pm:page>
+
+</h:form>
+
+</h:body>
+
+</html>

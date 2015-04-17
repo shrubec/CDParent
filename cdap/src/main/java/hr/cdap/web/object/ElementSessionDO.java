@@ -20,7 +20,6 @@ public class ElementSessionDO {
 	private String elementMinChar;
 	private String elementMaxChar;
 	private String elementDateFormat;
-	private String elementCardNumber;
 	private String elementRequired;
 	
 }

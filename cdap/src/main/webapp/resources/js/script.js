@@ -176,7 +176,6 @@ function clearForm() {
 	document.getElementById('mainForm:elementMinimumLength').value='';
 	document.getElementById('mainForm:elementMaximumLength').value='';
 	document.getElementById('mainForm:dateFormat').value='';
-	document.getElementById('mainForm:startCardNumber').value='';
 	document.getElementById('mainForm:elementRequired').value='';
 	PF('elementEditorWidgetVar').clear();
 }

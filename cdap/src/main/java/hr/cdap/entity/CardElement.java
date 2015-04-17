@@ -26,7 +26,6 @@ public class CardElement {
 	public static final String ELEMENT_DATA_TYPE_STRING="1";
 	public static final String ELEMENT_DATA_TYPE_NUMBER="2";
 	public static final String ELEMENT_DATA_TYPE_DATE="3";
-	public static final String ELEMENT_DATA_TYPE_SERIAL="4";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,9 +75,6 @@ public class CardElement {
 	@Column(name = "max_char_length")
 	private String maxCharLength;
 	
-	@Column(name = "start_serial_number")
-	private String startSerialNumber;
-	
 	@Column(name = "date_format")
 	private String dateFormat;
 	
@@ -91,9 +87,6 @@ public class CardElement {
 	
 	@Transient
 	private Boolean addedOnForm=false;
-	
-//	@Transient
-//	private CardData cardData;
 	
 	
 	public CardElement(CardType cardType,Boolean dynamic) {
