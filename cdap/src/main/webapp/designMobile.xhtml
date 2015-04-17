@@ -15,31 +15,38 @@
             <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
           <title>Mobile Card Designer</title>
        </f:facet>
+       
 
-	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
-	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
+	 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+	  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	  
+	  
+	  <style>
+		  #draggable { width: 150px; height: 150px; padding: 0.5em; }
+	</style>
 
+	 <script>
+	  $(function() {
+	    $( "#draggable" ).draggable();
+	  });
+	  </script>
+  
+  
 </h:head>
 
-<h:body>
+<h:body onload="test()">
 
 	<h:form id="mainForm">
-	 <pm:page>
-            <pm:header title="Title"></pm:header>
-             
-            <pm:content>
                 
-                <p:panel>
                 
-                <p:outputLabel id="testLabela" value="Test labela"/>
-                <p:draggable for="testLabela" containment="parent" />
-                
-              </p:panel>
-                
-            </pm:content>
+            <div id="draggable" class="ui-widget-content">
+			  
+			  <p:commandButton value="Test gumbic"></p:commandButton>
+			  
+			</div>
  
-            <pm:footer title="Footer"></pm:footer>
-        </pm:page>
+                
 
 </h:form>
 
