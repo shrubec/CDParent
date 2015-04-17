@@ -47,7 +47,7 @@
 			<p:outputLabel id="side1label" value="Prednja strana"></p:outputLabel>
 		</f:facet>
 		<f:facet name="right">
-			<p:commandButton value="Pozadina" icon="ui-icon-circle-plus" actionListener="#{designView.showSelectBackgroundDialog}" update="mainForm" process="@this">
+			<p:commandButton value="Pozadina" icon="ui-icon-circle-plus" actionListener="#{designView.showSelectBackgroundDialog}"  process="@this">
 			 	<p:ajax event="dialogReturn" listener="#{designView.returnBackgroundDialogFront}" />
 			</p:commandButton>
 			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(1,1)}" update="mainForm" process="@this"/>
@@ -63,7 +63,7 @@
 	id="frontSide" 
 	name="frontSide" 
 	layout="block" 
-	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-image: url('images/card_template1.jpg');"
+	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-size: 100% 100%; background-image: #{designView.backgroundImageFront};"
 	rendered="#{designView.renderCardPanel}"
 />
 
@@ -73,7 +73,7 @@
 			<p:outputLabel id="side2label" value="Stražnja strana"></p:outputLabel>
 		</f:facet>
 		<f:facet name="right">
-			<p:commandButton value="Pozadina" icon="ui-icon-circle-plus" actionListener="#{designView.showSelectBackgroundDialog}" update="mainForm" process="@this">
+			<p:commandButton value="Pozadina" icon="ui-icon-circle-plus" actionListener="#{designView.showSelectBackgroundDialog}"  process="@this">
 			 	<p:ajax event="dialogReturn" listener="#{designView.returnBackgroundDialogBack}" />
 			</p:commandButton>
 			<p:commandButton value="Statički tekst" icon="ui-icon-circle-plus" actionListener="#{designView.addNewCardElement(2,1)}" update="mainForm" process="@this"/>
@@ -89,7 +89,7 @@
 	id="backSide" 
 	name="backSide"  
 	layout="block" 
-	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;background-image: url('images/card_template2.png');"
+	style="width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{designView.backgroundImageBack};"
 	rendered="#{designView.renderCardPanel}"
 />
 

@@ -27,6 +27,12 @@ public class CardType {
 	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "image_front")
+	private String imageFront;
+	
+	@Column(name = "image_back")
+	private String imageBack;
+	
 	@Transient
 	private List<CardElement> elementList=new ArrayList<CardElement>();
 }

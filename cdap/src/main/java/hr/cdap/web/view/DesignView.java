@@ -5,6 +5,7 @@ import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.service.DesignService;
 import hr.cdap.web.object.ElementSessionDO;
+import hr.cdap.web.util.AbstractView;
 import hr.cdap.web.util.WebUtil;
 import hr.cdap.web.validator.CardDesignValidator;
 
@@ -37,11 +38,10 @@ import org.primefaces.event.SelectEvent;
 @ManagedBean
 @ViewScoped
 @SuppressWarnings({"rawtypes","unchecked"})
-public class DesignView {
+public class DesignView extends AbstractView {
 	
 	private @Getter @Setter String selectedId;
 	private @Getter @Setter String selectedCardTypeName;
-	private @Getter @Setter CardType selectedCardType; 
 	private @Getter @Setter List<CardType> cardTypes;
 	
 	@PostConstruct
@@ -59,13 +59,15 @@ public class DesignView {
 	}
 	
 	public void returnBackgroundDialogFront(SelectEvent event) {
-		System.out.println("return background dialog front " + event.getObject());
-		
+		selectedCardType.setImageFront((String)event.getObject());
+		RequestContext.getCurrentInstance().update("mainForm:frontSide");
+		loadCardTemplate();
 	}
 	
 	public void returnBackgroundDialogBack(SelectEvent event) {
-		System.out.println("return background dialog back " + event.getObject());
-		
+		selectedCardType.setImageBack((String)event.getObject());
+		RequestContext.getCurrentInstance().update("mainForm:backSide");
+		loadCardTemplate();
 	}
 	
 	
@@ -250,7 +252,6 @@ public class DesignView {
 	
 	
 	public void refreshAdditionalForm() {
-		System.out.println("Refresh additional forme...");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel3");
 		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel4");
 	}

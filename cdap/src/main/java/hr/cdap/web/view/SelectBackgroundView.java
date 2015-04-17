@@ -22,7 +22,6 @@ public class SelectBackgroundView {
     
     @PostConstruct
     public void init() {
-    	System.out.println("Init metoda...");
     	images.add("template_1_front.jpg");
     	images.add("template_1_back.jpg");
     	images.add("template_2_front.jpg");
@@ -50,8 +49,7 @@ public class SelectBackgroundView {
 	public void selectBackground() {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 		String image = params.get("image");
-		System.out.println("Odabrana slika: " + image);
-		RequestContext.getCurrentInstance().closeDialog(0);
+		RequestContext.getCurrentInstance().closeDialog(image);
 	}
 	
 }

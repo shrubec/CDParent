@@ -6,6 +6,7 @@ import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.service.AcquisitionService;
 import hr.cdap.service.DesignService;
+import hr.cdap.web.util.AbstractView;
 import hr.cdap.web.util.WebUtil;
 
 import java.text.ParseException;
@@ -32,10 +33,9 @@ import org.primefaces.context.RequestContext;
 
 @ManagedBean
 @ViewScoped
-public class AcquisitionView {
+public class AcquisitionView extends AbstractView {
 	
 	private @Getter @Setter String selectedCardTypeName;
-	private @Getter @Setter CardType selectedCardType;
 	private @Getter @Setter List<CardType> cardTypes=new ArrayList<CardType>();
 	private @Getter @Setter List<Card> cardList=new ArrayList<Card>();
 	private @Getter @Setter Card selectedCard; //ovo je samo za prikaz
