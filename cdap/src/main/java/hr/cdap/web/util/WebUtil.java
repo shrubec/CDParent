@@ -6,6 +6,7 @@ import hr.cdap.entity.CardElement;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -26,6 +27,11 @@ import org.primefaces.context.RequestContext;
 
 
 public class WebUtil {
+	
+	public static String getParameter(String param) {
+		 Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		 return (String)params.get(param);
+	}
 	
 	public static void infoMessage(String message) {
 		FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO, "Info",message));
