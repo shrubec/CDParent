@@ -48,14 +48,7 @@ function updateValueOnFormWithAjax(elementId, objectName, fieldName) {
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			if (xmlhttp.responseText != 'null') {
-				document.getElementById(fieldName).value=xmlhttp.responseText;
-			}
-			else {
-				document.getElementById(fieldName).value='';
-			}
-		}
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
 	};
 
 	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+ "&random=" + Math.random(), true);
@@ -71,9 +64,7 @@ function updateEditorValueOnFormWithAjax(elementId, objectName) {
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-			updateEditorValue(xmlhttp.responseText);
-		}
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
 	};
 
 	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+ "&random=" + Math.random(), true);
@@ -113,25 +104,76 @@ function updateValueOnFormAndObjectWithAjax (elementId, objectName, fieldName,ne
 	
 }
 
+
+function updateValueOnObjectWithAjax (elementId, objectName, newValue) {
+	var xmlhttp;
+	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp = new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {}
+	};
+
+	xmlhttp.open("GET", "Fetcher?elementId=" + elementId + "&objectName=" + objectName+"&newValue=" + newValue+ "&random=" + Math.random(), true);
+	xmlhttp.send();
+	
+}
+
+
 function selectElementInitial(cardElementId,panelId) {
 	selectElement(document.getElementById(cardElementId),panelId);
 }
 
 function selectElementFront(cardElement) {
-	selectElement(cardElement,'first:mainForm:mainTab:frontSide');
+	selectElement(cardElement,'mainForm:frontSide');
 }
 
 function selectElementBack(cardElement) {
-	selectElement(cardElement,'first:mainForm:mainTab:backSide');
+	selectElement(cardElement,'mainForm:backSide');
 }
 
 
 function selectElement(cardElement,panelId) {
 	
-	console.log('K1: ' + cardElement);
-	console.log('P1: ' + panelId);
+	var x1= convertPixelsToMilimeters(document.getElementById('mainForm:cardElement0').offsetLeft-document.getElementById(panelId).offsetLeft).toFixed(2);
+	var y1= convertPixelsToMilimeters(document.getElementById('mainForm:cardElement0').offsetTop-document.getElementById(panelId).offsetTop).toFixed(2);
 	
-	document.getElementById('first:mainForm:selectedId').value=cardElement.id;
+	var x2=  convertPixelsToMilimeters(document.getElementById('cardElement0').offsetLeft-document.getElementById(panelId).offsetLeft).toFixed(2);
+	var y2= convertPixelsToMilimeters(document.getElementById('cardElement0').offsetTop-document.getElementById(panelId).offsetTop).toFixed(2);
+	
+	
+	console.log('test 1X: ' + x1);
+	console.log('test 1X: ' + y1);
+	
+	console.log('test 2X: ' + x2);
+	console.log('test 2X: ' + y2);
+	
+	
+	
+	document.getElementById(panelId).appendChild(document.getElementById('cardElement0')); 
+	
+	var cardElementId=cardElement.id;
+	
+	var startWithMainForm=cardElementId.startsWith('mainForm');
+	if (startWithMainForm == true) {
+		cardElementIdForCalculation=cardElement.id.substring(9, cardElement.id.length);
+		cardElement=document.getElementById(cardElementIdForCalculation);
+	}
+	
+	
+	
+	if (startWithMainForm == false) {
+		cardElementId='mainForm:'+cardElement.id;
+	}
+	
+	document.getElementById('mainForm:selectedId').value=cardElementId;
+	
+	console.log('Card element: ' + cardElement.id);
+	console.log('Panel: ' + panelId);
+	console.log('ID: ' + cardElementId);
+	
 	markElementSelected	(cardElement,panelId);
 	card=document.getElementById(panelId);
 	var cardRect = card.getBoundingClientRect();
@@ -142,21 +184,26 @@ function selectElement(cardElement,panelId) {
 	var x=convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft).toFixed(2);
 	var y=convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop).toFixed(2);
 	
+	
+	//var x=x2+x1;
+	//var y=y2+y1;
+	
+	
+	//korektivni faktor zbog headera
+	y=y-12;
+	
 	disableEditorUpdate=true;
 	console.log('izracunate kooridnate za ' + cardElement.id+': ' + x + ' - ' + y + ', disableEditorUpdate: ' + disableEditorUpdate);
 	
 	//vrijednosti na formi se popunjavaju sa ajaxom
 	
-	/*
-	updateValueOnFormWithAjax(cardElement.id,'elementId','mainForm:selectedId');
-	updateValueOnFormWithAjax(cardElement.id,'elementType','mainForm:elementType');
-	updateValueOnFormWithAjax(cardElement.id,'elementName','mainForm:elementName');
-	updateValueOnFormWithAjax(cardElement.id,'elementWidth','mainForm:elementWidth');
-	updateValueOnFormWithAjax(cardElement.id,'elementHeight','mainForm:elementHeight');
-	updateEditorValueOnFormWithAjax(cardElement.id,'elementEditor'); //netreba id elementa jer ide prek widget var-a
-	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementX','mainForm:elementPositionX',x);
-	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementY','mainForm:elementPositionY',y);
-	*/
+	
+	
+	
+	console.log('update start 1... ' + cardElementId);
+	updateValueOnObjectWithAjax(cardElementId,'elementX',x);
+	updateValueOnObjectWithAjax(cardElementId,'elementY',y);
+	console.log('update finished 1... ' + cardElementId);
 	
 	
 	//refreshAdditionalForm();
@@ -221,7 +268,7 @@ function moveToPositionInitial(selectedPanel,selectedElement,x,y) {
 	initialSelectedElement.style.left = newLeft+"px";
 	initialSelectedElement.style.top=newTop+"px";
 	
-	console.log('nove koordinate... ' + newLeft + ', ' + newTop + ', ' + x + ', ' + y);
+	console.log('nove koordinate za '+selectedElement+'... ' + newLeft + ', ' + newTop + ', ' + x + ', ' + y);
 	
 }
 

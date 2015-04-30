@@ -3,7 +3,8 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pm="http://primefaces.org/mobile">
+    xmlns:pm="http://primefaces.org/mobile"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
      
     <f:view renderKitId="PRIMEFACES_MOBILE" />
      
@@ -33,6 +34,13 @@
 		  list-style-type: none
 		}
 		
+		<h:outputStylesheet>
+	
+	 	.column1{height:auto; vertical-align:top;}
+        .column2{height:auto; vertical-align:top; }
+        
+		        
+	</h:outputStylesheet>
 		        
 	</h:outputStylesheet>
     
@@ -45,63 +53,15 @@
 
 <h:body>
 
-	<pm:page id="first">
-		<pm:header title="Dizajn kartice" swatch="b"></pm:header>
 
-		<pm:content>
-			<h:form id="mainForm">
+			
+	<ui:include src="designMobile2.xhtml"></ui:include>
 			
 			
-			<h:panelGrid columns="2">
-			
-				<h:column>
-				
-					<p:tabView id="mainTab" dynamic="true"  orientation="Bottom" >
-				
-						<p:ajax event="tabChange" listener="#{mobileDesignView.onTabChange}" />
-					    <p:tab title="Prednja strana" id="tabFront"> 
 		
-		
-									<p:outputPanel id="frontSide" name="frontSide" layout="block"
-										style="width:400px;height:250px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-size: 100% 100%; background-image: #{mobileDesignView.backgroundImageFront};">
-		
-		
-		
-									</p:outputPanel>
-		
-		
-					    </p:tab> 
-					    <p:tab title="Stražnja strana" id="tabBack">
-					    		<p:outputPanel id="backSide" name="backSide" layout="block"
-										style="width:400px;height:250px;border:1px solid #666666;margin-bottom:20px;margin-left:20px;	background-size: 100% 100%; background-image: #{mobileDesignView.backgroundImageBack};">
-		
-		
-								</p:outputPanel>
-					    </p:tab>
-					</p:tabView>
-				
-				</h:column>
-				
-				<h:column>
-					<h:panelGrid columns="1">
-						<p:button icon="ui-icon-delete" styleClass="ui-btn-inline" value="Tijelo" outcome="pm:second?transition=fade" />
-						<p:commandButton value="Tekst"  icon="ui-icon-delete" styleClass="ui-btn-inline" actionListener="#{mobileDesignView.addNewCardElement(1,1)}" update="mainForm" process="@this" />
-						<p:commandButton value="Slika" type="button" icon="ui-icon-delete" styleClass="ui-btn-inline" />
-						<p:commandButton value="Potpis" type="button" icon="ui-icon-delete" styleClass="ui-btn-inline" />
-						<p:commandButton value="Obriši" type="button" icon="ui-icon-delete" styleClass="ui-btn-inline" />
-					</h:panelGrid>
-				</h:column>
-									
-			</h:panelGrid>
-			
-				
-			 <h:inputHidden id="selectedId" value="#{designView.selectedId}"></h:inputHidden>
-			
-			</h:form>
-		</pm:content>
-	</pm:page>
+		 
 
-	<pm:page id="second">
+	<p:outputPanel rendered="false">
 		<pm:header title="Tijelo kartice" >
 			<p:button outcome="pm:first" value="Povratak" icon="ui-icon-arrow-l" styleClass="ui-btn-left ui-btn-inline" />
 		</pm:header>
@@ -116,7 +76,9 @@
 				</p:commandLink>
 			</p:dataScroller>
 		</pm:content>
-	</pm:page>
+	</p:outputPanel>
+	
+	
 	
 	
 	

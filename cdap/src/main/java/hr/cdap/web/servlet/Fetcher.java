@@ -60,6 +60,7 @@ public class Fetcher extends HttpServlet {
 					method=ElementSessionDO.class.getMethod("set"+objectName, String.class);
 					method.invoke(object, newValue);
 					out.print(newValue);
+					System.out.println("New fetcher value: " + newValue);
 				}
 				else {
 					out.print(value);

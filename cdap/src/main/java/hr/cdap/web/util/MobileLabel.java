@@ -9,12 +9,13 @@ import org.primefaces.component.outputlabel.OutputLabel;
 
 public class MobileLabel extends OutputLabel{
 
+	
 	public void encodeBegin(FacesContext context) throws IOException
 	  {
 	   ResponseWriter writer = context.getResponseWriter();
 	   writer.startElement("div", this);
 	   writer.writeAttribute("id", getId(), null);
-//	   writer.writeAttribute("style", "height:0px;", null);
+	   writer.writeAttribute("style", "background-color:red;", null);
 	   super.encodeBegin(context);
 	  }
 	

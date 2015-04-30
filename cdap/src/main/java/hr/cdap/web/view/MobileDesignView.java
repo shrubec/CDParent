@@ -4,6 +4,7 @@ import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
 import hr.cdap.web.object.ElementSessionDO;
 import hr.cdap.web.util.AbstractView;
+import hr.cdap.web.util.MobileImage;
 import hr.cdap.web.util.MobileLabel;
 import hr.cdap.web.util.WebUtil;
 
@@ -26,15 +27,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.primefaces.component.graphicimage.GraphicImage;
 import org.primefaces.component.outputlabel.OutputLabel;
 import org.primefaces.component.outputpanel.OutputPanel;
-import org.primefaces.component.resizable.Resizable;
-import org.primefaces.component.tabview.Tab;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.TabChangeEvent;
-
-import com.sun.faces.facelets.tag.ui.IncludeHandler;
 
 @ManagedBean
 @ViewScoped
@@ -42,13 +37,22 @@ import com.sun.faces.facelets.tag.ui.IncludeHandler;
 public class MobileDesignView extends AbstractView{
 
 	private @Getter @Setter List<String> images=new ArrayList<String>();
-	private String activeSide="1";
+	private @Getter @Setter String activeSide;
 	
 	//identicno
 	private @Getter @Setter String selectedId;
 	
+	private @Getter @Setter Boolean editPhase=false;
+	
+//	private  @Getter @Setter ElementSessionDO selectedElement;
+	
+	private  @Getter @Setter CardElement selectedElement;
+	
+	private @Getter @Setter String elementText;
+	
 	@PostConstruct
 	public void init() {
+		activeSide="1";
 		createElementMap();
 		selectedCardType=new CardType();
 		images.add("template_1_front.jpg");
@@ -73,9 +77,52 @@ public class MobileDesignView extends AbstractView{
     	images.add("template_10_back.jpg");
 	}
 	
+	public void showDetails() {
+		System.out.println("Detalji za " + selectedId);
+		
+		for (CardElement element:selectedCardType.getElementList()) {
+			if (("mainForm:"+element.getFormId()).equals(selectedId)) {
+				selectedElement=element;
+				elementText=selectedElement.getStyleValue();
+				
+				System.out.println("Postavljen style value: " + selectedElement.getStyleValue()+", " + selectedElement.getValue());
+				
+			}
+		}
+		
+//		selectedElement=(ElementSessionDO)fetchElementMap().get(selectedId);
+//		elementText=selectedElement.getElementEditor();
+		
+		
+		editPhase=true;
+//		saveCardTemplate();
+	}
+	
+	public void saveDetails() {
+		editPhase=false;
+		
+		System.out.println("Selected element id: " + selectedId+", postavljen tekst: " + elementText );
+		
+//		System.out.println("Selected element pozicija: " + selectedElement.getElementX() + " - " + selectedElement.getElementY());
+		
+		selectedElement.setStyleValue(elementText);
+		
+//		saveCardTemplate();
+		loadCardTemplate();
+		
+//		addNewCardElement("1", "1");
+		
+	}
+
+	public void showMain() {
+		editPhase=false;
+		loadCardTemplate();
+	}
+	
 	private void createElementMap() {
 		WebUtil.getSession().setAttribute("elementMap", new HashMap<String,String>());
 	}
+	
 	
 	public String selectBackgroundImage() {
 		String selectedBackground=WebUtil.getParameter("selectedImage");
@@ -86,17 +133,22 @@ public class MobileDesignView extends AbstractView{
 		return "pm:first";
 	}
 	
-	public void onTabChange(TabChangeEvent event) {
-		Tab activeTab = event.getTab();
-		if(activeTab.getId().equals("tabFront"))
-			 activeSide="1";
-		else
-			 activeSide="2";
+	public void changeSide() {
+		System.out.println("Active side: " + activeSide);
+//		Tab activeTab = event.getTab();
+//		if(activeTab.getId().equals("tabFront"))
+//			 activeSide="1";
+//		else
+//			 activeSide="2";
 	}
+	
+	
 	
 	//element selected zakomentiran
 	public void addNewCardElement(String side,String type) {
 		
+//		if (!selectedCardType.getElementList().isEmpty())
+//			saveCardTemplate();
 		
 		System.out.println("Novi element na formu...");
 		
@@ -106,11 +158,15 @@ public class MobileDesignView extends AbstractView{
 		Map map=fetchElementMap();
 		ElementSessionDO elementSessionDO=createSessionElementObject(element);
 		map.put(elementSessionDO.getElementId(), elementSessionDO);
+		
+		System.out.println("Session objekt stavljenu mapu: " + elementSessionDO.getElementId()+", " + elementSessionDO);
+		
 		for (CardElement e:selectedCardType.getElementList()) {
 			addElementOnForm(e);
 		}
 
 		executeJS_markElementSelected(element);
+		
 	}
 	
 	
@@ -166,7 +222,7 @@ public class MobileDesignView extends AbstractView{
 			element.setHeight("8");
 		}
 		return element;
-	}
+	} 
 
 	//identicna
 	private Integer fetchNumberOfElements(String type) {
@@ -185,13 +241,13 @@ public class MobileDesignView extends AbstractView{
 		return map;
 	}
 	
-	//identicna
+	//razlika u IDu
 	private ElementSessionDO fetchElementMapValues(String formId) {
 		Map map=fetchElementMap();
-		return (ElementSessionDO)map.get("mainForm:"+formId);
+		return (ElementSessionDO)map.get(formId);
 	}
 	
-	//identicna
+	//razlika u IDu
 	private ElementSessionDO createSessionElementObject(CardElement element) {
 		
 		ElementSessionDO elementSessionDO=new ElementSessionDO();
@@ -223,10 +279,12 @@ public class MobileDesignView extends AbstractView{
 		return elementSessionDO;
 	}
 	
-	//isljucena onclick skripta
+	//mobile label
 	private void createFormElements(OutputPanel panel,CardElement element,String oncClickScript) {
 		UIComponent component = null;
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)|| element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
+		
+			/*
 			OutputPanel imagePanel=WebUtil.createImagePanel(element);
 			GraphicImage graphicImage = WebUtil.createImage(element,null);
 //			graphicImage.setOnclick(oncClickScript);
@@ -235,6 +293,32 @@ public class MobileDesignView extends AbstractView{
 			component = imagePanel;
 			Resizable resizableElement = WebUtil.createResizable(element);
 			component.getChildren().add(resizableElement);
+			*/
+			
+//			
+//			GraphicImage graphicImage = WebUtil.createImage(element,null);
+//			graphicImage.setOnclick(oncClickScript);
+//			panel.getChildren().add(graphicImage);
+//			
+//			Resizable resizableElement = WebUtil.createResizable(element);
+//			graphicImage.getChildren().add(resizableElement);
+//			
+			
+//			MobileImage
+			
+			MobileImage graphicImage = new MobileImage(); 
+			if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE)) {
+				graphicImage.setValue("resources/images/person.png");
+			}
+			else if (element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
+				graphicImage.setValue("resources/images/signature.png");
+			}
+			graphicImage.setId(element.getFormId());
+			graphicImage.setWidth("100%");
+			graphicImage.setHeight("100%");
+			graphicImage.setOnclick(oncClickScript);
+			panel.getChildren().add(graphicImage);
+			
 		} else {
 //			OutputLabel formLabel = WebUtil.createLabel(element);
 			
@@ -243,7 +327,8 @@ public class MobileDesignView extends AbstractView{
 			formLabel.setId(element.getFormId());
 			
 			
-//			formLabel.setOnclick(oncClickScript);
+			formLabel.setOnclick(oncClickScript);
+			
 			component = formLabel;
 			panel.getChildren().add(formLabel);
 		}
@@ -270,33 +355,41 @@ public class MobileDesignView extends AbstractView{
 			}
 		}
 
-		ElementSessionDO elementSessionDO = fetchElementMapValues(element.getFormId());
+		ElementSessionDO elementSessionDO = fetchElementMapValues("mainForm:"+element.getFormId());
+		
+		System.out.println("Session objekt se vadi iz forme " + "mainForm:"+element.getFormId()+": " + elementSessionDO);
+		
 		if (elementSessionDO != null) {
 			element.setName(elementSessionDO.getElementName());
 			element.setPositionX(elementSessionDO.getElementX());
 			element.setPositionY(elementSessionDO.getElementY());
 			element.setWidth(elementSessionDO.getElementWidth());
 			element.setHeight(elementSessionDO.getElementHeight());
-			if (elementSessionDO.getElementEditor() != null) {
-				element.setValue(getPlainTextValue(elementSessionDO.getElementEditor()).trim());
-			}
-			element.setStyleValue(elementSessionDO.getElementEditor()); 
+//			if (elementSessionDO.getElementEditor() != null) {
+//				element.setValue(getPlainTextValue(elementSessionDO.getElementEditor()).trim());
+//			}
+//			element.setStyleValue(elementSessionDO.getElementEditor()); 
 		}
 
 		//kao pocetak se uzima pozicija taba a ne panela unutar taba
 		RequestContext.getCurrentInstance().execute(" $(function() { $( '#"+element.getFormId()+"' ).draggable();  });");
 		
 		//element za pomak je bez prefiksa - cilja se njegov div element koji ima fiksno postavljen id
-		RequestContext.getCurrentInstance().execute("moveToPositionInitial('first:mainForm:mainTab','" + element.getFormId() + "',"+ element.getPositionX() + "," + element.getPositionY()+ ");");
+		
+		RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:frontSide','" +element.getFormId() + "',"+ element.getPositionX() + "," + element.getPositionY()+ ");");
 		executeJS_setElementStyleAndValue(element);
+		
 	}
 	
-	//identicna
+	//coordinatesTarget = "this.parentNode"; !!
 	private String createOnClickScript(CardElement element) {
 		String coordinatesTarget = "this";
-		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE) || element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			coordinatesTarget = "this.parentNode";
-		}
+//		if (element.getType().equals(CardElement.ELEMENT_TYPE_IMAGE) || element.getType().equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
+//			coordinatesTarget = "this.parentNode";
+//		}
+		
+//		coordinatesTarget = "this.parentNode";
+		
 		String oncClickScript;
 		if (element.getSide().equals("1")) {
 			oncClickScript = "selectElementFront(" + coordinatesTarget + ");";
@@ -312,7 +405,7 @@ public class MobileDesignView extends AbstractView{
 		if (element.getSide().equals("2")) {
 			selectedSide="backSide";
 		}
-		RequestContext.getCurrentInstance().execute("selectElement(document.getElementById('first:mainForm:mainTab:"+element.getFormId()+"'),'first:mainForm:mainTab:"+selectedSide+"')");
+		RequestContext.getCurrentInstance().execute("selectElement(document.getElementById('mainForm:"+element.getFormId()+"'),'mainForm:"+selectedSide+"')");
 	}
 	
 	//identicna
@@ -325,15 +418,15 @@ public class MobileDesignView extends AbstractView{
 			BigDecimal height=new BigDecimal(element.getHeight());
 			width=width.divide(new BigDecimal("0.264583333"),0, RoundingMode.HALF_UP);
 			height=height.divide(new BigDecimal("0.264583333"),0, RoundingMode.HALF_UP);
-			RequestContext.getCurrentInstance().execute("document.getElementById('first:mainForm:mainTab:"+element.getFormId()+"').style.width='"+width+"px'");
-			RequestContext.getCurrentInstance().execute("document.getElementById('first:mainForm:mainTab:"+element.getFormId()+"').style.height='"+height+"px'");
+			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').style.width='"+width+"px'");
+			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').style.height='"+height+"px'");
 		}
 		
-		RequestContext.getCurrentInstance().execute("document.getElementById('first:mainForm:mainTab:"+element.getFormId()+"').style.display='inline-block'");
+		RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').style.display='inline-block'");
 		
 		
 		if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL) || element.getType().equals(CardElement.ELEMENT_TYPE_FIELD)) {
-			RequestContext.getCurrentInstance().execute("document.getElementById('first:mainForm:mainTab:"+element.getFormId()+"').innerHTML='"+element.getStyleValue()+"'");
+			RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getStyleValue()+"'");
 		}
 	}
 
@@ -351,12 +444,57 @@ public class MobileDesignView extends AbstractView{
 		return styleValue;
 	}
 	
-	
-	public void createDraggableDiv() {
+	//modificirana
+	public void saveCardTemplate() {
 		
-		IncludeHandler include;
 		
+		
+		for (CardElement element:selectedCardType.getElementList()) {
+			if (element.getStyleValue() != null) {
+				element.setValue(getPlainTextValue(element.getStyleValue()).trim());
+			}
+			
+			
+			ElementSessionDO elementSessionDO=fetchElementMapValues("mainForm:"+element.getFormId());
+			
+			System.out.println("Dohvacam element iz mape " + "mainForm:"+element.getFormId()+": " + elementSessionDO);
+
+			System.out.println("XY: " + elementSessionDO.getElementX()+" - "+elementSessionDO.getElementY());
+			
+			element.setName(elementSessionDO.getElementName());
+			element.setPositionX(elementSessionDO.getElementX());
+			element.setPositionY(elementSessionDO.getElementY());
+			element.setWidth(elementSessionDO.getElementWidth());
+			element.setHeight(elementSessionDO.getElementHeight());
+			element.setStyleValue(elementSessionDO.getElementEditor());
+			
+			System.out.println("New editor value: " + element.getStyleValue());
+			
+		}
+//		validateCardTemplate();
+		
+//		WebUtil.getSession().setAttribute("elementMap", new HashMap<String,String>());
+//		loadCardTemplate();
 	}
 	
+	
+	
+	
+	//modificirana
+	public void loadCardTemplate() {
+		
+		OutputPanel panel=WebUtil.resolveSide(activeSide);
+		panel.getChildren().clear();
+//		Map map=(Map) WebUtil.getSession().getAttribute("elementMap");
+//		map.clear();
+		for (CardElement element:selectedCardType.getElementList()) {
+			element.setAddedOnForm(false);
+			
+//			ElementSessionDO elementSessionDO=createSessionElementObject(element);
+//			map.put(elementSessionDO.getElementId(), elementSessionDO);
+			
+			addElementOnForm(element);
+		}
+	}
 }
 

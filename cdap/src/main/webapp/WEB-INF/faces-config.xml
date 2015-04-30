@@ -15,5 +15,10 @@
    		<component-type>hr.cdap.web.util.MobileLabel</component-type>
    		<component-class>hr.cdap.web.util.MobileLabel</component-class>
   	</component>
+  	
+  	 <component>
+   		<component-type>hr.cdap.web.util.MobileImage</component-type>
+   		<component-class>hr.cdap.web.util.MobileImage</component-class>
+  	</component>
   
 </faces-config>
