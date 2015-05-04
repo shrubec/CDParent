@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+
+
+
+	<h:panelGrid columns="1" style="margin-bottom:10px" cellpadding="5">
+		<p:editor id="elementEditor" 
+			width="450" height="100"
+			controls="bold italic underline font size color undo redo"
+			widgetVar="elementEditorWidgetVar"  
+			value="#{mobileDesignView.selectedElement.elementEditor}"
+			/>
+	
+	</h:panelGrid>
+	
+	<h:panelGrid 
+		columns="2" 
+		style="margin-bottom:10px" 
+		cellpadding="5"
+		columnClasses="column1,column2">
+	
+	
+		<h:column>
+	
+			<p:outputLabel value="Naziv elementa" />
+			<p:inputText 
+				id="elementName"
+				value="#{mobileDesignView.selectedElement.elementName}" />
+	
+			<p:outputLabel value="Pozicija X" />
+			<p:inputText 
+				id="elementPositionX"
+				value="#{mobileDesignView.selectedElement.elementX}" />
+	
+			<p:outputLabel value="Pozicija Y" />
+			<p:inputText 
+				id="elementPositionY"
+				value="#{mobileDesignView.selectedElement.elementY}" />
+	
+		</h:column>
+	
+	
+		<h:column>
+	
+			<p:outputLabel value="Širina polja u mm" />
+			<p:inputText 
+				id="elementWidth"
+				value="#{mobileDesignView.selectedElement.elementWidth}" />
+	
+			<p:outputLabel value="Visina polja u mm" />
+			<p:inputText 
+				id="elementHeight"
+				value="#{mobileDesignView.selectedElement.elementHeight}" />
+	
+		</h:column>
+	
+	
+		<h:panelGrid style="margin-bottom:10px;height:50px;" cellpadding="5" columns="2">
+			<p:commandButton 
+				value="Spremi" 
+				icon="ui-icon-delete"
+				styleClass="ui-btn-inline" 
+				actionListener="#{mobileDesignView.saveDetails}"
+				update="mainForm"
+				/>
+			<p:commandButton 
+				value="Povratak" 
+				icon="ui-icon-delete"
+				styleClass="ui-btn-inline" 
+				actionListener="#{mobileDesignView.showMain}"
+				immediate="true"
+				process="@this"
+				update="mainForm"/>
+		</h:panelGrid>
+	
+	
+	
+	</h:panelGrid>
+
+
+
+</html>

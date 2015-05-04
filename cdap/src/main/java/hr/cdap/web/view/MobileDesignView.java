@@ -374,6 +374,9 @@ public class MobileDesignView extends AbstractView{
 		//kao pocetak se uzima pozicija taba a ne panela unutar taba
 		RequestContext.getCurrentInstance().execute(" $(function() { $( '#"+element.getFormId()+"' ).draggable();  });");
 		
+		
+		RequestContext.getCurrentInstance().execute("var theElement = document.getElementById('"+element.getFormId()+"'); theElement.addEventListener('touchend', handlerFunction, false); function handlerFunction(event) {"+createOnClickScript(element)+" }");
+		
 		//element za pomak je bez prefiksa - cilja se njegov div element koji ima fiksno postavljen id
 		
 		RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:frontSide','" +element.getFormId() + "',"+ element.getPositionX() + "," + element.getPositionY()+ ");");

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+
+
+	<p:editor id="elementEditor" 
+			width="350" height="100"
+			controls="bold italic underline font size color undo redo"
+			widgetVar="elementEditorWidgetVar"  
+			value="#{mobileDesignView.selectedElement.elementEditor}"
+	/>
+	
+	
+	<p:commandButton 
+				value="Spremi" 
+				icon="ui-icon-delete"
+				styleClass="ui-btn-inline" 
+				actionListener="#{mobileDesignView.saveDetails}"
+				update="mainForm"
+				/>
+	
+
+</html>
