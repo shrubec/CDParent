@@ -1,12 +1,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  
+   <repositories>
+    <repository>
+      <id>MavenCentral</id>
+      <url>http://maven.apache.org</url>
+    </repository>
+<!--     <repository> -->
+<!--       <id>Primefaces</id> -->
+<!--       <url>http://repository.primefaces.org</url> -->
+<!--     </repository> -->
+  </repositories> 
+  
+  
   <modelVersion>4.0.0</modelVersion>
   <groupId>cdap</groupId>
   <artifactId>cdap</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>cdap Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+  
+<!--   <name>cdap Maven Webapp</name> -->
+<!--   <url>http://maven.apache.org</url> -->
+  
+  
+  
   <dependencies>
 <!--    		<dependency> -->
 <!-- 			<groupId>com.sun.faces</groupId> -->
@@ -76,6 +94,12 @@
 	        <artifactId>commons-fileupload</artifactId>
 	        <version>1.2.1</version>
 	    </dependency>
+	    
+<!-- 	      <dependency>   -->
+<!-- 	        <groupId>org.primefaces.themes</groupId>   -->
+<!-- 	        <artifactId>all-themes</artifactId>   -->
+<!-- 	        <version>1.0.10</version>   -->
+<!-- 	    </dependency>   -->
 	    
   </dependencies>
   <build>

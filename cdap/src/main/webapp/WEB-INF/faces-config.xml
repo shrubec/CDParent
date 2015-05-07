@@ -21,4 +21,5 @@
    		<component-class>hr.cdap.web.util.MobileImage</component-class>
   	</component>
   
+  
 </faces-config>
