@@ -35,8 +35,8 @@
 </h:head>
 
 
-
-  <div class="header-top" >
+ <div id="mainDiv">
+  <div class="header-top" id="topHeader">
 	 <div class="wrap"> 
 		<div class="logo">
 			<a href="index.html"><img src="resources/images/style/akd.jpg" height="80px;" alt=""/></a>
@@ -50,8 +50,8 @@
 		<div class="clear"></div>
  	</div>
    </div>
-   <div class="header-bottom">
-   	<div class="wrap">
+   <div class="header-bottom" id="bottomHeader">
+   	<div class="wrap" id="wrapHeader"> 
    		<!-- start header menu -->
 		<ul class="megamenu skyblue">
 
@@ -192,16 +192,14 @@
 				</li>
 				
 		   </ul>
-		   <div class="clear"></div>
      	</div>
        </div>
        
        
-      
+      </div>
        
-       <div style="margin-left:10px;margin-top:10px;float: left;width: 95%;">
        
-       <h:panelGrid columns="2" columnClasses="column1,column2"  cellpadding="55" >
+       <h:panelGrid columns="2" columnClasses="column1,column2"   id="mainPanelGrid" >
        
        <h:column>
         <h:form>
@@ -228,15 +226,6 @@
        
        </h:panelGrid>
        
-       
-      
-    
-    </div>
 
-
-    
-	   
 	    	
-	    	
-        <a href="#" id="toTop" style="display: block;"><span id="toTopHover" style="opacity: 1;"></span></a>
 </html>

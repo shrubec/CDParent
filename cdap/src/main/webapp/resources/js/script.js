@@ -125,6 +125,26 @@ function selectElementBack(cardElement) {
 	selectElement(cardElement,'mainForm:backSide');
 }
 
+
+function getPositionX(element) {
+    var xPosition = 0;
+    while(element) {
+        xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+        element = element.offsetParent;
+    }
+    return xPosition;
+}
+
+function getPositionY(element) {
+    var yPosition = 0;
+    while(element) {
+        yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+        element = element.offsetParent;
+    }
+    return yPosition;
+}
+
+
 function selectElement(cardElement,panelId) {
 	
 	document.getElementById('mainForm:selectedId').value=cardElement.id;
@@ -135,11 +155,15 @@ function selectElement(cardElement,panelId) {
 //	console.log(convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop),convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft));
 	
 	//ovo se izracuna
-	var x=convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft).toFixed(2);
-	var y=convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop).toFixed(2);
+	//var x=convertPixelsToMilimeters(cardElement.offsetLeft-card.offsetLeft).toFixed(2);
+	//var y=convertPixelsToMilimeters(cardElement.offsetTop-card.offsetTop).toFixed(2);
+	
+	var x=convertPixelsToMilimeters(getPositionX(cardElement)-getPositionX(card)).toFixed(2);
+	var y=convertPixelsToMilimeters(getPositionY(cardElement)-getPositionY(card)).toFixed(2);
 	
 	disableEditorUpdate=true;
 	console.log('izracunate kooridnate za ' + cardElement.id+': ' + x + ' - ' + y + ', disableEditorUpdate: ' + disableEditorUpdate);
+	
 	
 	//vrijednosti na formi se popunjavaju sa ajaxom
 	updateValueOnFormWithAjax(cardElement.id,'elementId','mainForm:selectedId');
