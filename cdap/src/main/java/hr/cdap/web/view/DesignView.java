@@ -441,5 +441,22 @@ public class DesignView extends AbstractView {
 		
 	}
 	
+	public void deleteElement() {
+		saveTemplateElements();
+		if (selectedId != null && !selectedId.isEmpty()) {
+			System.out.println("Brisem element: " +selectedId);
+			for (CardElement element:selectedCardType.getElementList()) {
+				if (("mainForm:"+element.getFormId()).equals(selectedId)) {
+					selectedCardType.getElementList().remove(element);
+					Map map=fetchElementMap();
+					map.remove("mainForm:"+element.getFormId());
+					break;
+				}
+			}
+			setSelectedId(null);
+			loadCardTemplate();
+		}
+	}
+	
 
 }
