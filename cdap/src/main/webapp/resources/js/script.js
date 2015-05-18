@@ -168,12 +168,12 @@ function selectElement(cardElement,panelId) {
 	//vrijednosti na formi se popunjavaju sa ajaxom
 	updateValueOnFormWithAjax(cardElement.id,'elementId','mainForm:selectedId');
 	updateValueOnFormWithAjax(cardElement.id,'elementType','mainForm:elementType');
-	updateValueOnFormWithAjax(cardElement.id,'elementName','mainForm:elementName');
-	updateValueOnFormWithAjax(cardElement.id,'elementWidth','mainForm:elementWidth');
-	updateValueOnFormWithAjax(cardElement.id,'elementHeight','mainForm:elementHeight');
+	updateValueOnFormWithAjax(cardElement.id,'elementName','mainForm:mainTab:elementName');
+	updateValueOnFormWithAjax(cardElement.id,'elementWidth','mainForm:mainTab:elementWidth');
+	updateValueOnFormWithAjax(cardElement.id,'elementHeight','mainForm:mainTab:elementHeight');
 	updateEditorValueOnFormWithAjax(cardElement.id,'elementEditor'); //netreba id elementa jer ide prek widget var-a
-	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementX','mainForm:elementPositionX',x);
-	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementY','mainForm:elementPositionY',y);
+	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementX','mainForm:mainTab:elementPositionX',x);
+	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementY','mainForm:mainTab:elementPositionY',y);
 	
 	/*
 	updateValueOnFormWithAjax(cardElement.id,'elementDataType','mainForm:elementDataType');
@@ -191,16 +191,16 @@ function selectElement(cardElement,panelId) {
 function clearForm() {
 	disableEditorUpdate=true;
 	document.getElementById('mainForm:selectedId').value='';
-	document.getElementById('mainForm:elementPositionX').value='';
-	document.getElementById('mainForm:elementPositionY').value='';
-	document.getElementById('mainForm:elementName').value='';
-	document.getElementById('mainForm:elementWidth').value='';
-	document.getElementById('mainForm:elementHeight').value='';
-	document.getElementById('mainForm:elementDataType').value='';
-	document.getElementById('mainForm:elementMinimumLength').value='';
-	document.getElementById('mainForm:elementMaximumLength').value='';
-	document.getElementById('mainForm:dateFormat').value='';
-	document.getElementById('mainForm:elementRequired').value='';
+	document.getElementById('mainForm:mainTab:elementPositionX').value='';
+	document.getElementById('mainForm:mainTab:elementPositionY').value='';
+	document.getElementById('mainForm:mainTab:elementName').value='';
+	document.getElementById('mainForm:mainTab:elementWidth').value='';
+	document.getElementById('mainForm:mainTab:elementHeight').value='';
+	document.getElementById('mainForm:mainTab:elementDataType').value='';
+	document.getElementById('mainForm:mainTab:elementMinimumLength').value='';
+	document.getElementById('mainForm:mainTab:elementMaximumLength').value='';
+	document.getElementById('mainForm:mainTab:dateFormat').value='';
+	document.getElementById('mainForm:mainTab:elementRequired').value='';
 	PF('elementEditorWidgetVar').clear();
 }
 
@@ -217,8 +217,8 @@ function convertMilimetersToPixels(milimeters) {
 function moveToPosition() {
 	panel=document.getElementById(currentlySelectedPanel);
 	var panelRect = panel.getBoundingClientRect();
-	var pxTop=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionY').value));
-	var pxLeft=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionX').value));
+	var pxTop=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:mainTab:elementPositionY').value));
+	var pxLeft=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:mainTab:elementPositionX').value));
 	var startTop=panelRect.top;
 	var startLeft=panelRect.left;
 	var newTop=pxTop+startTop;
@@ -256,7 +256,7 @@ function updateElementEditorMap() {
 	var type=document.getElementById('mainForm:elementType').value;
 	console.log('update element editor map... ' + currentlySelected.id + ', ' + type + ', ' + disableEditorUpdate);
 	if (disableEditorUpdate == false && type != '3' && type != '4') {
-			var elementEditor=document.getElementById('mainForm:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
+			var elementEditor=document.getElementById('mainForm:mainTab:elementEditor_input').value; //editor unutar sebe ima input element, njega treba namjestiti
 			callUpdater(currentlySelected.id,null,null,null,null,null,elementEditor);
 			currentlySelected.innerHTML=elementEditor;
 	}
@@ -269,11 +269,11 @@ function redrawElementByFormValues() {
 	
 	panel=document.getElementById(currentlySelectedPanel);
 	var panelRect = panel.getBoundingClientRect();
-	var pxTop=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionY').value));
-	var pxLeft=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementPositionX').value));
-	var pxWidth=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementWidth').value));
-	var pxHeight=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:elementHeight').value));
-	var elementEditor=document.getElementById('mainForm:elementEditor_input').value;
+	var pxTop=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:mainTab:elementPositionY').value));
+	var pxLeft=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:mainTab:elementPositionX').value));
+	var pxWidth=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:mainTab:elementWidth').value));
+	var pxHeight=parseInt(convertMilimetersToPixels(document.getElementById('mainForm:mainTab:elementHeight').value));
+	var elementEditor=document.getElementById('mainForm:mainTab:elementEditor_input').value;
 	
 	var startTop=panelRect.top;
 	var startLeft=panelRect.left;
@@ -302,22 +302,22 @@ function markElementSelected(element,panelId) {
 
 function updateElementStyleAndPosition(cardElement,setPositionOnly) {
 	
-	var x=document.getElementById('mainForm:elementPositionX').value;
-	var y=document.getElementById('mainForm:elementPositionY').value;
-	var elementName=document.getElementById('mainForm:elementName').value;
-	var elementWidth=document.getElementById('mainForm:elementWidth').value;
-	var elementHeight=document.getElementById('mainForm:elementHeight').value;
+	var x=document.getElementById('mainForm:mainTab:elementPositionX').value;
+	var y=document.getElementById('mainForm:mainTab:elementPositionY').value;
+	var elementName=document.getElementById('mainForm:mainTab:elementName').value;
+	var elementWidth=document.getElementById('mainForm:mainTab:elementWidth').value;
+	var elementHeight=document.getElementById('mainForm:mainTab:elementHeight').value;
 	callUpdater(cardElement.id,x,y,elementName,elementWidth,elementHeight,null);
 }
 
 function updateImageSize(imagePanel,imageElement) {
-	var x=document.getElementById('mainForm:elementPositionX').value;
-	var y=document.getElementById('mainForm:elementPositionY').value;
-	var elementName=document.getElementById('mainForm:elementName').value;
+	var x=document.getElementById('mainForm:mainTab:elementPositionX').value;
+	var y=document.getElementById('mainForm:mainTab:elementPositionY').value;
+	var elementName=document.getElementById('mainForm:mainTab:elementName').value;
 	var elementWidth=convertPixelsToMilimeters(imageElement.width).toFixed(2);
 	var elementHeight=convertPixelsToMilimeters(imageElement.height).toFixed(2);
-	document.getElementById('mainForm:elementWidth').value=elementWidth;
-	document.getElementById('mainForm:elementHeight').value=elementHeight;
+	document.getElementById('mainForm:mainTab:elementWidth').value=elementWidth;
+	document.getElementById('mainForm:mainTab:elementHeight').value=elementHeight;
 	callUpdater(imagePanel.id,x,y,elementName,elementWidth,elementHeight,null);
 }
 

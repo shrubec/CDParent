@@ -7,10 +7,10 @@
       <id>MavenCentral</id>
       <url>http://maven.apache.org</url>
     </repository>
-<!--     <repository> -->
-<!--       <id>Primefaces</id> -->
-<!--       <url>http://repository.primefaces.org</url> -->
-<!--     </repository> -->
+    <repository>
+      <id>Primefaces</id>
+      <url>http://repository.primefaces.org</url>
+    </repository>
   </repositories> 
   
   
@@ -95,11 +95,11 @@
 	        <version>1.2.1</version>
 	    </dependency>
 	    
-<!-- 	      <dependency>   -->
-<!-- 	        <groupId>org.primefaces.themes</groupId>   -->
-<!-- 	        <artifactId>all-themes</artifactId>   -->
-<!-- 	        <version>1.0.10</version>   -->
-<!-- 	    </dependency>   -->
+	      <dependency>  
+	        <groupId>org.primefaces.themes</groupId>  
+	        <artifactId>all-themes</artifactId>  
+	        <version>1.0.10</version>  
+	    </dependency>  
 	    
   </dependencies>
   <build>

@@ -59,12 +59,14 @@ public class DesignView extends AbstractView {
 	}
 	
 	public void returnBackgroundDialogFront(SelectEvent event) {
+		saveTemplateElements();
 		selectedCardType.setImageFront((String)event.getObject());
 		RequestContext.getCurrentInstance().update("mainForm:frontSide");
 		loadCardTemplate();
 	}
 	
 	public void returnBackgroundDialogBack(SelectEvent event) {
+		saveTemplateElements();
 		selectedCardType.setImageBack((String)event.getObject());
 		RequestContext.getCurrentInstance().update("mainForm:backSide");
 		loadCardTemplate();
@@ -179,8 +181,8 @@ public class DesignView extends AbstractView {
 			element.setRequired(true);
 		}
 		else if (type.equals(CardElement.ELEMENT_TYPE_FIELD)) {
-			element.setValue("SPECIMEN "+String.valueOf(selectedCardType.getElementList().size()));
-			element.setStyleValue("SPECIMEN "+String.valueOf(selectedCardType.getElementList().size()));
+			element.setValue("SPECIMEN");
+			element.setStyleValue("SPECIMEN");
 			element.setWidth("40");
 			element.setHeight("8");
 			element.setDataType(CardElement.ELEMENT_DATA_TYPE_STRING);
@@ -189,8 +191,8 @@ public class DesignView extends AbstractView {
 			element.setRequired(true);
 		}
 		else {
-			element.setValue("SPECIMEN "+String.valueOf(selectedCardType.getElementList().size()));
-			element.setStyleValue("SPECIMEN "+String.valueOf(selectedCardType.getElementList().size()));
+			element.setValue("SPECIMEN");
+			element.setStyleValue("SPECIMEN");
 			element.setWidth("40");
 			element.setHeight("8");
 		}
@@ -252,8 +254,8 @@ public class DesignView extends AbstractView {
 	
 	
 	public void refreshAdditionalForm() {
-		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel3");
-		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel4");
+//		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel3");
+//		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel4");
 	}
 	
 	public void addElementOnForm(CardElement element) {
@@ -373,8 +375,7 @@ public class DesignView extends AbstractView {
 	}
 	
 	
-	public void saveCardTemplate() {
-		
+	private void saveTemplateElements() {
 		for (CardElement element:selectedCardType.getElementList()) {
 			if (element.getStyleValue() != null) {
 				element.setValue(getPlainTextValue(element.getStyleValue()).trim());
@@ -389,12 +390,15 @@ public class DesignView extends AbstractView {
 			if (elementSessionDO.getElementDataType() == null) {
 				element.setDataType(null);
 				element.setDateFormat(null);
-//				element.setStartSerialNumber(null);
 				element.setMinCharLength(null);
 				element.setMaxCharLength(null);
 				element.setRequired(null);
 			}
 		}
+	}
+	
+	public void saveCardTemplate() {
+		saveTemplateElements();
 //		validateCardTemplate();
 		DesignService.saveCardType(selectedCardType);
 		OutputPanel front=WebUtil.resolveSide("1");
