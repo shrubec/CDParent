@@ -23,12 +23,19 @@
 		.topColumnCenter{height:auto; vertical-align:middle; margin-left:10px; width:220px; }
 		.topColumnRight{height:auto; vertical-align:middle; margin-left:10px; }
 	
-	 	.mainColumnLeft{height:auto; vertical-align:top;  width:600px;}
-	 	.mainColumnRight{height:auto; vertical-align:top;  width:800px; float:right; margin-left:100px; }
+	 	.mainColumnLeft{height:auto; vertical-align:top;  width:560px; padding-right: 50px;}
+	 	.mainColumnRight{height:auto; vertical-align:top;  float:right; width:100%; padding-right: 10px;}
+	 	
+	 	 
+<!-- 	 	.detailsColumnLeft{height:auto; vertical-align:top;  width:200px; } -->
+<!-- 	 	.detailsColumnRight{height:auto; vertical-align:top;  width:550px; text-align:right; } -->
+
+	 	.detailsColumnLeft{height:auto; vertical-align:top;   }
+	 	.detailsColumnRight{height:auto; vertical-align:top;  text-align:right; }
+	 	
+	 	.ui-outputlabel{vertical-align:bottom;font-size:20pt;font-color:red;}
 	 	
 	 	
-	 	.detailsColumnLeft{height:auto; vertical-align:top;  width:200px; }
-	 	.detailsColumnRight{height:auto; vertical-align:top;  width:550px; text-align:right; }
 	 	
 	</h:outputStylesheet>
 	
@@ -120,7 +127,7 @@
 	
 	<h:column>
 	
-		 <p:tabView rendered="#{designView.renderCardPanel}" id="mainTab" >
+		 <p:tabView rendered="#{designView.renderCardPanel}" id="mainTab">
 	     
 	        <p:tab title="Element kartice"  >
 	        
@@ -128,7 +135,7 @@
 					<p:outputLabel value="Tekst" />
 					<p:editor style="float:right;"
 								id="elementEditor"  
-								height="100" 
+								height="80" 
 								width="250"
 								controls="bold italic underline font size color undo redo"
 								widgetVar="elementEditorWidgetVar" 
@@ -142,7 +149,8 @@
 					<p:selectOneMenu 
 									id="elementDataType" 
 									value="#{designView.selectedElement.dataType}" 
-									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2}"> 
+									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2}"
+									style="width:70px;"> 
 										<f:selectItem itemLabel="Tekst" itemValue="1" />
 										<f:selectItem itemLabel="Broj" itemValue="2" />
 										<f:selectItem itemLabel="Datum" itemValue="3" />
@@ -157,17 +165,18 @@
 				
 				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight">	
 					<p:outputLabel value="Podatak obavezan" />
-					<p:selectOneMenu 
+					<p:selectOneMenu  
 									id="elementRequired" 
 									value="#{designView.selectedElement.required}"  
 									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType == 4}" 
+									style="width:70px;"
 									>
 										<f:selectItem itemLabel="DA" itemValue="true" />
 										<f:selectItem itemLabel="NE" itemValue="false" />
 								</p:selectOneMenu>
 				</h:panelGrid>
 				
-				
+				 
 				
 				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
 					<p:outputLabel  value="Naziv elementa" />
@@ -216,7 +225,7 @@
 				</h:panelGrid>
 				
 				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight">	
-					<p:outputLabel value="Minimalni broj znakova" />
+					<p:outputLabel value="Min. broj znakova" />
 					<p:inputText 
 									id="elementMinimumLength" 
 									value="#{designView.selectedElement.minCharLength}" 
@@ -225,7 +234,7 @@
 				</h:panelGrid>
 				
 				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight">	
-					<p:outputLabel value="Maksimalni broj znakova" />
+					<p:outputLabel value="Maks. broj znakova" />
 					<p:inputText 
 									
 									id="elementMaximumLength" 
@@ -246,12 +255,13 @@
 				
 				 <p:commandButton value="Obriši element"  icon="ui-icon-trash" actionListener="#{designView.deleteElement}" update="mainForm" />
 			
-	        
+			
 	        </p:tab>
 	        
 	         <p:tab title="Specifikacija čipa" >
 	        
-		        <p:dataTable >
+	        
+		        <p:dataTable style="max-width:750px;width:auto;">
 		        
 				    <p:column headerText="Naziv">
 				        <h:outputText value="Ime" />
@@ -270,12 +280,13 @@
 				    </p:column>
 				 
 				</p:dataTable>
+				
 	        
 	          </p:tab>
 	        
 	         <p:tab title="Općenito o tipu kartice">
-	        
-	        	<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
+	         
+	       		<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
 					<p:outputLabel  value="Tip kartice" />
 					<p:inputText />
 				</h:panelGrid>

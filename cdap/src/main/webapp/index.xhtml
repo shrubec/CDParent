@@ -26,9 +26,30 @@
 
 <h:outputStylesheet>
 	
-	 	.column1{height:auto; vertical-align:top; padding: 10px;}
-        .column2{height:auto; vertical-align:top; width: 100%; padding: 10px;}
+	 	.column1{height:auto; vertical-align:top; padding: 10px; }
+        .column2{height:auto; vertical-align:top; width: 100%; padding: 10px; }
         
+        .cssmenu ul li a {
+        	font-family: Gill Sans, Verdana;
+			font-size: 12px;
+			line-height: 14px;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			font-weight: bold;
+        }
+        
+        #title {
+        	position: absolute;
+        	right: 100px;
+        	width: 600px;
+        	font-family: Gill Sans, Verdana;
+			font-size: 12px;
+			line-height: 14px;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			font-weight: bold;
+			margin-top:70px; 
+        } 
 		        
 	</h:outputStylesheet>
 
@@ -40,12 +61,21 @@
 	 <div class="wrap"> 
 		<div class="logo">
 			<a href="index.html"><img src="resources/images/style/akd.jpg" height="80px;" alt=""/></a>
+			
+		
 	    </div>
-	    <div class="cssmenu">
-		   <ul>
-			 <li><a href="checkout.html">AKD card design, acquisition and personalization</a></li> 
-		   </ul>
+	    
+		<div id="title">	
+		AKD card design, acquisition and personalization
 		</div>
+	    
+	    
+<!-- 	    <div class="cssmenu"> -->
+<!-- 		   <ul> -->
+<!-- 			 <li><a href="checkout.html">AKD card design, acquisition and personalization</a></li>  -->
+<!-- 		   </ul> -->
+<!-- 		</div> -->
+	 
 	
 		<div class="clear"></div>
  	</div>
@@ -203,7 +233,7 @@
        
        <h:column>
         <h:form>
-        <p:menu style="height:800px;">
+        <p:menu style="height:90%;">
         <p:submenu label="Ajax">
             <p:menuitem value="Save" actionListener="#{menuView.save}"  icon="ui-icon-disk" />
             <p:menuitem value="Update" actionListener="#{menuView.update}"  icon="ui-icon-arrowrefresh-1-w"/>
@@ -226,6 +256,4 @@
        
        </h:panelGrid>
        
-
-	    	
 </html>

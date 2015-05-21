@@ -291,11 +291,11 @@ function markElementSelected(element,panelId) {
 	currentlySelectedPanel=panelId;
 	if (currentlySelected != null) {
 		var oldStyle=currentlySelected.getAttribute("style");
-		oldStyle=oldStyle+'border:0px;';
+		oldStyle=oldStyle+'border:0px; background-color: transparent;';
 		currentlySelected.setAttribute("style", oldStyle);
 	}
 	var style=element.getAttribute("style");
-	style=style+'border:1px solid red;';
+	style=style+'border:1px solid red; background-color:#FFC2B2; ';
 	element.setAttribute("style", style);
 	currentlySelected=element;
 }
