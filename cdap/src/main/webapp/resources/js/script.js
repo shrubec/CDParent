@@ -3,6 +3,18 @@ var disableEditorUpdate=false;
 var currentlySelected;
 var currentlySelectedPanel;
 
+
+function setCardDimensions() {
+//	console.log("H1: "+window.screen.availHeight);
+//	console.log("W1: "+window.screen.availWidth);
+//	console.log("H2: "+screen.height);
+//	console.log("W2: "+screen.width);
+	
+	var height=screen.height;
+	console.log("nova visina: "+height);
+	setCardDimensionsRemote([{name:'height',value:screen.height}]);
+}
+
 function markSelectedImage(image) {
 	selectBackground([{name:'image', value:image}]);
 }

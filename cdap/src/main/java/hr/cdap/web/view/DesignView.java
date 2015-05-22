@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import lombok.Getter;
@@ -44,10 +45,64 @@ public class DesignView extends AbstractView {
 	private @Getter @Setter String selectedCardTypeName;
 	private @Getter @Setter List<CardType> cardTypes;
 	
+	private @Getter @Setter String cardWidth="480px;";
+	private @Getter @Setter String cardHeight="280px;";
+	private String fieldWidth="40";
+	private String fieldHeight="8";
+	private String imageWidth="25";
+	private String imageHeight="25";
+	private String signatureWidth="40";
+	private String signatureHeight="10";
+	
+	private  @Getter @Setter Boolean oneSideActive=false;
+	private  @Getter @Setter boolean activeBack=false;
+	
+	 
 	@PostConstruct
 	public void init() {
+		System.out.println("Initi metoda...");
 		createElementMap();
 		cardTypes=DesignService.fetchCardTypes();
+	}
+	
+	public void setElementDimensions() {
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		Integer height=null;
+		try {
+			height = Integer.valueOf(params.get("height"));
+			if (height <= 800) {
+				
+				oneSideActive=true;
+				
+//				cardWidth="320px;";
+//				cardHeight = "190px;";
+//				fieldWidth = "20";
+//				fieldHeight = "6";
+//				imageWidth = "20";
+//				imageHeight = "20";
+//				signatureWidth = "30";
+//				signatureHeight = "8";
+				
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void changeActiveSide() {
+		System.out.println("Active back: " + activeBack);
+		
+		if (activeBack) activeBack=false;
+		else activeBack=true;
+		
+		saveTemplateElements();
+		
+		if (activeBack) activeBack=false;
+		else activeBack=true;
+		
+		setSelectedId(null);
+		loadCardTemplate();
 	}
 	
 	public void showSelectBackgroundDialog() {
@@ -140,8 +195,23 @@ public class DesignView extends AbstractView {
 		Map map=fetchElementMap();
 		ElementSessionDO elementSessionDO=createSessionElementObject(element);
 		map.put(elementSessionDO.getElementId(), elementSessionDO);
+		
+		
+		String activeSide=null;
+		if (oneSideActive == true && !activeBack) activeSide="1";
+		if (oneSideActive == true && activeBack) activeSide="2";
+		
+		
 		for (CardElement e:selectedCardType.getElementList()) {
-			addElementOnForm(e);
+			
+			if (activeSide == null || activeSide.equals(e.getSide())) {
+			
+				System.out.println("Dodajem element " + e.getFormId());
+				addElementOnForm(e);
+			
+			}
+			
+			
 		}
 		executeJS_markElementSelected(element);
 	}
@@ -171,20 +241,20 @@ public class DesignView extends AbstractView {
 		}
 		
 		if (type.equals(CardElement.ELEMENT_TYPE_IMAGE)) {
-			element.setWidth("25");
-			element.setHeight("25");
+			element.setWidth(imageHeight);
+			element.setHeight(imageWidth);
 			element.setRequired(true);
 		}
 		else if (type.equals(CardElement.ELEMENT_TYPE_SIGNATURE)) {
-			element.setWidth("40");
-			element.setHeight("10");
+			element.setWidth(signatureWidth);
+			element.setHeight(signatureHeight);
 			element.setRequired(true);
 		}
 		else if (type.equals(CardElement.ELEMENT_TYPE_FIELD)) {
 			element.setValue("SPECIMEN");
 			element.setStyleValue("SPECIMEN");
-			element.setWidth("40");
-			element.setHeight("8");
+			element.setWidth(fieldWidth);
+			element.setHeight(fieldHeight);
 			element.setDataType(CardElement.ELEMENT_DATA_TYPE_STRING);
 			element.setMinCharLength("3");
 			element.setMaxCharLength("20");
@@ -193,8 +263,8 @@ public class DesignView extends AbstractView {
 		else {
 			element.setValue("SPECIMEN");
 			element.setStyleValue("SPECIMEN");
-			element.setWidth("40");
-			element.setHeight("8");
+			element.setWidth(fieldWidth);
+			element.setHeight(fieldHeight);
 		}
 		return element;
 	}
@@ -376,24 +446,41 @@ public class DesignView extends AbstractView {
 	
 	
 	private void saveTemplateElements() {
+
+		String activeSide=null;
+		if (oneSideActive == true && !activeBack) activeSide="1";
+		if (oneSideActive == true && activeBack) activeSide="2";
+		
 		for (CardElement element:selectedCardType.getElementList()) {
-			if (element.getStyleValue() != null) {
-				element.setValue(getPlainTextValue(element.getStyleValue()).trim());
+			
+			
+			if (activeSide == null || activeSide.equals(element.getSide())) {
+				
+			
+				System.out.println("Spremam element " + element.getSide()+", " + element.getFormId() + ", " + activeSide + ", " +oneSideActive+", " + activeBack);
+				
+				if (element.getStyleValue() != null) {
+					element.setValue(getPlainTextValue(element.getStyleValue()).trim());
+				}
+				ElementSessionDO elementSessionDO=fetchElementMapValues(element.getFormId());
+				element.setName(elementSessionDO.getElementName());
+				element.setPositionX(elementSessionDO.getElementX());
+				element.setPositionY(elementSessionDO.getElementY());
+				element.setWidth(elementSessionDO.getElementWidth());
+				element.setHeight(elementSessionDO.getElementHeight());
+				element.setStyleValue(elementSessionDO.getElementEditor());
+				if (elementSessionDO.getElementDataType() == null) {
+					element.setDataType(null);
+					element.setDateFormat(null);
+					element.setMinCharLength(null);
+					element.setMaxCharLength(null);
+					element.setRequired(null);
+				}
+
+			
 			}
-			ElementSessionDO elementSessionDO=fetchElementMapValues(element.getFormId());
-			element.setName(elementSessionDO.getElementName());
-			element.setPositionX(elementSessionDO.getElementX());
-			element.setPositionY(elementSessionDO.getElementY());
-			element.setWidth(elementSessionDO.getElementWidth());
-			element.setHeight(elementSessionDO.getElementHeight());
-			element.setStyleValue(elementSessionDO.getElementEditor());
-			if (elementSessionDO.getElementDataType() == null) {
-				element.setDataType(null);
-				element.setDateFormat(null);
-				element.setMinCharLength(null);
-				element.setMaxCharLength(null);
-				element.setRequired(null);
-			}
+			
+			
 		}
 	}
 	
@@ -419,11 +506,25 @@ public class DesignView extends AbstractView {
 		back.getChildren().clear();
 		Map map=(Map) WebUtil.getSession().getAttribute("elementMap");
 		map.clear();
+	
+		String activeSide=null;
+		if (oneSideActive == true && !activeBack) activeSide="1";
+		if (oneSideActive == true && activeBack) activeSide="2";
+
 		for (CardElement element:selectedCardType.getElementList()) {
-			element.setAddedOnForm(false);
-			ElementSessionDO elementSessionDO=createSessionElementObject(element);
-			map.put(elementSessionDO.getElementId(), elementSessionDO);
-			addElementOnForm(element);
+			
+			
+			if (activeSide == null || activeSide.equals(element.getSide())) {
+				
+			
+				element.setAddedOnForm(false);
+				ElementSessionDO elementSessionDO=createSessionElementObject(element);
+				map.put(elementSessionDO.getElementId(), elementSessionDO);
+				addElementOnForm(element);
+
+			
+			}
+			
 		}
 		RequestContext.getCurrentInstance().execute("clearForm()");
 	}
