@@ -47,6 +47,7 @@ public class DesignView extends AbstractView {
 	
 	private @Getter @Setter String cardWidth="480px;";
 	private @Getter @Setter String cardHeight="280px;";
+	private @Getter @Setter String fontSize="90%;";
 	private String fieldWidth="40";
 	private String fieldHeight="8";
 	private String imageWidth="25";
@@ -73,6 +74,7 @@ public class DesignView extends AbstractView {
 			if (height <= 800) {
 				
 				oneSideActive=true;
+				fontSize="70%";
 				
 //				cardWidth="320px;";
 //				cardHeight = "190px;";
