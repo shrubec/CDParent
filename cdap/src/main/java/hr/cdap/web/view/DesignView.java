@@ -61,7 +61,6 @@ public class DesignView extends AbstractView {
 	 
 	@PostConstruct
 	public void init() {
-		System.out.println("Initi metoda...");
 		createElementMap();
 		cardTypes=DesignService.fetchCardTypes();
 	}
@@ -72,19 +71,8 @@ public class DesignView extends AbstractView {
 		try {
 			height = Integer.valueOf(params.get("height"));
 			if (height <= 800) {
-				
 				oneSideActive=true;
 				fontSize="70%";
-				
-//				cardWidth="320px;";
-//				cardHeight = "190px;";
-//				fieldWidth = "20";
-//				fieldHeight = "6";
-//				imageWidth = "20";
-//				imageHeight = "20";
-//				signatureWidth = "30";
-//				signatureHeight = "8";
-				
 			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -93,8 +81,8 @@ public class DesignView extends AbstractView {
 	
 	
 	public void changeActiveSide() {
-		System.out.println("Active back: " + activeBack);
-		
+
+		//zato jer se sprema template od prethodno odabrane strane
 		if (activeBack) activeBack=false;
 		else activeBack=true;
 		
