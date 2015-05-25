@@ -30,6 +30,10 @@
 		} 
 		
 		        
+		.topToolbarLeft {vertical-align:middle;width:250px; }     
+		.topToolbarCenter {vertical-align:middle; width:250px;}     
+		.topToolbarRight {vertical-align:middle;width:150px;}        
+		.topToolbarSpacer {padding-left:20px;}
 	</h:outputStylesheet>
 
 </h:head>
@@ -39,18 +43,19 @@
 
 <h:form id="mainForm">
 
- 	 	    	<a href="design.jsf">Designer</a>
-
-<p:toolbar >
-		<f:facet name="left">
+	
+	<p:toolbar>
+		<f:facet name="left" >
 			
-			<p:outputLabel for="cardType" value="Tip kartice:" />
-	        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{acquisitionView.selectedCardTypeName}" style="width:200px;">
+			<p:outputLabel for="cardType" value="Tip kartice:" styleClass="topToolbarLeft" />
+			<p:spacer styleClass="topToolbarSpacer"></p:spacer>
+	        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{acquisitionView.selectedCardTypeName}" style="vertical-align:middle; width:150px;" >
 	        	<f:selectItem itemLabel="Odaberite" />
 	            <f:selectItems value="#{acquisitionView.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
 	            <p:ajax   listener="#{acquisitionView.cardTypeSelected}" update="mainForm" />  
 	        </p:selectOneMenu>
-			<p:commandButton value="Nova kartica" icon="ui-icon-circle-plus"  update="mainForm"  actionListener="#{acquisitionView.newCard}" immediate="true"/>
+	        <p:spacer styleClass="topToolbarSpacer"></p:spacer>
+			<p:commandButton value="Nova kartica" icon="ui-icon-circle-plus"  update="mainForm"  actionListener="#{acquisitionView.newCard}" immediate="true" styleClass="topToolbarRight"/>
 		
 		</f:facet>
 		<f:facet name="right">
@@ -73,14 +78,14 @@
 					id="frontSide" 
 					name="frontSide" 
 					layout="block" 
-					style="float:left;width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageFront};"
+					style="float:left;width:480px;height:280px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageFront};"
 				/>
 				
 				<p:outputPanel 
 					id="backSide" 
 					name="backSide"  
 					layout="block" 
-					style="float:left;width:400px;height:200px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageBack};"
+					style="float:left;width:480px;height:280px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageBack};"
 				/>
 		
 		</p:panel>

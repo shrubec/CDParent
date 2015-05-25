@@ -161,7 +161,7 @@ public class WebUtil {
 		InputText formField = new InputText();
 		formField.setId(element.getFormId());
 		
-		if (element.getMaxCharLength() != null) {
+		if (element.getMaxCharLength() != null && !element.getMaxCharLength().isEmpty()) {
 			formField.setMaxlength(Integer.valueOf(element.getMaxCharLength()));
 		}
 //		if (element.getRequired()) {

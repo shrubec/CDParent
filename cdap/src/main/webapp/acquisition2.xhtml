@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+
+
+<h:head>
+
+ 	<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+          <title>Designer</title>
+       </f:facet>
+
+	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
+	<h:outputScript library="js" name="script.js" />
+
+	<link href="resources/css/style.css" rel="stylesheet" type="text/css" media="all" />
+<!-- start menu -->     
+<link href="resources/css/megamenu.css" rel="stylesheet" type="text/css" media="all" />
+
+<h:outputStylesheet>
+	
+	 	.column1{height:auto; vertical-align:top; padding: 10px; }
+        .column2{height:auto; vertical-align:top; width: 100%; padding: 10px; }
+        
+        .cssmenu ul li a {
+        	font-family: Gill Sans, Verdana;
+			font-size: 12px;
+			line-height: 14px;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			font-weight: bold;
+        }
+        
+        #title {
+        	position: absolute;
+        	right: 100px;
+        	width: 600px;
+        	font-family: Gill Sans, Verdana;
+			font-size: 12px;
+			line-height: 14px;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			font-weight: bold;
+			margin-top:60px; 
+        } 
+		        
+	</h:outputStylesheet>
+
+</h:head>
+
+
+ <div id="mainDiv">
+  <div class="header-top" id="topHeader">
+	 <div class="wrap"> 
+		<div class="logo">
+			<a href="index.html"><img src="resources/images/style/akd.jpg" height="70px;" alt=""/></a>
+			
+		
+	    </div>
+	    
+		<div id="title">	
+		AKD card design, acquisition and personalization
+		</div>
+	    
+	    
+<!-- 	    <div class="cssmenu"> -->
+<!-- 		   <ul> -->
+<!-- 			 <li><a href="checkout.html">AKD card design, acquisition and personalization</a></li>  -->
+<!-- 		   </ul> -->
+<!-- 		</div> -->
+	 
+	
+		<div class="clear"></div>
+ 	</div>
+   </div>
+   <div class="header-bottom" id="bottomHeader">
+   	<div class="wrap" id="wrapHeader"> 
+   		<!-- start header menu -->
+		<ul class="megamenu skyblue">
+
+				<li><a class="color10" href="#">Dizajn kartica</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+								<h4>Dizajn kartica</h4>
+								<ul>
+									<li><a href="shop.html">new arrivals</a></li>
+									<li><a href="shop.html">men</a></li>
+									<li><a href="shop.html">women</a></li>
+									<li><a href="shop.html">accessories</a></li>
+									<li><a href="shop.html">kids</a></li>
+									<li><a href="shop.html">brands</a></li>
+								</ul>	
+							</div>							
+						</div>
+						
+					</div>
+					
+    				</div>
+				</li>
+				
+				
+				<li><a class="color10" href="#">Zaprimanje kartica</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+								<h4>Zaprimanje kartica</h4>
+								<ul>
+									<li><a href="shop.html">new arrivals</a></li>
+									<li><a href="shop.html">men</a></li>
+									<li><a href="shop.html">women</a></li>
+									<li><a href="shop.html">accessories</a></li>
+									<li><a href="shop.html">kids</a></li>
+									<li><a href="shop.html">brands</a></li>
+								</ul>	
+							</div>							
+						</div>
+						
+					</div>
+					
+    				</div>
+				</li>
+				
+				
+				<li><a class="color10" href="#">Personalizacija</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+								<h4>Personalizacija</h4>
+								<ul>
+									<li><a href="shop.html">new arrivals</a></li>
+									<li><a href="shop.html">men</a></li>
+									<li><a href="shop.html">women</a></li>
+									<li><a href="shop.html">accessories</a></li>
+									<li><a href="shop.html">kids</a></li>
+									<li><a href="shop.html">brands</a></li>
+								</ul>	
+							</div>							
+						</div>
+						
+					</div>
+					
+    				</div>
+				</li>
+
+				<li><a class="color10" href="#">Prodaja</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+								<h4>Prodaja</h4>
+								<ul>
+									<li><a href="shop.html">new arrivals</a></li>
+									<li><a href="shop.html">men</a></li>
+									<li><a href="shop.html">women</a></li>
+									<li><a href="shop.html">accessories</a></li>
+									<li><a href="shop.html">kids</a></li>
+									<li><a href="shop.html">brands</a></li>
+								</ul>	
+							</div>							
+						</div>
+						
+					</div>
+					
+    				</div>
+				</li>
+
+				
+				<li><a class="color10" href="#">Skladište</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+								<h4>Materijal i skladište</h4>
+								<ul>
+									<li><a href="shop.html">new arrivals</a></li>
+									<li><a href="shop.html">men</a></li>
+									<li><a href="shop.html">women</a></li>
+									<li><a href="shop.html">accessories</a></li>
+									<li><a href="shop.html">kids</a></li>
+									<li><a href="shop.html">brands</a></li>
+								</ul>	
+							</div>							
+						</div>
+						
+					</div>
+					
+    				</div>
+				</li>
+				
+				
+				<li><a class="color10" href="#">Administracija</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+								<h4>Administracija</h4>
+								<ul>
+									<li><a href="shop.html">new arrivals</a></li>
+									<li><a href="shop.html">men</a></li>
+									<li><a href="shop.html">women</a></li>
+									<li><a href="shop.html">accessories</a></li>
+									<li><a href="shop.html">kids</a></li>
+									<li><a href="shop.html">brands</a></li>
+								</ul>	
+							</div>							
+						</div>
+						
+					</div>
+					
+    				</div>
+				</li>
+				
+		   </ul>
+     	</div>
+       </div>
+       
+       
+      </div>
+       
+       
+       <h:panelGrid columns="2" columnClasses="column1,column2"   id="mainPanelGrid" >
+       
+       <h:column>
+        <h:form>
+        <p:menu style="height:90%;">
+        <p:submenu label="Ajax">
+            <p:menuitem value="Save" actionListener="#{menuView.save}"  icon="ui-icon-disk" />
+            <p:menuitem value="Update" actionListener="#{menuView.update}"  icon="ui-icon-arrowrefresh-1-w"/>
+        </p:submenu>
+        <p:submenu label="Non-Ajax">
+            <p:menuitem value="Delete" actionListener="#{menuView.delete}" ajax="false" icon="ui-icon-close"/>
+        </p:submenu>
+        <p:submenu label="Navigations">
+            <p:menuitem value="External" url="http://www.primefaces.org" icon="ui-icon-home"/>
+            <p:menuitem value="Internal"  icon="ui-icon-star"/>
+        </p:submenu>
+    </p:menu>
+    
+    </h:form>
+       </h:column>
+       
+        <h:column>
+      		<ui:include src="acquisition.xhtml"></ui:include>
+       </h:column>
+       
+       </h:panelGrid>
+       
+</html>

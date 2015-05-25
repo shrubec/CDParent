@@ -47,6 +47,13 @@
 	 	
 	 	.formFieldSplitted{width:50px; margin-right:2px;}
 	 	
+	 	
+	 	.topToolbarLeft {vertical-align:middle;width:250px; }     
+		.topToolbarCenter {vertical-align:middle; width:250px;}     
+		.topToolbarRight {vertical-align:middle;width:150px;}        
+		.topToolbarSpacer {padding-left:20px;}
+	 	
+	 	
 	</h:outputStylesheet>
 	
 	
@@ -57,30 +64,27 @@
 <h:form id="mainForm">
 
 
-<p:outputPanel  id="cardTypePanel">
-
-		<h:panelGrid columns="4" style="margin-bottom:5px;" cellpadding="5" columnClasses="topColumn1,topColumn2,topColumn3,topColumn4">	
-			<h:column>
-	        	<p:outputLabel for="cardType" value="Tip kartice:" />
-	        </h:column>
-	        <h:column>
-		        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{designView.selectedCardTypeName}" style="width:200px;">
+	<p:toolbar>
+		<f:facet name="left" >
+			
+			<p:outputLabel for="cardType" value="Tip kartice:" styleClass="topToolbarLeft" />
+			<p:spacer styleClass="topToolbarSpacer"></p:spacer>
+	        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{designView.selectedCardTypeName}" style="vertical-align:middle; width:150px;">
 		        	<f:selectItem itemLabel="Odaberite" />
 		            <f:selectItems value="#{designView.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
 		            <p:ajax   listener="#{designView.cardTypeSelected}" update="mainForm" />  
 		        </p:selectOneMenu>
-		     </h:column>
-	        <h:column>
-	        	<p:commandButton value="Novi tip kartice" icon="ui-icon-circle-plus"  oncomplete="PF('newTypeDialog').show()" actionListener="#{designView.newCardType}" immediate="true"/>
-			</h:column>
+	        <p:spacer styleClass="topToolbarSpacer"></p:spacer>
+			<p:commandButton value="Novi tip kartice" icon="ui-icon-circle-plus"  oncomplete="PF('newTypeDialog').show()" actionListener="#{designView.newCardType}" immediate="true" styleClass="topToolbarRight" />
+			<p:spacer styleClass="topToolbarSpacer"></p:spacer>
+			<p:commandButton value="Spremi"  icon="ui-icon-disk" actionListener="#{designView.saveCardTemplate}" update="mainForm" styleClass="topToolbarRight" />
 			
-			<h:column>
-			 	<p:commandButton value="Spremi"  icon="ui-icon-disk" actionListener="#{designView.saveCardTemplate}" update="mainForm" />
-			</h:column>
 			
-		</h:panelGrid>
-        
- </p:outputPanel>
+		</f:facet>
+		<f:facet name="right">
+		</f:facet>
+	</p:toolbar>
+
  
 <!--   <p:inputText id="test" value="#{designView.selectedCardType.name}" rendered="#{designView.renderCardPanel}" /> -->
 		
