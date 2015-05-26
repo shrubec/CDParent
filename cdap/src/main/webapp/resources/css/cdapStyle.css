@@ -1,0 +1,183 @@
+
+.cardPanel{
+	width:480px;
+	height:280px;
+	border:1px solid #666666;
+	margin-top:10px;
+	margin-bottom:20px;
+	margin-left:20px; 
+	background-size: 100% 100%; 
+}
+
+.column1 {
+	height: auto;
+	vertical-align: top;
+	padding: 10px;
+}
+
+.column2 {
+	height: auto;
+	vertical-align: top;
+	width: 100%;
+	padding: 10px;
+}
+
+.cssmenu ul li a {
+	font-family: Gill Sans, Verdana;
+	font-size: 12px;
+	line-height: 14px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-weight: bold;
+}
+
+#title {
+	position: absolute;
+	right: 100px;
+	width: 600px;
+	font-family: Gill Sans, Verdana;
+	font-size: 12px;
+	line-height: 14px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-weight: bold;
+	margin-top: 60px;
+}
+
+/* Dizajn stil */
+.topColumn1 {
+	height: auto;
+	vertical-align: middle;
+	padding-left: 10px;
+	width: 90px;
+}
+
+.topColumn2 {
+	height: auto;
+	vertical-align: middle;
+	padding-left: 10px;
+	width: 200px;
+}
+
+.topColumn3 {
+	height: auto;
+	vertical-align: middle;
+	padding-left: 10px;
+}
+
+.topColumn4 {
+	height: auto;
+	vertical-align: middle;
+	padding-left: 10px;
+}
+
+.mainColumnLeft {
+	height: auto;
+	vertical-align: top;
+	width: 560px;
+	padding-right: 50px;
+}
+
+.mainColumnRight {
+	height: auto;
+	vertical-align: top;
+	float: right;
+	width: 100%;
+	padding-right: 10px;
+}
+
+.detailsColumnLeft {
+	height: auto;
+	vertical-align: top;
+}
+
+.detailsColumnRight {
+	height: auto;
+	vertical-align: top;
+	text-align: right;
+}
+
+.doubleFieldColumn {
+	height: auto;
+	vertical-align: top;
+	text-align: right;
+	float: right;
+}
+
+.ui-outputlabel {
+	vertical-align: bottom;
+	font-size: 20pt;
+	font-color: red;
+}
+
+.formRow {
+	border: none;
+	border-style: none;
+	background: transparent;
+	height: 20px;
+	vertical-align: top;
+}
+
+.formColumnLeft {
+	text-align: left;
+	width: 650px;
+	vertical-align: top;
+}
+
+.formColumnRight {
+	text-align: right;
+	float: right;
+	width: 60%;
+	vertical-align: top;
+}
+
+.ui-panelgrid .ui-panelgrid-cell {
+	border-style: none;
+}
+
+.formFieldSplitted {
+	width: 50px;
+	margin-right: 2px;
+}
+
+.topToolbarLeft {
+	vertical-align: middle;
+	width: 250px;
+}
+
+.topToolbarCenter {
+	vertical-align: middle;
+	width: 250px;
+}
+
+.topToolbarRight {
+	vertical-align: middle;
+	width: 150px;
+}
+
+.topToolbarSpacer {
+	padding-left: 20px;
+}
+
+
+/* Akvizicija stil */
+.acquisitionColumnLeft {
+	height: auto;
+	vertical-align: top;
+	width: 560px;
+	padding-right: 50px;
+}
+
+.acquisitionColumnRight {
+	height: auto;
+	vertical-align: top;
+	float: right;
+	width: 100%;
+	padding-right: 10px;
+}
+
+.ui-widget-content {
+	color: black;
+}
+
+

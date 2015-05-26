@@ -100,7 +100,7 @@ public class DesignView extends AbstractView {
 		options.put("modal", true);
 		options.put("contentHeight", 450);
 		options.put("contentWidth", 1300);
-		RequestContext.getCurrentInstance().openDialog("selectBackground",options, null);
+		RequestContext.getCurrentInstance().openDialog("templates/dialogs/selectBackground",options, null);
 	}
 	
 	public void returnBackgroundDialogFront(SelectEvent event) {

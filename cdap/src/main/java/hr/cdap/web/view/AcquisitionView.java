@@ -49,7 +49,7 @@ public class AcquisitionView extends AbstractView {
 	}
 	
 	public void showImageDialog() {
-		RequestContext.getCurrentInstance().openDialog("uploadImage");
+		RequestContext.getCurrentInstance().openDialog("templates/dialogs/uploadImage");
 	}
 	
 	public void returnImageDialog() {

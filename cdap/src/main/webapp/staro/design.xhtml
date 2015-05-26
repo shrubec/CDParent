@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+
+ 	<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+          <title>Cards</title>
+       </f:facet>
+
+	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
+	<h:outputScript library="js" name="script.js" />
+
+ 	<h:outputStylesheet>
+	
+		.topColumn1 {height:auto; vertical-align:middle; padding-left:10px; width:90px; }
+		.topColumn2 {height:auto; vertical-align:middle; padding-left:10px; width:200px; }
+		.topColumn3 {height:auto; vertical-align:middle; padding-left:10px; }
+		.topColumn4 {height:auto; vertical-align:middle; padding-left:10px; }
+	
+	 	.mainColumnLeft{height:auto; vertical-align:top;  width:560px; padding-right: 50px;}
+	 	.mainColumnRight{height:auto; vertical-align:top;  float:right; width:100%; padding-right: 10px;}
+	 	 
+	 	.detailsColumnLeft{height:auto; vertical-align:top;   }
+	 	.detailsColumnRight{height:auto; vertical-align:top;  text-align:right; }
+	 	
+	 	.doubleFieldColumn{height:auto; vertical-align:top;  text-align:right; float:right; }
+	 	
+	 	.ui-outputlabel{vertical-align:bottom;font-size:20pt;font-color:red;}
+	 	
+	 	
+	 	.formRow{border:none; border-style:none; background:transparent; height:20px; vertical-align:top;}
+		.formColumnLeft{text-align: left;width:650px; vertical-align:top;}
+		.formColumnRight{ text-align: right; float:right; width:60%; vertical-align:top;}
+		
+		.ui-panelgrid .ui-panelgrid-cell {border-style:none;}
+	 	
+	 	.formFieldSplitted{width:50px; margin-right:2px;}
+	 	
+	 	
+	 	.topToolbarLeft {vertical-align:middle;width:250px; }     
+		.topToolbarCenter {vertical-align:middle; width:250px;}     
+		.topToolbarRight {vertical-align:middle;width:150px;}        
+		.topToolbarSpacer {padding-left:20px;}
+	 	
+	 	
+	</h:outputStylesheet>
+	
+	
+</h:head> 
+
+<h:body onload="setCardDimensions();">
+
+<h:form id="mainForm">
+
+
+	<p:toolbar>
+		<f:facet name="left" >
+			
+			<p:outputLabel for="cardType" value="Tip kartice:" styleClass="topToolbarLeft" />
+			<p:spacer styleClass="topToolbarSpacer"></p:spacer>
+	        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{designView.selectedCardTypeName}" style="vertical-align:middle; width:150px;">
+		        	<f:selectItem itemLabel="Odaberite" />
+		            <f:selectItems value="#{designView.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
+		            <p:ajax   listener="#{designView.cardTypeSelected}" update="mainForm" />  
+		        </p:selectOneMenu>
+	        <p:spacer styleClass="topToolbarSpacer"></p:spacer>
+			<p:commandButton value="Novi tip kartice" icon="ui-icon-circle-plus"  oncomplete="PF('newTypeDialog').show()" actionListener="#{designView.newCardType}" immediate="true" styleClass="topToolbarRight" />
+			<p:spacer styleClass="topToolbarSpacer"></p:spacer>
+			<p:commandButton value="Spremi"  icon="ui-icon-disk" actionListener="#{designView.saveCardTemplate}" update="mainForm" styleClass="topToolbarRight" />
+			
+			
+		</f:facet>
+		<f:facet name="right">
+		</f:facet>
+	</p:toolbar>
+
+ 
+<!--   <p:inputText id="test" value="#{designView.selectedCardType.name}" rendered="#{designView.renderCardPanel}" /> -->
+		
+		
+	<h:panelGrid columns="2" style="margin-bottom:10px;margin-top:20px;" cellpadding="5" columnClasses="mainColumnLeft,mainColumnRight">	
+	
+	<h:column> 
+	
+			<p:toolbar rendered="#{designView.renderCardPanel and (designView.oneSideActive==false or (designView.oneSideActive==true and designView.activeBack==false))}">
+				<f:facet name="left">
+				
+				<p:outputLabel id="side1label" value="Prednja strana" rendered="#{designView.oneSideActive == false}"></p:outputLabel>
+				<p:selectBooleanButton id="sideButton1"  value="#{designView.activeBack}"   offLabel="Prednja strana" onLabel="Stražnja strana"  rendered="#{designView.oneSideActive == true}" >
+				  	<p:ajax update="mainForm" listener="#{designView.changeActiveSide}" />
+				</p:selectBooleanButton>
+ 
+					 
+				</f:facet>
+				<f:facet name="right">
+					<p:commandButton value="Pozadina" icon="ui-icon-image" actionListener="#{designView.showSelectBackgroundDialog}"  process="@this">
+					 	<p:ajax event="dialogReturn" listener="#{designView.returnBackgroundDialogFront}" />
+					</p:commandButton>
+					<p:commandButton value="Labela" icon="ui-icon-print" actionListener="#{designView.addNewCardElement(1,1)}" update="mainForm" process="@this"/>
+					<p:commandButton value="Polje" icon="ui-icon-document" actionListener="#{designView.addNewCardElement(1,2)}" update="mainForm" process="@this"/>
+					<p:commandButton value="Slika" icon="ui-icon-person" actionListener="#{designView.addNewCardElement(1,3)}" update="mainForm" process="@this"/>
+					<p:commandButton value="Potpis" icon="ui-icon-pencil" actionListener="#{designView.addNewCardElement(1,4)}" update="mainForm" process="@this" />
+				</f:facet>
+			</p:toolbar>
+		
+		<!-- panel prednje strane kartice -->
+		<p:outputPanel  
+			id="frontSide" 
+			name="frontSide"  
+			layout="block" 
+			style="border:1px solid #666666;margin-top:10px;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{designView.backgroundImageFront}; width:#{designView.cardWidth};height:#{designView.cardHeight};"
+			rendered="#{designView.renderCardPanel and (designView.oneSideActive==false or (designView.oneSideActive==true and designView.activeBack==false))}"
+		/>
+		
+		<p:toolbar rendered="#{designView.renderCardPanel and (designView.oneSideActive==false or (designView.oneSideActive==true and designView.activeBack==true))}">
+			<f:facet name="left">
+				<p:outputLabel id="side2label" value="Stražnja strana" rendered="#{designView.oneSideActive == false}">></p:outputLabel>
+				<p:selectBooleanButton id="sideButton2"  value="#{designView.activeBack}"   offLabel="Prednja strana" onLabel="Stražnja strana"  rendered="#{designView.oneSideActive == true}" >
+				  	<p:ajax update="mainForm" listener="#{designView.changeActiveSide}" />
+				</p:selectBooleanButton>
+				
+			</f:facet>
+			<f:facet name="right">
+				<p:commandButton value="Pozadina" icon="ui-icon-image" actionListener="#{designView.showSelectBackgroundDialog}"  process="@this">
+				 	<p:ajax event="dialogReturn" listener="#{designView.returnBackgroundDialogBack}" />
+				</p:commandButton>
+				<p:commandButton value="Labela" icon="ui-icon-print" actionListener="#{designView.addNewCardElement(2,1)}" update="mainForm" process="@this"/>
+				<p:commandButton value="Polje" icon="ui-icon-document" actionListener="#{designView.addNewCardElement(2,2)}" update="mainForm" process="@this"/>
+				<p:commandButton value="Slika" icon="ui-icon-person" actionListener="#{designView.addNewCardElement(2,3)}" update="mainForm" process="@this"/>
+				<p:commandButton value="Potpis" icon="ui-icon-pencil" actionListener="#{designView.addNewCardElement(2,4)}" update="mainForm" process="@this"/>
+			</f:facet>
+		</p:toolbar>
+ 
+
+			<!-- panel stražnje strane kartice -->
+		<p:outputPanel 
+			id="backSide" 
+			name="backSide"  
+			layout="block" 
+			style="border:1px solid #666666;margin-top:10px;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{designView.backgroundImageBack}; width:#{designView.cardWidth};height:#{designView.cardHeight};"
+			rendered="#{designView.renderCardPanel and (designView.oneSideActive==false or (designView.oneSideActive==true and designView.activeBack==true))}"
+		/>
+				
+	</h:column>
+	
+	<h:column>
+	
+		 <p:tabView rendered="#{designView.renderCardPanel}" id="mainTab" >
+	     
+	        <p:tab title="Element kartice"  > 
+	        
+				<p:panelGrid style="margin-top:5px;" >
+				 
+				 		<p:row styleClass="formRow" >
+				            <p:column  colspan="4" styleClass="formColumnLeft" > Tekst </p:column>
+				            <p:column   styleClass="formColumnRight" >
+					             <p:editor style="float:right;"
+									id="elementEditor"  
+									height="80" 
+									width="250"
+									controls="bold italic underline font size color undo redo"
+									widgetVar="elementEditorWidgetVar" 
+									onchange="updateElementEditorMap()"
+									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type == 3 or designView.selectedElement.type == 4}"   
+								/>
+				            </p:column>
+				        </p:row>
+				        
+				        <p:row styleClass="formRow" >
+				            <p:column  colspan="4" styleClass="formColumnLeft" > Tip podatka </p:column>
+				            <p:column   styleClass="formColumnRight" >
+				             	<p:selectOneMenu 
+									id="elementDataType" 
+									value="#{designView.selectedElement.dataType}" 
+									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2}"
+									style="width:70px;"> 
+										<f:selectItem itemLabel="Tekst" itemValue="1" />
+										<f:selectItem itemLabel="Broj" itemValue="2" />
+										<f:selectItem itemLabel="Datum" itemValue="3" />
+										<p:ajax 
+											event="change" 
+											process="@this" 
+											listener="#{designView.changeDataType}" 
+											update="mainForm:mainTab:elementMinimumLength, mainForm:mainTab:elementMaximumLength,mainForm:mainTab:dateFormat, mainForm:mainTab:elementRequired"
+										/>
+								</p:selectOneMenu>
+				            </p:column>
+				        </p:row>
+				        
+				        <p:row styleClass="formRow" >
+				            <p:column  colspan="4" styleClass="formColumnLeft" > Podatak obavezan </p:column>
+				            <p:column   styleClass="formColumnRight" >
+				             	<p:selectOneMenu  
+									id="elementRequired" 
+									value="#{designView.selectedElement.required}"  
+									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType == 4}" 
+									style="width:70px;"
+									>
+										<f:selectItem itemLabel="DA" itemValue="true" />
+										<f:selectItem itemLabel="NE" itemValue="false" />
+								</p:selectOneMenu>
+				            </p:column>
+				        </p:row>
+				        
+				        <p:row styleClass="formRow" >
+				            <p:column  colspan="4" styleClass="formColumnLeft" > Pozicija X / Y </p:column>
+				            <p:column   styleClass="formColumnRight" >
+					             <p:inputText 
+									id="elementPositionX" 
+									onchange="updateElementMap()" 
+									disabled="#{designView.selectedElement.type == null}"
+									styleClass="formFieldSplitted"
+								/>
+								
+								<p:inputText 
+									id="elementPositionY" 
+									onchange="updateElementMap()" 
+									disabled="#{designView.selectedElement.type == null}"
+									styleClass="formFieldSplitted"
+								/>
+								
+				            </p:column>
+				        </p:row>
+				 
+				        <p:row styleClass="formRow">
+				            <p:column  colspan="4" styleClass="formColumnLeft" > Širina / visina polja u mm </p:column>
+	    			            <p:column  styleClass="formColumnRight" >
+						             	<p:inputText 
+									id="elementWidth" 
+									onchange="updateElementMap()" 
+									disabled="#{designView.selectedElement.type == null}"
+									styleClass="formFieldSplitted"
+								/>
+								<p:inputText 
+									id="elementHeight" 
+									onchange="updateElementMap()" 
+									disabled="#{designView.selectedElement.type == null}"
+									styleClass="formFieldSplitted"
+								/>
+							</p:column>
+				        </p:row>
+				        
+				        <p:row styleClass="formRow">
+				            <p:column  colspan="4" styleClass="formColumnLeft">
+				                Min / max broj znakova
+				            </p:column>
+				            <p:column  styleClass="formColumnRight" >
+					            <p:inputText 
+									id="elementMinimumLength" 
+									value="#{designView.selectedElement.minCharLength}" 
+									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType != 1}" 
+									styleClass="formFieldSplitted"
+								/>
+								<p:inputText 
+									
+									id="elementMaximumLength" 
+									value="#{designView.selectedElement.maxCharLength}" 
+									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType != 1}" 
+									styleClass="formFieldSplitted"
+								/>
+						    </p:column>
+				        </p:row>
+				        
+				        <p:row styleClass="formRow" >
+				            <p:column  colspan="4" styleClass="formColumnLeft" > Format datuma </p:column>
+				            <p:column   styleClass="formColumnRight" >
+				             	<p:inputText 
+									id="dateFormat" 
+									value="#{designView.selectedElement.dateFormat}" 
+									disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType != 3}" 
+								/>
+				            </p:column>
+				        </p:row>
+				        
+				          <p:row styleClass="formRow" >
+				            <p:column  colspan="4" styleClass="formColumnLeft" > Naziv elementa </p:column>
+				            <p:column   styleClass="formColumnRight" >
+					             <p:inputText 
+									id="elementName" 
+									onchange="updateElementMap()" 
+									disabled="#{designView.selectedElement.type == null}" 
+								/>
+				            </p:column>
+				        </p:row>
+				    
+				</p:panelGrid>
+				
+				<p:commandButton value="Obriši element"  icon="ui-icon-trash" actionListener="#{designView.deleteElement}" update="mainForm" />
+			
+	        </p:tab>
+	        
+	         <p:tab title="Specifikacija čipa" >
+	        
+	        
+		        <p:dataTable style="max-width:750px;width:auto;">
+		        
+				    <p:column headerText="Naziv">
+				        <h:outputText value="Ime" />
+				    </p:column>
+				 
+				    <p:column headerText="Tip podatka">
+				        <h:outputText value="Tekst" />
+				    </p:column>
+				    
+				      <p:column headerText="Encoding">
+				        <h:outputText value="UTF-8" />
+				    </p:column>
+				 
+				    <p:column headerText="Maksimalna dužina">
+				        <h:outputText value="150" />
+				    </p:column>
+				 
+				</p:dataTable>
+				
+	        
+	          </p:tab>
+	        
+	         <p:tab title="Općenito o tipu kartice">
+	         
+	       		<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
+					<p:outputLabel  value="Tip kartice" />
+					<p:inputText />
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
+					<p:outputLabel  value="Opis" />
+					<p:inputText />
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
+					<p:outputLabel  value="Datum kreiranja" />
+					<p:inputText />
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
+					<p:outputLabel  value="Kreirao korisnik" />
+					<p:inputText />
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
+					<p:outputLabel  value="Predložak za generiranje serijskog broja" />
+					<p:inputText />
+				</h:panelGrid>
+	        
+	        </p:tab>
+	      
+	        
+	    </p:tabView>
+	
+	
+	</h:column>
+	
+	
+	</h:panelGrid>
+	
+
+ 
+ 
+ <!-- remote komande - javascript -->
+ 
+ <p:remoteCommand 
+ 	name="refreshAdditionalForm" 
+ 	action="#{designView.refreshAdditionalForm}"  
+ />
+ 
+ <p:remoteCommand 
+	name="setCardDimensionsRemote" 
+	actionListener="#{designView.setElementDimensions}"
+	immediate="true"
+	process="@this"
+/>		
+  
+ <h:inputHidden id="selectedId" value="#{designView.selectedId}"></h:inputHidden>
+ <h:inputHidden id="elementType" />
+ 
+ 
+ <!-- Dialog za novi tip kartice -->
+ <p:dialog id="newTypeDialog" widgetVar="newTypeDialog" modal="true" header="Novi tip kartice" position="center center" width="400" height="100" resizable="false"  appendToBody="true">
+  		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+	   		<p:outputLabel value="Naziv: " />
+			<p:inputText value="#{designView.selectedCardType.name}" required="true" requiredMessage="Naziv je obavezan	"/>
+			<p:commandButton value="Spremi" icon="ui-icon-circle-save" oncomplete="PF('cardTypeSelect').selectValue()" actionListener="#{designView.saveCardType}" update="mainForm" />
+       </h:panelGrid>
+  </p:dialog>
+
+</h:form>
+
+</h:body>
+</html>

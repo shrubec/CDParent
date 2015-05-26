@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	
+	
+<h:head>
+
+ 	<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+          <title>Cards</title>
+       </f:facet>
+
+	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
+	<h:outputScript library="js" name="script.js" />
+	
+	<h:outputStylesheet>
+	
+	 	.acquisitionColumn1{height:auto; vertical-align:top;}
+        .acquisitionColumn2{height:auto; vertical-align:top;}
+        
+        .ui-widget-content {color:black;} 
+        
+        .ui-state-default .someCssClassName {
+		    background-image: url('images/slika.jpg');
+		} 
+		
+		        
+		.topToolbarLeft {vertical-align:middle;width:250px; }     
+		.topToolbarCenter {vertical-align:middle; width:250px;}     
+		.topToolbarRight {vertical-align:middle;width:150px;}        
+		.topToolbarSpacer {padding-left:20px;}
+	</h:outputStylesheet>
+
+</h:head>
+
+<h:body>
+
+
+<h:form id="mainForm">
+
+	
+	<p:toolbar>
+		<f:facet name="left" >
+			
+			<p:outputLabel for="cardType" value="Tip kartice:" styleClass="topToolbarLeft" />
+			<p:spacer styleClass="topToolbarSpacer"></p:spacer>
+	        <p:selectOneMenu id="cardType" widgetVar="cardTypeSelect" value="#{acquisitionView.selectedCardTypeName}" style="vertical-align:middle; width:150px;" >
+	        	<f:selectItem itemLabel="Odaberite" />
+	            <f:selectItems value="#{acquisitionView.cardTypes}"  var="item" itemValue="#{item.name}" itemLabel="#{item.name}" />
+	            <p:ajax   listener="#{acquisitionView.cardTypeSelected}" update="mainForm" />  
+	        </p:selectOneMenu>
+	        <p:spacer styleClass="topToolbarSpacer"></p:spacer>
+			<p:commandButton value="Nova kartica" icon="ui-icon-circle-plus"  update="mainForm"  actionListener="#{acquisitionView.newCard}" immediate="true" styleClass="topToolbarRight"/>
+		
+		</f:facet>
+		<f:facet name="right">
+		</f:facet>
+	</p:toolbar>
+
+
+	
+	<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="15"  columnClasses="acquisitionColumn1, acquisitionColumn2" >
+
+		<p:panel id="cardPanel"  style="with:120%;float:left;" >
+		
+		 		<f:facet name="header">
+                 	<p:commandButton value="Spremi" icon="ui-icon-circle-plus"  update="mainForm"  style="float:right;" actionListener="#{acquisitionView.saveCard}" disabled="#{acquisitionView.editPhase == false}" immediate="true"  />
+                    <p:commandButton value="Ažuriraj" icon="ui-icon-circle-plus"  update="mainForm" process="@this" style="float:right;" />
+                    <p:commandButton value="Obriši" icon="ui-icon-circle-plus"  update="mainForm" process="@this" style="float:right;"/>
+                </f:facet> 
+                    
+				<p:outputPanel  
+					id="frontSide" 
+					name="frontSide" 
+					layout="block" 
+					style="float:left;width:480px;height:280px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageFront};"
+				/>
+				
+				<p:outputPanel 
+					id="backSide" 
+					name="backSide"  
+					layout="block" 
+					style="float:left;width:480px;height:280px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageBack};"
+				/>
+		
+		</p:panel>
+
+		<p:dataTable 
+			var="card" 
+			value="#{acquisitionView.cardList}" 
+			selectionMode="single" 
+			selection="#{acquisitionView.selectedCard}" 
+			rowKey="#{card.id}">
+				<p:ajax event="rowSelect" listener="#{acquisitionView.selectCard}"  />
+			    <p:column headerText="Id"><h:outputText value="#{card.id}" /> </p:column>
+			    <p:column headerText="Tip kartice"> <h:outputText value="#{card.cardType.name}" /></p:column>
+			    <p:column headerText="Serijski broj"> <h:outputText value="#{card.cardNumber}" /> </p:column>
+			    <p:column headerText="Datum kreiranja">
+			        <h:outputText value="#{card.dateCreated}" >
+			        	<f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss"/>
+			        </h:outputText>
+			    </p:column>
+		</p:dataTable>	
+	</h:panelGrid>
+
+ 	<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+
+
+	<!-- dummy Dialog button - samo zbog ajax listenera koji ce uhvatiti gasenje dialoga a koji se ne moze attachati na remote command nego mora bas na button -->
+	<p:commandButton id="dummyDialogButton" widgetVar="dummyDialogButton" actionListener="#{acquisitionView.showImageDialog}" style="display:none">
+	    <p:ajax event="dialogReturn" listener="#{acquisitionView.returnImageDialog}" />
+	</p:commandButton>
+
+	 <p:remoteCommand 
+ 		name="showImageDialog" 
+ 		onstart="document.getElementById('mainForm:dummyDialogButton').click();"
+ 	/>
+ 	
+
+
+</h:form>
+
+
+
+</h:body>
+</html>

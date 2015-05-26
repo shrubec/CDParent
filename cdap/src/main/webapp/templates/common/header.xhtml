@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	
+<h:head>
+
+ 	<f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+          <title>AKD CDAP</title>
+       </f:facet>
+
+	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
+	<h:outputScript library="js" name="script.js" />
+
+	<link href="resources/css/style.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="resources/css/megamenu.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="resources/css/cdapStyle.css" rel="stylesheet" type="text/css" media="all" />
+
+</h:head>
+
+<div id="mainDiv">
+	<div class="header-top" id="topHeader">
+		<div class="wrap">
+			<div class="logo">
+				<a href="index.html"><img src="resources/images/style/akd.jpg" height="70px;" alt="" /></a>
+			</div>
+			<div id="title">AKD card design, acquisition and personalization</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div class="header-bottom" id="bottomHeader">
+		<div class="wrap" id="wrapHeader">
+			<ul class="megamenu skyblue">
+				<li><a class="color10" href="designMain.jsf">Dizajn kartica</a></li>
+				<li><a class="color10" href="acquisitionMain.jsf">Akvizicija</a></li>
+				<li><a class="color10" href="#">Personalizacija</a></li>
+				<li><a class="color10" href="#">Prodaja</a></li>
+				<li><a class="color10" href="#">Skladište</a></li>
+				<li><a class="color10" href="#">Administracija</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+</html>

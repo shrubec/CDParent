@@ -6,40 +6,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 	
 	
-<h:head>
-
- 	<f:facet name="first">
-            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-            <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
-          <title>Cards</title>
-       </f:facet>
-
-	<!-- Ovo je da se moze dinamicki dodati draggable komponenta, bez toga ne radi -->
-	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces"/>
-	<h:outputScript library="js" name="script.js" />
-	
-	<h:outputStylesheet>
-	
-	 	.column1{height:auto; vertical-align:top;}
-        .column2{height:auto; vertical-align:top;}
-        
-        .ui-widget-content {color:black;} 
-        
-        .ui-state-default .someCssClassName {
-		    background-image: url('images/slika.jpg');
-		} 
-		
-		        
-		.topToolbarLeft {vertical-align:middle;width:250px; }     
-		.topToolbarCenter {vertical-align:middle; width:250px;}     
-		.topToolbarRight {vertical-align:middle;width:150px;}        
-		.topToolbarSpacer {padding-left:20px;}
-	</h:outputStylesheet>
-
-</h:head>
-
 <h:body>
-
 
 <h:form id="mainForm">
 
@@ -64,9 +31,9 @@
 
 
 	
-	<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="15"  columnClasses="column1,column2" >
+	<h:panelGrid columns="2"  cellpadding="15"  style="margin-top:20px;" columnClasses="acquisitionColumnLeft,acquisitionColumnRight" >
 
-		<p:panel id="cardPanel"  style="with:120%;float:left;" >
+		<p:panel id="cardPanel"  style="float:left;" >
 		
 		 		<f:facet name="header">
                  	<p:commandButton value="Spremi" icon="ui-icon-circle-plus"  update="mainForm"  style="float:right;" actionListener="#{acquisitionView.saveCard}" disabled="#{acquisitionView.editPhase == false}" immediate="true"  />
@@ -78,14 +45,16 @@
 					id="frontSide" 
 					name="frontSide" 
 					layout="block" 
-					style="float:left;width:480px;height:280px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageFront};"
+					styleClass="cardPanel"
+					style="background-image: #{acquisitionView.backgroundImageFront};"
 				/>
 				
 				<p:outputPanel 
 					id="backSide" 
 					name="backSide"  
 					layout="block" 
-					style="float:left;width:480px;height:280px;border:1px solid #666666;margin-bottom:20px;margin-left:20px; background-size: 100% 100%; background-image: #{acquisitionView.backgroundImageBack};"
+					styleClass="cardPanel"
+					style="background-image: #{acquisitionView.backgroundImageBack};"
 				/>
 		
 		</p:panel>
