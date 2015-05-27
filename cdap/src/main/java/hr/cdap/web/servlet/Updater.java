@@ -39,6 +39,7 @@ public class Updater extends HttpServlet {
 		String elementHeight=request.getParameter("elementHeight");
 		String elementEditor=request.getParameter("elementEditor");
 		String elementName=request.getParameter("elementName");
+		
 		ElementSessionDO element=null;
 		Map map=(Map) request.getSession().getAttribute("elementMap");
 		if (map.get(id) == null) {

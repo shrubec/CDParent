@@ -185,23 +185,13 @@ public class DesignView extends AbstractView {
 		Map map=fetchElementMap();
 		ElementSessionDO elementSessionDO=createSessionElementObject(element);
 		map.put(elementSessionDO.getElementId(), elementSessionDO);
-		
-		
 		String activeSide=null;
 		if (oneSideActive == true && !activeBack) activeSide="1";
 		if (oneSideActive == true && activeBack) activeSide="2";
-		
-		
 		for (CardElement e:selectedCardType.getElementList()) {
-			
 			if (activeSide == null || activeSide.equals(e.getSide())) {
-			
-				System.out.println("Dodajem element " + e.getFormId());
 				addElementOnForm(e);
-			
 			}
-			
-			
 		}
 		executeJS_markElementSelected(element);
 	}
@@ -287,10 +277,6 @@ public class DesignView extends AbstractView {
 				elementSessionDO.setElementDataType("Datum");
 				elementSessionDO.setElementDateFormat(element.getDateFormat());
 			}
-//			else if (element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
-//				elementSessionDO.setElementDataType("Serijski broj");
-//				elementSessionDO.setElementCardNumber(element.getStartSerialNumber());
-//			}
 		}
 		return elementSessionDO;
 	}
@@ -314,8 +300,11 @@ public class DesignView extends AbstractView {
 	
 	
 	public void refreshAdditionalForm() {
-//		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel3");
-//		RequestContext.getCurrentInstance().update("mainForm:elementDataPanel4");
+		RequestContext.getCurrentInstance().update("mainForm:mainTab:elementDataType");
+		RequestContext.getCurrentInstance().update("mainForm:mainTab:elementMinimumLength");
+		RequestContext.getCurrentInstance().update("mainForm:mainTab:elementMaximumLength");
+		RequestContext.getCurrentInstance().update("mainForm:mainTab:dateFormat");
+		RequestContext.getCurrentInstance().update("mainForm:mainTab:elementRequired");
 	}
 	
 	public void addElementOnForm(CardElement element) {
@@ -412,14 +401,11 @@ public class DesignView extends AbstractView {
 	}
 	
 	public void changeDataType() {
-		
 		CardElement selectedElement=getSelectedElement();
 		selectedElement.setMinCharLength(null);
 		selectedElement.setMaxCharLength(null);
 		selectedElement.setDateFormat(null);
-//		selectedElement.setStartSerialNumber(null);
 		selectedElement.setRequired(true);
-		
 		if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING)) {
 			selectedElement.setMinCharLength("3");
 			selectedElement.setMaxCharLength("20");
@@ -427,10 +413,6 @@ public class DesignView extends AbstractView {
 		else if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_DATE)) {
 			selectedElement.setDateFormat("dd.MM.yyyy");
 		}
-//		else if (selectedElement.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_SERIAL)) {
-//			selectedElement.setStartSerialNumber("0000000001");
-//			selectedElement.setRequired(null);
-//		}
 		executeJS_markElementSelected(selectedElement);
 	}
 	
@@ -485,6 +467,7 @@ public class DesignView extends AbstractView {
 		WebUtil.getSession().setAttribute("elementMap", new HashMap<String,String>());
 		RequestContext.getCurrentInstance().execute("clearForm()");
 		loadCardTemplate();
+		WebUtil.infoMessage("Tip kartice uspješno spremljen.");
 	}
 	
 	

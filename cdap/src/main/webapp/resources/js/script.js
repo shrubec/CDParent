@@ -63,6 +63,15 @@ function updateValueOnFormWithAjax(elementId, objectName, fieldName) {
 		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 			if (xmlhttp.responseText != 'null') {
 				document.getElementById(fieldName).value=xmlhttp.responseText;
+				
+				/*
+				if (objectName == 'elementRequired')
+					PF('elementRequiredWidget').selectValue(xmlhttp.responseText);
+				else if (objectName == 'elementDataType')
+					PF('elementDataTypeWidget').selectValue(xmlhttp.responseText);
+				else
+					document.getElementById(fieldName).value=xmlhttp.responseText;
+				*/
 			}
 			else {
 				document.getElementById(fieldName).value='';
@@ -180,6 +189,8 @@ function selectElement(cardElement,panelId) {
 	//vrijednosti na formi se popunjavaju sa ajaxom
 	updateValueOnFormWithAjax(cardElement.id,'elementId','mainForm:selectedId');
 	updateValueOnFormWithAjax(cardElement.id,'elementType','mainForm:elementType');
+	
+	
 	updateValueOnFormWithAjax(cardElement.id,'elementName','mainForm:mainTab:elementName');
 	updateValueOnFormWithAjax(cardElement.id,'elementWidth','mainForm:mainTab:elementWidth');
 	updateValueOnFormWithAjax(cardElement.id,'elementHeight','mainForm:mainTab:elementHeight');
@@ -187,17 +198,10 @@ function selectElement(cardElement,panelId) {
 	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementX','mainForm:mainTab:elementPositionX',x);
 	updateValueOnFormAndObjectWithAjax(cardElement.id,'elementY','mainForm:mainTab:elementPositionY',y);
 	
-	/*
-	updateValueOnFormWithAjax(cardElement.id,'elementDataType','mainForm:elementDataType');
-	updateValueOnFormWithAjax(cardElement.id,'elementMinChar','mainForm:elementMinimumLength');
-	updateValueOnFormWithAjax(cardElement.id,'elementMaxChar','mainForm:elementMaximumLength');
-	updateValueOnFormWithAjax(cardElement.id,'elementDateFormat','mainForm:dateFormat');
-	updateValueOnFormWithAjax(cardElement.id,'elementCardNumber','mainForm:startCardNumber');
-	updateValueOnFormWithAjax(cardElement.id,'elementRequired','mainForm:elementRequired');
-	*/
-	
+	//ostatak forme (tip podatka, obaveznost umosa, min i max duzina) se refresha pomocu remote komande
 	refreshAdditionalForm();
 }
+
 
 
 function clearForm() {
@@ -274,8 +278,6 @@ function updateElementEditorMap() {
 	}
 	disableEditorUpdate=false;
 }
-
-
 
 function redrawElementByFormValues() {
 	

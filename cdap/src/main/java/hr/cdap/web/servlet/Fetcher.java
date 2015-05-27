@@ -64,6 +64,7 @@ public class Fetcher extends HttpServlet {
 				}
 				else {
 					out.print(value);
+					System.out.println("Fetcher old value: " + value);
 				}
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();

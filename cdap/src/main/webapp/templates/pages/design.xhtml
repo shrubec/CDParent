@@ -209,7 +209,7 @@
 												id="elementDataType" 
 												value="#{designView.selectedElement.dataType}" 
 												disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2}"
-												style="width:70px;"> 
+												style="width:70px;" > 
 													<f:selectItem itemLabel="Tekst" itemValue="1" />
 													<f:selectItem itemLabel="Broj" itemValue="2" />
 													<f:selectItem itemLabel="Datum" itemValue="3" />
@@ -230,8 +230,7 @@
 										id="elementRequired" 
 										value="#{designView.selectedElement.required}"  
 										disabled="#{designView.selectedElement.type == null or designView.selectedElement.type != 2 or designView.selectedElement.dataType == 4}" 
-										style="width:70px;"
-										>
+										style="width:70px;" >
 											<f:selectItem itemLabel="DA" itemValue="true" />
 											<f:selectItem itemLabel="NE" itemValue="false" />
 									</p:selectOneMenu>
@@ -361,6 +360,9 @@
 		</h:column>
 		
 		</h:panelGrid>
+		
+		
+		<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 		
 	 <!-- remote komande - javascript -->
 	 
