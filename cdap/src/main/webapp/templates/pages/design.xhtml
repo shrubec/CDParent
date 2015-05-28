@@ -6,7 +6,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 
-<h:body onload="setCardDimensions();">
+<h:body>
 	<h:form id="mainForm">
 		<p:toolbar>
 			<f:facet name="left" >
@@ -53,10 +53,6 @@
 				<h:column> 
 					<p:toolbar rendered="#{designView.renderCardPanel and (designView.oneSideActive==false or (designView.oneSideActive==true and designView.activeBack==false))}">
 						<f:facet name="left">
-							<p:outputLabel 
-								id="side1label" 
-								value="Prednja strana" 
-								rendered="#{designView.oneSideActive == false}" />
 							<p:selectBooleanButton 
 								id="sideButton1"  
 								value="#{designView.activeBack}"   
@@ -371,13 +367,6 @@
 	 	action="#{designView.refreshAdditionalForm}"  
 	 />
 	 
-	 <p:remoteCommand 
-		name="setCardDimensionsRemote" 
-		actionListener="#{designView.setElementDimensions}"
-		immediate="true"
-		process="@this"
-	/>		
-	  
 	 <h:inputHidden id="selectedId" value="#{designView.selectedId}"></h:inputHidden>
 	 <h:inputHidden id="elementType" />
 	 

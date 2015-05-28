@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
 import lombok.Getter;
@@ -54,29 +53,12 @@ public class DesignView extends AbstractView {
 	private String imageHeight="25";
 	private String signatureWidth="40";
 	private String signatureHeight="10";
-	
-	private  @Getter @Setter Boolean oneSideActive=false;
-	private  @Getter @Setter boolean activeBack=false;
-	
 	 
 	@PostConstruct
 	public void init() {
 		createElementMap();
 		cardTypes=DesignService.fetchCardTypes();
-	}
-	
-	public void setElementDimensions() {
-		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-		Integer height=null;
-		try {
-			height = Integer.valueOf(params.get("height"));
-			if (height <= 800) {
-				oneSideActive=true;
-				fontSize="70%";
-			}
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		}
+		oneSideActive=(Boolean)WebUtil.getSession().getAttribute("oneSideActive");
 	}
 	
 	
@@ -185,9 +167,7 @@ public class DesignView extends AbstractView {
 		Map map=fetchElementMap();
 		ElementSessionDO elementSessionDO=createSessionElementObject(element);
 		map.put(elementSessionDO.getElementId(), elementSessionDO);
-		String activeSide=null;
-		if (oneSideActive == true && !activeBack) activeSide="1";
-		if (oneSideActive == true && activeBack) activeSide="2";
+		String activeSide=getActiveSide();
 		for (CardElement e:selectedCardType.getElementList()) {
 			if (activeSide == null || activeSide.equals(e.getSide())) {
 				addElementOnForm(e);
@@ -419,10 +399,7 @@ public class DesignView extends AbstractView {
 	
 	private void saveTemplateElements() {
 
-		String activeSide=null;
-		if (oneSideActive == true && !activeBack) activeSide="1";
-		if (oneSideActive == true && activeBack) activeSide="2";
-		
+		String activeSide=getActiveSide();
 		for (CardElement element:selectedCardType.getElementList()) {
 			
 			
@@ -479,25 +456,14 @@ public class DesignView extends AbstractView {
 		back.getChildren().clear();
 		Map map=(Map) WebUtil.getSession().getAttribute("elementMap");
 		map.clear();
-	
-		String activeSide=null;
-		if (oneSideActive == true && !activeBack) activeSide="1";
-		if (oneSideActive == true && activeBack) activeSide="2";
-
+		String activeSide=getActiveSide();
 		for (CardElement element:selectedCardType.getElementList()) {
-			
-			
 			if (activeSide == null || activeSide.equals(element.getSide())) {
-				
-			
 				element.setAddedOnForm(false);
 				ElementSessionDO elementSessionDO=createSessionElementObject(element);
 				map.put(elementSessionDO.getElementId(), elementSessionDO);
 				addElementOnForm(element);
-
-			
 			}
-			
 		}
 		RequestContext.getCurrentInstance().execute("clearForm()");
 	}

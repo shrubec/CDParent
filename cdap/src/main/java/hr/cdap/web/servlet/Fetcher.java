@@ -43,7 +43,7 @@ public class Fetcher extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
-	
+	@SuppressWarnings({"rawtypes"})
 	private void fetchValuesFromSession(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		Map map=(Map) request.getSession().getAttribute("elementMap");
 		String elementId=request.getParameter("elementId");
@@ -60,11 +60,9 @@ public class Fetcher extends HttpServlet {
 					method=ElementSessionDO.class.getMethod("set"+objectName, String.class);
 					method.invoke(object, newValue);
 					out.print(newValue);
-					System.out.println("New fetcher value: " + newValue);
 				}
 				else {
 					out.print(value);
-					System.out.println("Fetcher old value: " + value);
 				}
 			} catch (NoSuchMethodException e) {
 				e.printStackTrace();

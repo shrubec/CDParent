@@ -68,9 +68,12 @@ public class AcquisitionService {
 			list=new ArrayList<Card>();
 			WebUtil.getSession().setAttribute("cardList", list);
 		}
-		card.setId(list.size()+1);
-		card.setCardNumber("000000"+String.valueOf(card.getId()));
-		list.add(card);
+		
+		if (card.getId() == null) {
+			card.setId(list.size()+1);
+			card.setCardNumber("000000"+String.valueOf(card.getId()));
+			list.add(card);
+		}
 		
 		
 		List<CardData> dataList=(List<CardData>)WebUtil.getSession().getAttribute("dataList");

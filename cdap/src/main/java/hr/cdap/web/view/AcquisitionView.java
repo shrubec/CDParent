@@ -42,10 +42,22 @@ public class AcquisitionView extends AbstractView {
 	private @Getter @Setter Card activeCard;
 	private @Getter @Setter Boolean editPhase=false;
 	
+	
 	@PostConstruct
 	private void loadCardTypes() {
 		WebUtil.getSession().removeAttribute("activeCard");
 		cardTypes=DesignService.fetchCardTypes();
+		oneSideActive=(Boolean)WebUtil.getSession().getAttribute("oneSideActive");
+	}
+	
+	
+	public void changeActiveSide() {
+		if (editPhase) mapFormDataToObject(); 
+		if (activeBack) activeBack=false;
+		else activeBack=true;
+		loadCardTemplate();
+		if (activeBack) activeBack=false;
+		else activeBack=true;
 	}
 	
 	public void showImageDialog() {
@@ -78,6 +90,15 @@ public class AcquisitionView extends AbstractView {
 		activeCard.setDataList(AcquisitionService.prepareNewCardData(activeCard,selectedCardType.getElementList()));
 		WebUtil.getSession().setAttribute("activeCard", activeCard);
 		loadCardTemplate();
+	}
+	
+	public void editCard() {
+		if (activeCard == null) 
+			newCard();
+		else {
+			editPhase=true;
+			loadCardTemplate();
+		}
 	}
 	
 	public void cardTypeSelected() {
@@ -215,6 +236,17 @@ public class AcquisitionView extends AbstractView {
 	}
 	
 	public void saveCard() {
+		mapFormDataToObject(); 
+		AcquisitionService.saveCard(activeCard);
+		cardList.clear();
+		cardList.addAll(AcquisitionService.fetchCardByType(selectedCardType));
+		editPhase=false;
+		loadCardTemplate();
+		WebUtil.infoMessage("Kartica " + activeCard.getCardNumber() + " uspješno spremljena");
+	}
+	
+
+	private void mapFormDataToObject() {
 		for (CardElement element:selectedCardType.getElementList()) {
 			Object obj=WebUtil.fetchElement(WebUtil.resolveSide(element.getSide()), element.getFormId());
 			Object value=null;
@@ -228,20 +260,15 @@ public class AcquisitionView extends AbstractView {
 			if (!element.getType().equals(CardElement.ELEMENT_TYPE_LABEL)) 
 				applyFormDataToCard(element, value);
 		} 
-		AcquisitionService.saveCard(activeCard);
-		cardList.clear();
-		cardList.addAll(AcquisitionService.fetchCardByType(selectedCardType));
-		editPhase=false;
-		loadCardTemplate();
-		WebUtil.infoMessage("Kartica " + activeCard.getCardNumber() + " uspješno spremljena");
 	}
 	
-	 
+	
 	private void applyFormDataToCard(CardElement element,Object value) {
-		if (element.getDataType() != null) {
+		if (element.getDataType() != null && value != null) {
 			CardData data=WebUtil.fetchDataForElement(element, activeCard);
-			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING))
+			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_STRING)) {
 				data.setValueString((String)value);
+			}
 			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_NUMBER))
 				data.setValueInt(Integer.valueOf((String)value));
 			if(element.getDataType().equals(CardElement.ELEMENT_DATA_TYPE_DATE)) {
@@ -255,15 +282,17 @@ public class AcquisitionView extends AbstractView {
 		}
 	}
 	
-	
 	public void loadCardTemplate() {
 		OutputPanel front=WebUtil.resolveSide("1");
 		OutputPanel back=WebUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
+		String activeSide=getActiveSide();
 		if (selectedCardType != null) {
 			for (CardElement element:selectedCardType.getElementList()) {
-				addElementOnForm(element);
+				if (activeSide == null || activeSide.equals(element.getSide())) {
+					addElementOnForm(element);
+				}
 			}
 		}
 	}
@@ -273,10 +302,12 @@ public class AcquisitionView extends AbstractView {
 		OutputPanel back=WebUtil.resolveSide("2");
 		front.getChildren().clear();
 		back.getChildren().clear();
+		String activeSide=getActiveSide();
 		for (CardElement element:card.getCardType().getElementList()) {
-			addElementOnForm(element);
+			if (activeSide == null || activeSide.equals(element.getSide())) {
+				addElementOnForm(element);
+			}
 		}
 	}
-	
 	
 }

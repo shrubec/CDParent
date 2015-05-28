@@ -8,6 +8,8 @@ public class AbstractView {
 
 	
 	protected @Getter @Setter CardType selectedCardType;
+	protected  @Getter @Setter Boolean oneSideActive=false;
+	protected  @Getter @Setter boolean activeBack=false;
 	
 	public String getBackgroundImageFront() {
 		if (selectedCardType == null) 
@@ -23,5 +25,13 @@ public class AbstractView {
 		else {
 			return "url('resources/images/background/"+selectedCardType.getImageBack()+"')";
 		}
+	}
+	
+	protected String getActiveSide() {
+		String activeSide=null;
+		if (oneSideActive ==null) oneSideActive=false;
+		if (oneSideActive == true && !activeBack) activeSide="1";
+		if (oneSideActive == true && activeBack) activeSide="2";
+		return activeSide;
 	}
 }

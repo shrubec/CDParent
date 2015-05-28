@@ -64,6 +64,8 @@
                     <p:commandButton 
                     	value="Ažuriraj" 
                     	icon="ui-icon-circle-plus"  
+                    	actionListener="#{acquisitionView.editCard}" 
+                    	disabled="#{acquisitionView.editPhase == true}" 
                     	update="mainForm" 
                     	process="@this" 
                     	style="float:right;" />
@@ -72,7 +74,19 @@
                     	icon="ui-icon-circle-plus"  
                     	update="mainForm" 
                     	process="@this" 
-                    	style="float:right;"/>
+                    	style="float:right;" />
+							<p:selectBooleanButton 
+								id="sideButton1"  
+								value="#{acquisitionView.activeBack}"   
+								offLabel="Prednja strana" 
+								onLabel="Stažnja strana"  
+								rendered="#{acquisitionView.oneSideActive == true}" >
+							  		<p:ajax 
+							  			update="mainForm" 
+							  			listener="#{acquisitionView.changeActiveSide}"  
+							  			immediate="true" process="@form" />
+							</p:selectBooleanButton>
+                    	
                 </f:facet> 
 				<p:outputPanel  
 					id="frontSide" 
@@ -80,14 +94,19 @@
 					layout="block" 
 					styleClass="cardPanel"
 					style="background-image: #{acquisitionView.backgroundImageFront};"
+					rendered="#{acquisitionView.oneSideActive==false or (acquisitionView.oneSideActive==true and acquisitionView.activeBack==false)}"
+					
 				/>
+				
 				<p:outputPanel 
 					id="backSide" 
 					name="backSide"  
 					layout="block" 
 					styleClass="cardPanel"
 					style="background-image: #{acquisitionView.backgroundImageBack};"
+					rendered="#{acquisitionView.oneSideActive==false or (acquisitionView.oneSideActive==true and acquisitionView.activeBack==true)}"
 				/>
+				
 		</p:panel>
 
 		<p:dataTable 
@@ -121,7 +140,12 @@
  		onstart="document.getElementById('mainForm:dummyDialogButton').click();"
  	/>
  	
-
+ 	<p:remoteCommand 
+		name="setCardDimensionsRemote" 
+		actionListener="#{acquisitionView.setElementDimensions}"
+		immediate="true"
+		process="@this"
+	/>		
 
 </h:form>
 
