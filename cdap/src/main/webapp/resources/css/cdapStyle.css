@@ -181,3 +181,16 @@
 }
 
 
+.opcenitoColumnLeft {
+	text-align: left;
+	width: 450px;
+	vertical-align: top;
+}
+
+.opcenitoColumnRight {
+	text-align: right;
+	float: right;
+	width: 60%;
+	vertical-align: top;
+}
+

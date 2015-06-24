@@ -53,6 +53,10 @@
 				<h:column> 
 					<p:toolbar rendered="#{designView.renderCardPanel and (designView.oneSideActive==false or (designView.oneSideActive==true and designView.activeBack==false))}">
 						<f:facet name="left">
+							<p:outputLabel 
+								id="side1label" 
+								value="Prednja strana"
+								rendered="#{designView.oneSideActive == false}" />
 							<p:selectBooleanButton 
 								id="sideButton1"  
 								value="#{designView.activeBack}"   
@@ -331,23 +335,15 @@
 		         </p:tab>
 		        
 		         <p:tab title="Općenito o tipu kartice">
-		       		<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
+		       		<h:panelGrid columns="2" style="width:650px;margin-bottom:5px" cellpadding="5" columnClasses="opcenitoColumnLeft,opcenitoColumnRight" >	
 						<p:outputLabel  value="Tip kartice" />
 						<p:inputText />
-					</h:panelGrid>
-					<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
 						<p:outputLabel  value="Opis" />
 						<p:inputText />
-					</h:panelGrid>
-					<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
 						<p:outputLabel  value="Datum kreiranja" />
 						<p:inputText />
-					</h:panelGrid>
-					<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
 						<p:outputLabel  value="Kreirao korisnik" />
 						<p:inputText />
-					</h:panelGrid>
-					<h:panelGrid columns="2" style="margin-bottom:5px" cellpadding="5" columnClasses="detailsColumnLeft,detailsColumnRight" >	
 						<p:outputLabel  value="Predložak za generiranje serijskog broja" />
 						<p:inputText />
 					</h:panelGrid>
