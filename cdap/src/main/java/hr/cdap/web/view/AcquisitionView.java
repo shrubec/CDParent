@@ -77,11 +77,13 @@ public class AcquisitionView extends AbstractView {
 			}
 			RequestContext.getCurrentInstance().execute("moveToPositionInitial('mainForm:" + panel.getId()+ "','mainForm:" + element.getFormId() + "',"+ element.getPositionX() + "," + element.getPositionY()+ ");");
 			WebUtil.executeJS_setElementStyle(element);
+			if (element.getType().equals(CardElement.ELEMENT_TYPE_LABEL)) 
+				RequestContext.getCurrentInstance().execute("document.getElementById('mainForm:"+element.getFormId()+"').innerHTML='"+element.getStyleValue()+"'");
 		}
 	}
 	
 	public void newCard() {
-		editPhase=true;
+		editPhase=true; 
 		activeCard=new Card();
 		activeCard.setDateCreated(new Date());
 		activeCard.setCardType(selectedCardType);
