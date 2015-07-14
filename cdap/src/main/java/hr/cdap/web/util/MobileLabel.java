@@ -15,7 +15,7 @@ public class MobileLabel extends OutputLabel{
 	   ResponseWriter writer = context.getResponseWriter();
 	   writer.startElement("div", this);
 	   writer.writeAttribute("id", getId(), null);
-	   writer.writeAttribute("style", "background-color:red;", null);
+//	   writer.writeAttribute("style", "background-color:red;", null);
 	   super.encodeBegin(context);
 	  }
 	
