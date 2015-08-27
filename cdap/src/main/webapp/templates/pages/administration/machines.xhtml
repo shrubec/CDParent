@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+	
+<h:body >
+	<h:form id="mainForm">
+		<p:toolbar>
+			<f:facet name="left" >
+				<p:commandButton 
+					value="Novi stroj" 
+					icon="addIcon"  
+					oncomplete="PF('newMachineDialog').show()"  
+					actionListener="#{machineView.newMachine}" 
+					immediate="true" 
+					update="mainForm:newMachineDialog"
+					process="@this"
+					styleClass="topToolbarRight" />	
+			</f:facet>
+		</p:toolbar>
+		
+		<p:spacer />
+		<p:messages 
+			id="messages" 
+			showDetail="true" 
+			autoUpdate="true" 
+			closable="true" 
+			globalOnly="true"/>
+		<p:dataScroller 
+			id="machineList" 
+			value="#{machineView.machineList}" 
+			var="machine" 
+			chunkSize="10">
+	        <f:facet name="header">Lista strojeva za personalizaciju</f:facet>
+	        <p:commandLink 
+	        	styleClass="commandLink" 
+	        	actionListener="#{machineView.selectMachine}" 
+	        	process="@this" 
+	        	update="mainForm:newMachineDialog" 
+	        	oncomplete="PF('newMachineDialog').show()">
+	        <f:param 
+	        	name="machineId" 
+	        	value="#{machine.id}" />
+	        <h:panelGrid 
+	        	columns="2"   
+	        	columnClasses="adminMachineMainLeft,adminMachineMainRight">
+	            <p:graphicImage 
+	            	value="resources/images/icons/machine_150x150.png" 
+	            	width="120" 
+	            	height="120" /> 
+	            <p:outputPanel>
+	                <h:panelGrid 
+	                	columns="2" 
+	                	cellpadding="5" 
+	                	columnClasses="adminMachineColumnLeft,adminMachineColumnRight">
+	                    <h:outputText 
+	                    	value="Id:" />
+	                    <h:outputText 
+	                    	value="#{machine.id}" 
+	                    	style="font-weight: bold"/>
+	                    <h:outputText 
+	                    	value="Ime: " />
+	                    <h:outputText 
+	                    	value="#{machine.name}" 
+	                    	style="font-weight: bold"/>
+	                    <h:outputText
+	                    	value="Opis" />
+	                    <h:outputText 
+	                    	value="#{machine.descr}" 
+	                    	style="font-weight: bold"/>
+	                </h:panelGrid>
+	            </p:outputPanel>
+	        </h:panelGrid>
+	        </p:commandLink>
+	    </p:dataScroller>
+		
+	 <p:dialog 
+	 	id="newMachineDialog" 
+	 	widgetVar="newMachineDialog" 
+	 	modal="true" 
+	 	header="Novi / postojeći perso stroj" 
+	 	position="center center" 
+	 	width="1000" 
+	 	height="850" 
+	 	resizable="false"  
+	 	appendToBody="true" >
+	  		<h:panelGrid 
+	  			id="dialogPanelGrid" 
+	  			columns="2" 
+	  			style="margin-bottom:10px" 
+	  			cellpadding="15" 
+	  			columnClasses="adminMachineDialogLeft,adminMachineDialogRight">
+	  			<p:outputLabel 
+	  				value="ID: " />
+				<p:inputText 
+					value="#{machineView.machine.id}" 
+					disabled="true" />
+		   		<p:outputLabel 
+		   			value="Naziv stroja: " />
+				<p:inputText 
+					value="#{machineView.machine.name}" 
+					required="true" 
+					requiredMessage="Naziv je obavezan" />
+				<p:outputLabel 
+					value="Opis: " />
+				<p:inputTextarea  
+					value="#{machineView.machine.descr}" />
+				<p:outputLabel 
+		   			value="XML direktorij: " />	
+				<p:inputText 
+					value="#{machineView.machine.xmlFolder}" />
+				<p:outputLabel 
+		   			value="Direktorij za slike: " />	
+				<p:inputText 
+					value="#{machineView.machine.imageFolder}" />
+				<p:outputLabel 
+		   			value="Direktorij za potpise: " />	
+				<p:inputText 
+					value="#{machineView.machine.signatureFolder}" />
+				<p:outputLabel 
+					value="XML header: " />
+				<p:inputTextarea  
+					value="#{machineView.machine.xmlHeader}" rows="25" cols="90" />
+				<p:commandButton 
+					value="Spremi" 
+					icon="ui-icon-circle-save"  
+					actionListener="#{machineView.saveMachine}" />
+	    	</h:panelGrid>
+			<p:messages 
+				id="messagesDialog" 
+				autoUpdate="true" 
+				closable="true" />
+	       
+	  </p:dialog>
+	</h:form>
+</h:body>
+       
+
+</html>

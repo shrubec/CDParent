@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+
+	<p:menu style="height:90%;">
+		<p:submenu label="Osnovno">
+			<p:menuitem value="Klijenti"  actionListener="#{administrationMainView.renderPage(1)}" icon="administrationClientIcon" update="mainGrid" />
+			<p:menuitem value="Korisnici aplikacije" actionListener="#{administrationMainView.renderPage(2)}" icon="administrationUserIcon" update="mainGrid" />
+			<p:menuitem value="Postavke strojeva" actionListener="#{administrationMainView.renderPage(3)}" icon="administrationMachineIcon" update="mainGrid" />
+		</p:submenu>
+		<p:submenu label="Logovi">
+			<p:menuitem value="Tipovi logova" actionListener="#{administrationMainView.renderPage(4)}" icon="administrationReport1Icon" update="mainGrid" />
+			<p:menuitem value="Logovi" actionListener="#{administrationMainView.renderPage(5)}" icon="administrationReport2Icon" update="mainGrid" />
+		</p:submenu>
+	</p:menu>
+
+
+</html>

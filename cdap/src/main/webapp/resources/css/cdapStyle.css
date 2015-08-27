@@ -131,6 +131,83 @@
 	vertical-align: top;
 }
 
+.adminDialogLeft {
+	width: 100px;
+	height:30px;
+}
+.adminDialogRight {
+	height:30px;
+	text-align: right;
+	width: 250px;
+}
+
+.adminUserDialogLeft {
+	width: 150px;
+	height:30px;
+}
+.adminUserDialogRight {
+	height:30px;
+	text-align: right;
+	width: 250px;
+}
+
+.adminMachineDialogLeft {
+	width: 350px;
+	height:30px;
+}
+.adminMachineDialogRight {
+	height:30px;
+	text-align: right;
+	width: 350px;
+}
+
+.adminClientMainLeft {
+	width: 200px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.adminClientMainRight {
+	vertical-align: middle;
+}
+
+.adminMachineMainLeft {
+	width: 200px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.adminMachineMainRight {
+	vertical-align: middle;
+}
+
+.adminClientColumnLeft {
+	text-align: left;
+	width: 250px;
+	vertical-align: top;
+}
+
+.adminClientColumnRight {
+	text-align: right;
+	float: right;
+	width: 350px;
+	vertical-align: top;
+}
+
+.adminMachineColumnLeft {
+	text-align: left;
+	width: 250px;
+	vertical-align: top;
+}
+
+.adminMachineColumnRight {
+	text-align: right;
+	float: right;
+	width: 350px;
+	vertical-align: top;
+}
+
+
 .ui-panelgrid .ui-panelgrid-cell {
 	border-style: none;
 }
@@ -194,3 +271,30 @@
 	vertical-align: top;
 }
 
+.commandLink:hover {
+	text-shadow: 0 0 20px #4747B2;
+	font-style: oblique;
+}
+
+.modifyBtnImg  {
+	 background-image: url('../../resources/images/icons/modify_16x16.png') !important;
+}
+
+.administrationClientIcon {
+	 background-image: url('../../resources/images/icons/company_16x16.png') !important;
+}
+.administrationMachineIcon {
+	 background-image: url('../../resources/images/icons/machine_16x16.png') !important;
+}
+.administrationUserIcon {
+	 background-image: url('../../resources/images/icons/user_16x16.png') !important;
+}
+.administrationReport1Icon {
+	 background-image: url('../../resources/images/icons/report1_16x16.png') !important;
+}
+.administrationReport2Icon {
+	 background-image: url('../../resources/images/icons/report2_16x16.png') !important;
+}
+.addIcon {
+	 background-image: url('../../resources/images/icons/add_16x16.png') !important;
+}

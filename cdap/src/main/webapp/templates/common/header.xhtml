@@ -24,27 +24,30 @@
 </h:head>
 
 <div id="mainDiv">
-	<div class="header-top" id="topHeader">
-		<div class="wrap">
-			<div class="logo">
-				<a href="index.html"><img src="resources/images/style/akd.jpg" height="70px;" alt="" /></a>
+	<h:form id="headerForm">
+		<div class="header-top" id="topHeader">
+			<div class="wrap">
+				<div class="logo">
+					<a href="index.html"><img src="resources/images/style/akd.jpg" height="70px;" alt="" /></a>
+				</div>
+				<div id="title">AKD card design, acquisition and personalization</div>
+				<div class="clear"></div>
 			</div>
-			<div id="title">AKD card design, acquisition and personalization</div>
-			<div class="clear"></div>
 		</div>
-	</div>
-	<div class="header-bottom" id="bottomHeader">
-		<div class="wrap" id="wrapHeader">
-			<ul class="megamenu skyblue">
-				<li><a class="color10" href="designMain.jsf">Dizajn kartica</a></li>
-				<li><a class="color10" href="acquisitionMain.jsf">Akvizicija</a></li>
-				<li><a class="color10" href="#">Personalizacija</a></li>
-				<li><a class="color10" href="#">Prodaja</a></li>
-				<li><a class="color10" href="#">Skladište</a></li>
-				<li><a class="color10" href="#">Administracija</a></li>
-			</ul>
+		<div class="header-bottom" id="bottomHeader">
+			<div class="wrap" id="wrapHeader">
+				<ul class="megamenu skyblue">
+					<li><a class="color10" href="designMain.jsf">Dizajn kartica</a></li>
+					<li><a class="color10" href="acquisitionMain.jsf">Akvizicija</a></li>
+					<li><a class="color10" href="#">Personalizacija</a></li>
+					<li><a class="color10" href="#">Prodaja</a></li>
+					<li><a class="color10" href="#">Skladište</a></li>
+					<li><a class="color10" href="administrationMain.jsf">Administracija</a></li>
+					<li> <p:commandLink class="color10" value="#{userLoginView.logoutLink}" actionListener="#{userLoginView.logout}" immediate="true"/></li>
+				</ul>
+			</div>
 		</div>
-	</div>
+	</h:form>
 </div>
 
 </html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	
+<h:body>
+	<h:form id="mainForm">
+		<p:toolbar>
+			<f:facet name="left" >
+				<p:commandButton 
+					value="Novi korisnik" 
+					icon="addIcon"  
+					oncomplete="PF('newUserDialog').show()"  
+					actionListener="#{userView.newUser}" 
+					immediate="true" 
+					update="mainForm:newUserDialog"
+					process="@this"
+					styleClass="topToolbarRight" />	
+			</f:facet>
+		</p:toolbar>
+		<p:spacer />
+		<p:messages 
+			id="messages" 
+			showDetail="true" 
+			autoUpdate="true" 
+			closable="true" 
+			globalOnly="true" />
+		<p:dataTable 
+			var="user" 
+			value="#{userView.userList}" 
+			selectionMode="single" 
+			selection="#{userView.tableSelectUser}" 
+			rowKey="#{user.id}">
+				<f:facet name="header" > Korisnici aplikacije </f:facet>
+				<p:column width="20">
+			    <p:graphicImage 
+			    	style="vertical-align: middle;"
+	            	value="resources/images/icons/user_16x16.png" 
+	            	width="16" 
+	            	height="16" /> 
+			    </p:column>
+			    <p:column 
+			    	headerText="Id">
+			 		<h:outputText 
+			 			value="#{user.id}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Ime">
+			    	<h:outputText 
+			    		value="#{user.name}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Prezime">
+			     	<h:outputText 
+			     		value="#{user.lastName}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Korisničko ime">
+			    	<h:outputText 
+			    		value="#{user.username}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Klijent">
+			   		<h:outputText 
+			    		value="#{user.client.name}" />
+			    </p:column>
+			    <p:column width="60">
+				    <p:graphicImage 
+				    	style="vertical-align: middle;"
+		            	value="resources/images/clients/#{user.client.logoLink}" 
+		            	width="50" 
+		            	height="25" /> 
+			    </p:column>
+			    <p:column>
+			       <p:commandButton 
+			       		process="@this"  
+			       		update="mainForm:newUserDialog" 
+			       		oncomplete="PF('newUserDialog').show()" 
+			       		icon="modifyBtnImg"
+			       		title="Ažuriraj">
+		                <f:setPropertyActionListener 
+		                	value="#{user}" 
+		                	target="#{userView.user}" />
+		            </p:commandButton>
+			    </p:column>
+		</p:dataTable>
+		
+	 <p:dialog 
+	 	id="newUserDialog" 
+	 	widgetVar="newUserDialog" 
+	 	modal="true" 
+	 	header="Novi / postojeći korisnik" 
+	 	position="center center" 
+	 	width="550" 
+	 	height="550" 
+	 	resizable="false"  
+	 	appendToBody="true" >
+	  		<h:panelGrid 
+	  			id="dialogPanelGrid" 
+	  			columns="2" 
+	  			style="margin-bottom:10px" 
+	  			cellpadding="15" 
+	  			columnClasses="adminUserDialogLeft,adminUserDialogRight">
+	  			<p:outputLabel 
+	  				value="ID: "/>
+				<p:inputText
+					value="#{userView.user.id}" 
+					disabled="true" />
+		   		<p:outputLabel 
+		   			value="Ime: " />
+				<p:inputText 
+					value="#{userView.user.name}" 
+					required="true"  
+					requiredMessage="Ime je obavezno"/>
+				<p:outputLabel 
+					value="Prezime: " />
+				<p:inputText  
+					value="#{userView.user.lastName}" 
+					required="true"
+					requiredMessage="Prezime je obavezno"/>
+				<p:outputLabel 
+					value="Korisničko ime " />
+				<p:inputText  
+					value="#{userView.user.username}" 
+					required="true"
+					requiredMessage="Korisničko ime je obavezno"/>
+				<p:outputLabel 
+					value="Lozinka: " />
+				<p:password 
+					value="#{userView.user.password}" 
+					required="true"
+					requiredMessage="Lozinka je obavezna"/>
+				<p:outputLabel 
+					value="Klijent: " />
+				  <p:selectOneMenu 
+		        	value="#{userView.user.client}" 
+		        	converter="clientConverter"
+		        	style="vertical-align:middle; width:145px;" >
+			            <f:selectItems 
+			            	value="#{userView.clientList}"  
+			            	var="client" 
+			            	itemValue="#{client}" 
+			            	itemLabel="#{client.name}" />
+			        </p:selectOneMenu>
+			    <p:outputLabel 
+					value="Korisnik aktivan: " />
+			    <p:selectBooleanButton  
+			    	value="#{userView.user.active}" 
+			    	onLabel="DA" 
+			    	offLabel="NE" 
+			    	onIcon="ui-icon-check" 
+			    	offIcon="ui-icon-close" />
+			    <p:outputLabel 
+					value="Uloga dizajn kartica: " />
+			  	<p:selectBooleanCheckbox 
+			  		value="#{userView.user.roleDesign}" />
+			  	<p:outputLabel 
+					value="Uloga akvizicija: " />
+			  	<p:selectBooleanCheckbox 
+			  		value="#{userView.user.roleAcquisition}" />
+			    <p:outputLabel 
+					value="Uloga personalizacija: " />
+			  	<p:selectBooleanCheckbox 
+			  		value="#{userView.user.rolePerso}" />
+			    <p:outputLabel 
+					value="Uloga prodaja: " />
+			  	<p:selectBooleanCheckbox 
+			  		value="#{userView.user.roleSales}" />
+			    <p:outputLabel 
+					value="Uloga skladište: " />
+			  	<p:selectBooleanCheckbox 
+			  		value="#{userView.user.roleStorage}" />
+			    <p:outputLabel 
+					value="Uloga administrator: " />
+			  	<p:selectBooleanCheckbox 
+			  		value="#{userView.user.roleAdmin}" />
+				<p:commandButton 
+					value="Spremi" 
+					icon="ui-icon-circle-save"  
+					actionListener="#{userView.saveUser}" 
+					/>
+	       </h:panelGrid>
+	       	<p:messages 
+				id="messagesDialog" 
+				autoUpdate="true" 
+				closable="true" />
+	  </p:dialog>
+	</h:form>
+</h:body>
+       
+
+</html>

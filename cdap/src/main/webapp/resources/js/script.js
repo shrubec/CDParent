@@ -11,7 +11,6 @@ function setCardDimensions() {
 //	console.log("W2: "+screen.width);
 	
 	var height=screen.height;
-	console.log("nova visina: "+height);
 	setCardDimensionsRemote([{name:'height',value:screen.height}]);
 }
 

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	
+<h:body>
+
+	<h:form id="mainForm">
+		<p:spacer />
+		<p:messages 
+			id="messages" 
+			showDetail="true" 
+			autoUpdate="true" 
+			closable="true" 
+			globalOnly="true" />
+		<p:dataTable 
+			var="log" 
+			value="#{logView.logList}" 
+			rowKey="#{log.id}"
+			paginator="true"
+            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+            rowsPerPageTemplate="15,20,25"
+            rows="20"
+			>
+				<f:facet name="header" > Logovi </f:facet>
+				<p:column 
+					width="20">
+				    <p:graphicImage 
+				    	style="vertical-align: middle;"
+		            	value="resources/images/icons/report2_16x16.png" 
+		            	width="16" 
+		            	height="16" /> 
+			    </p:column>
+			    <p:column 
+			    	headerText="Id"
+			    	width="20">
+			 		<h:outputText 
+			 			value="#{log.id}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Akcija" 
+			    	filterBy="#{log.logType.name}" 
+			    	filterMatchMode="contains">
+			    	<h:outputText 
+			    		value="#{log.logType.name}" />
+			    </p:column>
+			     <p:column 
+			    	headerText="Vrijeme"
+			    	width="140">
+			    	<h:outputText 
+			    		value="#{log.timeCreated}" >
+			    		<f:convertDateTime 
+			    			pattern="dd.MM.yyyy HH:mm:ss" />
+			    	</h:outputText>
+			    </p:column>
+			     <p:column 
+			    	headerText="Ime"
+			    	filterBy="#{log.user.name}" 
+			    	filterMatchMode="contains"
+			    	width="100">
+			    	<h:outputText 
+			    		value="#{log.user.name}" />
+			    </p:column>
+			     <p:column 
+			    	headerText="Prezime"
+			    	filterBy="#{log.user.lastName}" 
+			    	filterMatchMode="contains"
+			    	width="100">
+			    	<h:outputText 
+			    		value="#{log.user.lastName}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Stroj">
+			    	<h:outputText rendered="#{log.machine != null}"
+			    		value="#{log.machine.name}" />
+			    </p:column>
+			     <p:column 
+			    headerText="Paket">
+			    	<h:outputText rendered="#{log.cardPackage != null}"
+			    		value="#{log.cardPackage.number}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Kartica">
+			    	<h:outputText rendered="#{log.card != null}"
+			    		value="#{log.card.cardNumber}" />
+			    </p:column>
+			      <p:column 
+			   		headerText="Tip kartice">
+			    	<h:outputText rendered="#{log.cardType != null}"
+			    		value="#{log.cardType.name}" />
+			    </p:column>
+			       <p:column 
+			   		headerText="Dodatni info">
+			    	<h:outputText 
+			    		value="#{log.info}" />
+			    </p:column>
+		</p:dataTable>
+		
+	</h:form>
+</h:body>
+       
+
+</html>
