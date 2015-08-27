@@ -24,10 +24,6 @@
 					<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="15"  >
 						<p:fileUpload  fileUploadListener="#{imageUploadView.handleFileUpload}"  auto="true" mode="advanced" update="imageForm" previewWidth="150"/>
 						<p:commandButton value="Spremi"  actionListener="#{imageUploadView.saveImage}"  ajax="false" immediate="true"/>
-						
-						
-						<p:fileUpload  fileUploadListener="#{imageUploadView.handleFileUpload}"  mode="advanced" update="@all" previewWidth="150"/>
-						
 					</h:panelGrid>
 			</h:form>
 		</h:body>

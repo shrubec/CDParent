@@ -28,7 +28,6 @@ public class ImageUploadView {
 	@PostConstruct
     public void init() {
 		WebUtil.getSession().removeAttribute("imageBytes");
-		System.out.println("inicijalizirano...");
     }
 	
 	public void saveImage() {
@@ -45,7 +44,6 @@ public class ImageUploadView {
 	} 
 	
 	public void handleFileUpload(FileUploadEvent event) {
-		System.out.println("uploadano...");
 		bytes = event.getFile().getContents();
 		WebUtil.getSession().setAttribute("imageBytes", bytes);
 		
