@@ -7,13 +7,17 @@
 
 
 	<ui:include src="templates/common/header.xhtml"></ui:include>
-	<h:panelGrid columns="2" columnClasses="column1,column2" >
-		<h:column>
-			<ui:include src="templates/common/leftMenu.xhtml"></ui:include>
-		</h:column>
+	<h:panelGrid columns="2" columnClasses="column1,column2" id="mainGrid" >
+		<h:form id="menuForm">
+			<h:column>
+				<ui:include src="templates/leftMenu/designMenu.xhtml"></ui:include>
+			</h:column>
+		</h:form>
+		
 		<h:column>
 			<ui:include src="templates/pages/design.xhtml"></ui:include>
 		</h:column>
+		
 	</h:panelGrid>
 
 </html>

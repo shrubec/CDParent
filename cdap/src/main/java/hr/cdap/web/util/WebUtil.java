@@ -3,9 +3,13 @@ package hr.cdap.web.util;
 import hr.cdap.entity.Card;
 import hr.cdap.entity.CardData;
 import hr.cdap.entity.CardElement;
+import hr.cdap.entity.Client;
+import hr.cdap.entity.User;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.application.FacesMessage;
@@ -220,6 +224,21 @@ public class WebUtil {
 			}
 		}
 		return null;
+	}
+	
+	public static List<Client> initClientList(List<Client> clientList,User user) {
+		List<Client> filteredClientList=new ArrayList<Client>();
+		if (user != null && !user.getClient().getName().equals("AKD")) {
+			for (Client client:clientList) {
+				if (user.getClient().equals(client)) {
+					filteredClientList.add(client);
+				}
+			}
+		}
+		else {
+			filteredClientList.addAll(clientList);
+		}
+		return filteredClientList;
 	}
 	
 }

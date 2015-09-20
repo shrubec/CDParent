@@ -1,15 +1,15 @@
 package hr.cdap.web.util;
 
+import hr.cdap.entity.CardType;
 import lombok.Getter;
 import lombok.Setter;
-import hr.cdap.entity.CardType;
 
 public class AbstractView {
 
-	
 	protected @Getter @Setter CardType selectedCardType;
-	protected  @Getter @Setter Boolean oneSideActive=false;
-	protected  @Getter @Setter boolean activeBack=false;
+	protected @Getter @Setter Boolean oneSideActive=false;
+	protected @Getter @Setter boolean activeBack=false;
+	
 	
 	public String getBackgroundImageFront() {
 		if (selectedCardType == null) 
@@ -34,4 +34,5 @@ public class AbstractView {
 		if (oneSideActive == true && activeBack) activeSide="2";
 		return activeSide;
 	}
+	
 }

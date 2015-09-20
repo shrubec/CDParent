@@ -220,6 +220,7 @@
 .topToolbarLeft {
 	vertical-align: middle;
 	width: 250px;
+	margin-right:10px;
 }
 
 .topToolbarCenter {

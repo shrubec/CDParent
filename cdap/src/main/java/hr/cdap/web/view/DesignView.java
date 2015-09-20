@@ -1,9 +1,12 @@
 package hr.cdap.web.view;
 
 
+import hr.cdap.dbsimulator.DBSimulator;
 import hr.cdap.entity.CardElement;
 import hr.cdap.entity.CardType;
+import hr.cdap.entity.Client;
 import hr.cdap.service.DesignService;
+import hr.cdap.service.LoginService;
 import hr.cdap.web.object.ElementSessionDO;
 import hr.cdap.web.util.AbstractView;
 import hr.cdap.web.util.WebUtil;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
@@ -40,9 +44,14 @@ import org.primefaces.event.SelectEvent;
 @SuppressWarnings({"rawtypes","unchecked"})
 public class DesignView extends AbstractView {
 	
+	private @EJB DBSimulator dbSimulator;
+	private @EJB LoginService loginService;
+	
 	private @Getter @Setter String selectedId;
 	private @Getter @Setter String selectedCardTypeName;
 	private @Getter @Setter List<CardType> cardTypes;
+	private @Getter @Setter List<Client> filteredClientList;
+	private Client activeClient;
 	
 	private @Getter @Setter String cardWidth="480px;";
 	private @Getter @Setter String cardHeight="280px;";
@@ -59,8 +68,21 @@ public class DesignView extends AbstractView {
 		createElementMap();
 		cardTypes=DesignService.fetchCardTypes();
 		oneSideActive=(Boolean)WebUtil.getSession().getAttribute("oneSideActive");
+		filteredClientList=WebUtil.initClientList(dbSimulator.getClientList(), loginService.getLoggedUser(WebUtil.getSession()));
 	}
 	
+	public Client getActiveClient() {
+		activeClient=(Client)WebUtil.getSession().getAttribute("activeClient");
+		if (activeClient== null)  {
+			activeClient=new Client();
+		}
+		return activeClient;
+	}
+	
+	public void setActiveClient(Client activeClient) {
+		this.activeClient=activeClient;
+		WebUtil.getSession().setAttribute("activeClient", activeClient);
+	}
 	
 	public void changeActiveSide() {
 
@@ -401,13 +423,8 @@ public class DesignView extends AbstractView {
 
 		String activeSide=getActiveSide();
 		for (CardElement element:selectedCardType.getElementList()) {
-			
-			
 			if (activeSide == null || activeSide.equals(element.getSide())) {
-				
-			
 				System.out.println("Spremam element " + element.getSide()+", " + element.getFormId() + ", " + activeSide + ", " +oneSideActive+", " + activeBack);
-				
 				if (element.getStyleValue() != null) {
 					element.setValue(getPlainTextValue(element.getStyleValue()).trim());
 				}
@@ -425,11 +442,7 @@ public class DesignView extends AbstractView {
 					element.setMaxCharLength(null);
 					element.setRequired(null);
 				}
-
-			
 			}
-			
-			
 		}
 	}
 	

@@ -22,13 +22,13 @@ public class LoginFilter implements Filter {
 	@EJB
 	LoginService loginService;
 
-	@Override
+//	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+//	@Override
 	public void doFilter(ServletRequest arg0, ServletResponse arg1,
 			FilterChain arg2) throws IOException, ServletException {
 
@@ -43,7 +43,7 @@ public class LoginFilter implements Filter {
 		}
 	}
 
-	@Override
+//	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 		// TODO Auto-generated method stub
 
