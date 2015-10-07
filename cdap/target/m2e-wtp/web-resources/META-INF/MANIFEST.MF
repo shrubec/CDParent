@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Built-By: Sasa
-Build-Jdk: 1.7.0_40
+Build-Jdk: 1.7.0_25
+Built-By: shrubec
 Created-By: Maven Integration for Eclipse
 

@@ -4,6 +4,7 @@ import hr.cdap.entity.Card;
 import hr.cdap.entity.CardPackage;
 import hr.cdap.entity.CardType;
 import hr.cdap.entity.Client;
+import hr.cdap.entity.DeliveryLocation;
 import hr.cdap.entity.Log;
 import hr.cdap.entity.LogType;
 import hr.cdap.entity.PersoMachine;
@@ -30,6 +31,8 @@ public class DBSimulator {
 	private @Getter @Setter List<User> userList=new ArrayList<User>();
 	private @Getter @Setter List<PersoMachine> machineList=new ArrayList<PersoMachine>();
 	private @Getter @Setter List<Log> logList=new ArrayList<Log>();
+	private @Getter @Setter List<CardPackage> packageList=new ArrayList<CardPackage>();
+	private @Getter @Setter List<DeliveryLocation> locationList=new ArrayList<DeliveryLocation>();
 	private @Getter @Setter Map<Integer,LogType> logTypeMap=new HashMap<Integer,LogType>();
 	
 

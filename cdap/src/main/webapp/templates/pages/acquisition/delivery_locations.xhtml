@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	
+<h:body>
+	<h:form id="mainForm">
+		<p:toolbar>
+			<f:facet name="left" >
+				<p:commandButton 
+					value="Nova lokacija" 
+					icon="addIcon"  
+					oncomplete="PF('newLocationDialog').show()"  
+					actionListener="#{locationView.newLocation}" 
+					immediate="true" 
+					update="mainForm:newLocationDialog"
+					process="@this"
+					styleClass="topToolbarRight" />	
+			</f:facet>
+		</p:toolbar>
+		<p:spacer />
+		<p:messages 
+			id="messages" 
+			showDetail="true" 
+			autoUpdate="true" 
+			closable="true" 
+			globalOnly="true" />
+		<p:dataTable 
+			var="location" 
+			value="#{locationView.locationList}" 
+			rowKey="#{location.id}"
+			paginator="true"
+            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+            paginatorPosition="bottom"
+            rowsPerPageTemplate="15,20,25"
+            rows="20"
+			>
+				<f:facet name="header" > Lokacije dostave </f:facet>
+			    <p:column 
+			    	headerText="Id"
+			    	width="20">
+			 		<h:outputText 
+			 			value="#{location.id}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Klijent" 
+			    	filterBy="#{location.client.name}" 
+			    	filterMatchMode="contains">
+			    	<h:outputText 
+			    		value="#{location.client.name}" />
+			    </p:column>
+			     <p:column 
+			    	headerText="Naziv lokacije"
+			    	filterBy="#{location.name}" 
+			    	filterMatchMode="contains"
+			    	>
+			    	<h:outputText 
+			    		value="#{location.name}" />
+			    </p:column>
+			     <p:column 
+			    	headerText="Ulica i broj"
+			    	filterBy="#{location.street}" 
+			    	filterMatchMode="contains"
+			    	>
+			    	<h:outputText 
+			    		value="#{location.street}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Poštanski broj"
+			    	filterBy="#{location.postal}" 
+			    	filterMatchMode="contains"
+			    	>
+			    	<h:outputText 
+			    		value="#{location.postal}" />
+			    </p:column>
+			   <p:column 
+			    	headerText="Grad"
+			    	filterBy="#{location.city}" 
+			    	filterMatchMode="contains"
+			    	>
+			    	<h:outputText 
+			    		value="#{location.city}" />
+			    </p:column>
+			    <p:column>
+			      <p:commandButton 
+			       		process="@this"  
+			       		update="mainForm:newLocationDialog" 
+			       		oncomplete="PF('newLocationDialog').show()" 
+			       		icon="modifyBtnImg"
+			       		title="Ažuriraj">
+		                <f:setPropertyActionListener 
+		                	value="#{location}" 
+		                	target="#{locationView.location}" />
+		            </p:commandButton>
+			    </p:column>
+		</p:dataTable>
+	    <p:dialog 
+		 	id="newLocationDialog" 
+		 	widgetVar="newLocationDialog" 
+		 	modal="true" 
+		 	header="Nova / postojeća lokacija" 
+		 	position="center center" 
+		 	width="550" 
+		 	height="550" 
+		 	resizable="false"  
+		 	appendToBody="true" >
+	  		<h:panelGrid 
+	  			id="dialogPanelGrid" 
+	  			columns="2" 
+	  			style="margin-bottom:10px" 
+	  			cellpadding="15" 
+	  			columnClasses="locationDialogLeft,locationDialogRight">
+	  			<p:outputLabel 
+	  				value="ID: "/>
+	  			<p:inputText
+					value="#{locationView.location.id}" 
+					disabled="true" />
+	  			<p:outputLabel 
+					value="Klijent: " />
+				<p:selectOneMenu 
+		        	value="#{locationView.location.client}" 
+		        	converter="clientConverter"
+		        	style="vertical-align:middle; width:145px;" >
+			            <f:selectItems 
+			            	value="#{locationView.clientList}"  
+			            	var="client" 
+			            	itemValue="#{client}" 
+			            	itemLabel="#{client.name}" />
+			     </p:selectOneMenu>	
+		   		<p:outputLabel 
+		   			value="Ime: " />
+				<p:inputText 
+					value="#{locationView.location.name}" 
+					required="true"  
+					requiredMessage="Ime je obavezno"/>
+				<p:outputLabel 
+					value="Ulica i broj " />
+				<p:inputText  
+					value="#{locationView.location.street}" 
+					required="true"
+					requiredMessage="Ulica je obavezna"/>
+				<p:outputLabel 
+					value="Poštanski broj " />
+				<p:inputText   
+					value="#{locationView.location.postal}" 
+					required="true" 
+					requiredMessage="Poštanski broj je obavezno"/>
+					<p:outputLabel 
+					value="Grad " />
+				<p:inputText  
+					value="#{locationView.location.city}" 
+					required="true"
+					requiredMessage="Grad je obavezan"/>
+				<p:commandButton 
+					value="Spremi" 
+					icon="ui-icon-circle-save"  
+					actionListener="#{locationView.saveLocation}" 
+					/>
+	       </h:panelGrid>
+	       	<p:messages 
+				id="messagesDialog" 
+				autoUpdate="true" 
+				closable="true" />
+	  </p:dialog>
+	</h:form>
+</h:body>
+       
+
+</html>

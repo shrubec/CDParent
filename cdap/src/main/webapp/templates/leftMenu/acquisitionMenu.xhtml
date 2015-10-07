@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+
+	<p:menu style="height:90%;">
+		<p:submenu label="Paketi">
+			<p:menuitem value="Paketi kartica"  actionListener="#{acquisitionMainView.renderPage(1)}" icon="packageIcon" update="mainGrid" />
+			<p:menuitem value="Lokacije dostave"  actionListener="#{acquisitionMainView.renderPage(2)}" icon="postIcon" update="mainGrid" />
+		</p:submenu>
+		<p:submenu label="Kartice">
+			<p:menuitem value="Kartice" actionListener="#{acquisitionMainView.renderPage(3)}" icon="cardsIcon" update="mainGrid" />
+		</p:submenu>
+	</p:menu>
+
+
+</html>

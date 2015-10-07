@@ -1,7 +1,5 @@
 package hr.cdap.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,34 +8,38 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
 @Entity
-@Table(name = "package")
-public class CardPackage {
+@Table(name = "delivery_location")
+public class DeliveryLocation {
 
-	@Id
+	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name="card_type_id")
-	private CardType cardType;
+	@JoinColumn(name="client_id")
+	private Client client;
 	
-	@ManyToOne
-	@JoinColumn(name="delivery_location_id")
-	private DeliveryLocation deliveryLocation;
+	@Column(name = "code")
+	private String code;
 	
-	@Column(name = "package_number")
-	private String cardNumber;
+	@Column(name = "name")
+	private String name;
 	
-	@Column(name = "date_created")
-	@Temporal(TemporalType.DATE)
-	private Date dateCreated;
+	@Column(name = "postal")
+	private String postal;
+	
+	@Column(name = "city")
+	private String city;
+	
+	@Column(name = "street")
+	private String street;
+	
+	
 }

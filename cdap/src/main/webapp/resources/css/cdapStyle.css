@@ -151,6 +151,16 @@
 	width: 250px;
 }
 
+.locationDialogLeft {
+	width: 150px;
+	height:30px;
+}
+.locationDialogRight {
+	height:30px;
+	text-align: right;
+	width: 250px;
+}
+
 .adminMachineDialogLeft {
 	width: 350px;
 	height:30px;
@@ -298,4 +308,13 @@
 }
 .addIcon {
 	 background-image: url('../../resources/images/icons/add_16x16.png') !important;
+}
+.packageIcon {
+	 background-image: url('../../resources/images/icons/package_16x16.png') !important;
+}
+.cardsIcon {
+	 background-image: url('../../resources/images/icons/cards_16x16.png') !important;
+}
+.postIcon {
+	 background-image: url('../../resources/images/icons/post_16x16.png') !important;
 }
