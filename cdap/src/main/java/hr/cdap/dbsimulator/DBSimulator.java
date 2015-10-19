@@ -9,6 +9,7 @@ import hr.cdap.entity.Log;
 import hr.cdap.entity.LogType;
 import hr.cdap.entity.PersoMachine;
 import hr.cdap.entity.User;
+import hr.cdap.web.util.WebUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +43,7 @@ public class DBSimulator {
 		initializeUser();
 		initializeMachine();
 		initializeLogEvent();
+		initializeLocationList();
 	}
 
 	public void logAction(Integer logType,User user,Card card,PersoMachine machine,CardPackage cardPackage,CardType cardType,String additionalInfo) {
@@ -64,6 +66,25 @@ public class DBSimulator {
 		for (Client client:clientList) {
 			if (client.getName().equals(name)) {
 				return client;
+			}
+		}
+		return null;
+	}
+	
+	public DeliveryLocation findLocationByName(String name) {
+		for (DeliveryLocation location:locationList) {
+			if (location.getName().equals(name)) {
+				return location;
+			}
+		}
+		return null;
+	}
+	
+	public CardType findTypeByName(String name) {
+		List<CardType> typeList= (List<CardType>) WebUtil.getSession().getAttribute("cardTypeList");
+		for (CardType cardType:typeList) {
+			if (cardType.getName().equals(name)) {
+				return cardType;
 			}
 		}
 		return null;
@@ -184,6 +205,35 @@ public class DBSimulator {
 		m2.setLogFolder("D:\\logs");
 		machineList.add(m2);
 		
+	}
+	
+	private void initializeLocationList() {
+		DeliveryLocation l1=new DeliveryLocation();
+		l1.setId(1);
+		l1.setName("Savska");
+		l1.setStreet("Savska 101");
+		l1.setPostal("10000");
+		l1.setCity("Zagreb");
+		l1.setClient(clientList.get(0));
+		locationList.add(l1);
+		
+		DeliveryLocation l2=new DeliveryLocation();
+		l2.setId(2);
+		l2.setName("Radnièka");
+		l2.setStreet("Radnièka 5");
+		l2.setPostal("10000");
+		l2.setCity("Zagreb");
+		l2.setClient(clientList.get(1));
+		locationList.add(l2);
+		
+		DeliveryLocation l3=new DeliveryLocation();
+		l3.setId(3);
+		l3.setName("Varaždin");
+		l3.setStreet("Ludbreška 5");
+		l3.setPostal("42000");
+		l3.setCity("Varaždin");
+		l3.setClient(clientList.get(1));
+		locationList.add(l3);
 	}
 
 	private void initializeLogEvent() {

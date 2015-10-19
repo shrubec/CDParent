@@ -9,6 +9,19 @@
 <h:body>
 
 	<h:form id="mainForm">
+		<p:toolbar>
+			<f:facet name="left" >
+				<p:commandButton 
+					value="Novi paket" 
+					icon="addIcon"  
+					oncomplete="PF('newPackageDialog').show()"  
+					actionListener="#{packageView.newPackage}" 
+					immediate="true" 
+					update="mainForm:newPackageDialog"
+					process="@this"
+					styleClass="topToolbarRight" />	
+			</f:facet>
+		</p:toolbar>
 		<p:spacer />
 		<p:messages 
 			id="messages" 
@@ -17,15 +30,15 @@
 			closable="true" 
 			globalOnly="true" />
 		<p:dataTable 
-			var="log" 
-			value="#{logView.logList}" 
-			rowKey="#{log.id}"
+			var="cardPackage" 
+			value="#{packageView.packageList}" 
+			rowKey="#{cardPackage.id}"
 			paginator="true"
             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
             rowsPerPageTemplate="15,20,25"
             rows="20"
 			>
-				<f:facet name="header" > Logovi </f:facet>
+				<f:facet name="header" > Paketi </f:facet>
 				<p:column 
 					width="20">
 				    <p:graphicImage 
@@ -38,66 +51,112 @@
 			    	headerText="Id"
 			    	width="20">
 			 		<h:outputText 
-			 			value="#{log.id}" />
+			 			value="#{cardPackage.id}" />
 			    </p:column>
 			    <p:column 
-			    	headerText="Akcija" 
-			    	filterBy="#{log.logType.name}" 
+			    	headerText="Tip kartice" 
+			    	filterBy="#{cardPackage.cardType.name}" 
 			    	filterMatchMode="contains">
 			    	<h:outputText 
-			    		value="#{log.logType.name}" />
+			    		value="#{cardPackage.cardType.name}" />
+			    </p:column>
+			    <p:column 
+			    	headerText="Kartica u paketu" >
+			    	<h:outputText 
+			    		value="#{cardPackage.cardNumber}" />
 			    </p:column>
 			     <p:column 
-			    	headerText="Vrijeme"
+			    	headerText="Datum kreiranja"
 			    	width="140">
 			    	<h:outputText 
-			    		value="#{log.timeCreated}" >
+			    		value="#{cardPackage.dateCreated}" >
 			    		<f:convertDateTime 
-			    			pattern="dd.MM.yyyy HH:mm:ss" />
+			    			pattern="dd.MM.yyyy" />
 			    	</h:outputText>
 			    </p:column>
-			     <p:column 
-			    	headerText="Ime"
-			    	filterBy="#{log.user.name}" 
-			    	filterMatchMode="contains"
-			    	width="100">
-			    	<h:outputText 
-			    		value="#{log.user.name}" />
-			    </p:column>
-			     <p:column 
-			    	headerText="Prezime"
-			    	filterBy="#{log.user.lastName}" 
-			    	filterMatchMode="contains"
-			    	width="100">
-			    	<h:outputText 
-			    		value="#{log.user.lastName}" />
-			    </p:column>
 			    <p:column 
-			    	headerText="Stroj">
-			    	<h:outputText rendered="#{log.machine != null}"
-			    		value="#{log.machine.name}" />
+			    	headerText="Lokacija dostave" 
+			    	filterBy="#{cardPackage.deliveryLocation.name}" 
+			    	filterMatchMode="contains">
+			    	<h:outputText 
+			    		value="#{cardPackage.deliveryLocation.name}" />
 			    </p:column>
 			     <p:column 
-			    headerText="Paket">
-			    	<h:outputText rendered="#{log.cardPackage != null}"
-			    		value="#{log.cardPackage.number}" />
-			    </p:column>
-			    <p:column 
-			    	headerText="Kartica">
-			    	<h:outputText rendered="#{log.card != null}"
-			    		value="#{log.card.cardNumber}" />
-			    </p:column>
-			      <p:column 
-			   		headerText="Tip kartice">
-			    	<h:outputText rendered="#{log.cardType != null}"
-			    		value="#{log.cardType.name}" />
-			    </p:column>
-			       <p:column 
-			   		headerText="Dodatni info">
+			    	headerText="Kreirao korisnik">
 			    	<h:outputText 
-			    		value="#{log.info}" />
+			    		value="#{cardPackage.userCreated.name} #{cardPackage.userCreated.lastName}" />
 			    </p:column>
 		</p:dataTable>
+		
+		 <p:dialog 
+		 	id="newPackageDialog" 
+		 	widgetVar="newPackageDialog" 
+		 	modal="true" 
+		 	header="Novi / postojeći paket" 
+		 	position="center center" 
+		 	width="500" 
+		 	height="250" 
+		 	resizable="false"  
+		 	appendToBody="true" >
+	  		<h:panelGrid 
+	  			id="dialogPanelGrid" 
+	  			columns="2" 
+	  			style="margin-bottom:10px" 
+	  			cellpadding="15" 
+	  			columnClasses="packageDialogLeft,packageDialogRight">
+	  			<p:outputLabel 
+	  				value="ID: "/>
+	  			<p:inputText
+					value="#{packageView.cardPackage.id}" 
+					disabled="true" />
+	  			<p:outputLabel 
+					value="Tip kartice " />
+				<p:selectOneMenu 
+		        	value="#{packageView.selectedType}" 
+		        	converter="cardTypeConverter"
+		        	required="true"
+		        	requiredMessage="Tip kartice je obavezan"
+		        	style="vertical-align:middle; width:145px;" 
+		        	>
+		        		<p:ajax listener="#{packageView.refreshLocationList}" update="deliveryLocation" />
+			            <f:selectItems 
+			            	value="#{packageView.typeList}"  
+			            	var="type" 
+			            	itemValue="#{type}" 
+			            	itemLabel="#{type.name}" />
+			     </p:selectOneMenu>	
+			     <p:outputLabel 
+					value="Lokacija dostave " />
+				<p:selectOneMenu 
+					id="deliveryLocation"
+		        	value="#{packageView.cardPackage.deliveryLocation}" 
+		        	converter="deliveryLocationConverter"
+		        	required="true"
+		        	requiredMessage="Lokacija dostave je obavezna"
+		        	style="vertical-align:middle; width:145px;" >
+			            <f:selectItems 
+			            	value="#{packageView.locationList}"  
+			            	var="location" 
+			            	itemValue="#{location}" 
+			            	itemLabel="#{location.name}" />
+			     </p:selectOneMenu>	
+		   		<p:outputLabel 
+		   			value="Broj kartica u paketu " />
+				<p:inputText 
+					value="#{packageView.cardPackage.cardNumber}" 
+					disabled="true"  />
+				<p:commandButton 
+					value="Spremi" 
+					icon="ui-icon-circle-save"  
+					actionListener="#{packageView.savePackage}" 
+					/>
+	       </h:panelGrid>
+	       	<p:messages 
+				id="messagesDialog" 
+				autoUpdate="true" 
+				closable="true" />
+	  </p:dialog>
+		
 		
 	</h:form>
 </h:body>

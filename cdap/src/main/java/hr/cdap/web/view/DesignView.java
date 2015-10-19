@@ -129,6 +129,7 @@ public class DesignView extends AbstractView {
 	
 	public void saveCardType() {
 		selectedCardTypeName=selectedCardType.getName();
+		selectedCardType.setClient(activeClient);
 		cardTypes.add(selectedCardType);
 		DesignService.saveCardType(selectedCardType);
 		loadCardTemplate();

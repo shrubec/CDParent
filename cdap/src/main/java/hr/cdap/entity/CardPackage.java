@@ -34,8 +34,12 @@ public class CardPackage {
 	@JoinColumn(name="delivery_location_id")
 	private DeliveryLocation deliveryLocation;
 	
-	@Column(name = "package_number")
-	private String cardNumber;
+	@ManyToOne
+	@JoinColumn(name="user_created_id")
+	private User userCreated;
+	
+	@Column(name = "card_number")
+	private Integer cardNumber;
 	
 	@Column(name = "date_created")
 	@Temporal(TemporalType.DATE)

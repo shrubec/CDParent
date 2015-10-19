@@ -161,6 +161,15 @@
 	width: 250px;
 }
 
+.packageDialogLeft {
+	width: 150px;
+	height:30px;
+}
+.packageDialogRight {
+	height:30px;
+	text-align: right;
+	width: 250px;
+}
 .adminMachineDialogLeft {
 	width: 350px;
 	height:30px;
