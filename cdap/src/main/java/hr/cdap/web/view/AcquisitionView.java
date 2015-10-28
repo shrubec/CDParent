@@ -1,8 +1,10 @@
 package hr.cdap.web.view;
 
+import hr.cdap.dbsimulator.DBSimulator;
 import hr.cdap.entity.Card;
 import hr.cdap.entity.CardData;
 import hr.cdap.entity.CardElement;
+import hr.cdap.entity.CardPackage;
 import hr.cdap.entity.CardType;
 import hr.cdap.service.AcquisitionService;
 import hr.cdap.service.DesignService;
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
@@ -41,15 +44,22 @@ public class AcquisitionView extends AbstractView {
 	private @Getter @Setter Card selectedCard; //ovo je samo za prikaz
 	private @Getter @Setter Card activeCard;
 	private @Getter @Setter Boolean editPhase=false;
+	private @Getter @Setter CardPackage cardPackage;
+	private @Getter @Setter List<CardPackage> packageList;
 	
+	private @EJB DBSimulator dbSimulator;
 	
 	@PostConstruct
 	private void loadCardTypes() {
 		WebUtil.getSession().removeAttribute("activeCard");
 		cardTypes=DesignService.fetchCardTypes();
 		oneSideActive=(Boolean)WebUtil.getSession().getAttribute("oneSideActive");
+		refreshPackageList();
 	}
 	
+	private void refreshPackageList()  {
+		packageList=dbSimulator.getPackageListForCardType(selectedCardType);
+	}
 	
 	public void changeActiveSide() {
 		if (editPhase) mapFormDataToObject(); 
@@ -82,9 +92,20 @@ public class AcquisitionView extends AbstractView {
 		}
 	}
 	
+	public void showCardToPackgageDialog() {
+		System.out.println("Dummy action...");
+	}
+	
+	public void savePackage() {
+		RequestContext.getCurrentInstance().update("mainForm");
+		RequestContext.getCurrentInstance().execute("PF('packageDialog').hide()");
+		newCard();
+	}
+	
 	public void newCard() {
 		editPhase=true; 
 		activeCard=new Card();
+		activeCard.setCardPackage(cardPackage);
 		activeCard.setDateCreated(new Date());
 		activeCard.setCardType(selectedCardType);
 		selectedCardType.getElementList().clear();
@@ -113,6 +134,7 @@ public class AcquisitionView extends AbstractView {
 		loadCardTemplate();
 		cardList.clear();
 		cardList.addAll(AcquisitionService.fetchCardByType(selectedCardType));
+		refreshPackageList();
 	}
 	
 	public List<SelectItem> getCardTypeItems() {
@@ -239,6 +261,7 @@ public class AcquisitionView extends AbstractView {
 	
 	public void saveCard() {
 		mapFormDataToObject(); 
+		activeCard.getCardPackage().setCardNumber(activeCard.getCardPackage().getCardNumber()+1);
 		AcquisitionService.saveCard(activeCard);
 		cardList.clear();
 		cardList.addAll(AcquisitionService.fetchCardByType(selectedCardType));

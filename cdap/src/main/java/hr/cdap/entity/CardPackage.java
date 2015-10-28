@@ -35,6 +35,10 @@ public class CardPackage {
 	private DeliveryLocation deliveryLocation;
 	
 	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
+	
+	@ManyToOne
 	@JoinColumn(name="user_created_id")
 	private User userCreated;
 	

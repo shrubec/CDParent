@@ -1,7 +1,7 @@
 package hr.cdap.web.converter;
 
 import hr.cdap.dbsimulator.DBSimulator;
-import hr.cdap.entity.CardType;
+import hr.cdap.entity.CardPackage;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.component.UIComponent;
@@ -11,13 +11,12 @@ import javax.faces.convert.FacesConverter;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-@FacesConverter(value = "cardTypeConverter", forClass = CardType.class)
+@FacesConverter(value = "cardPackageConverter", forClass = CardPackage.class)
 @ApplicationScoped
-public class CardTypeConverter implements Converter {
+public class CardPackageConverter implements Converter {
 
 	private DBSimulator dbSimulator;
-
-//	@Override
+	
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String arg2) {
 		try {
 			InitialContext ic = new InitialContext();
@@ -25,15 +24,12 @@ public class CardTypeConverter implements Converter {
 		} catch (NamingException e) {
 			e.printStackTrace();
 		}
-		Object obj= dbSimulator.findTypeByName(arg2);
-		System.out.println("Convertiani objekt: " + obj);
+		Object obj= dbSimulator.findPackageById(Integer.valueOf(arg2));
 		return obj;
 	}
 
-//	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
-		CardType cardType = (CardType) arg2;
-		return cardType.getName();
+		CardPackage cardPackage = (CardPackage) arg2;
+		return cardPackage.getId().toString();
 	}
-
 }

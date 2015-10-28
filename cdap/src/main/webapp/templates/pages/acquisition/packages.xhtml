@@ -35,7 +35,8 @@
 			rowKey="#{cardPackage.id}"
 			paginator="true"
             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-            rowsPerPageTemplate="15,20,25"
+            rowsPerPageTemplate="15,20,25" 
+            paginatorPosition="bottom"
             rows="20"
 			>
 				<f:facet name="header" > Paketi </f:facet>
@@ -43,7 +44,7 @@
 					width="20">
 				    <p:graphicImage 
 				    	style="vertical-align: middle;"
-		            	value="resources/images/icons/report2_16x16.png" 
+		            	value="resources/images/icons/package_16x16.png" 
 		            	width="16" 
 		            	height="16" /> 
 			    </p:column>
@@ -59,6 +60,13 @@
 			    	filterMatchMode="contains">
 			    	<h:outputText 
 			    		value="#{cardPackage.cardType.name}" />
+			    </p:column>
+			      <p:column 
+			    	headerText="Status" 
+			    	filterBy="#{cardPackage.status.name}" 
+			    	filterMatchMode="contains">
+			    	<h:outputText 
+			    		value="#{cardPackage.status.name}" />
 			    </p:column>
 			    <p:column 
 			    	headerText="Kartica u paketu" >
@@ -85,6 +93,20 @@
 			    	headerText="Kreirao korisnik">
 			    	<h:outputText 
 			    		value="#{cardPackage.userCreated.name} #{cardPackage.userCreated.lastName}" />
+			    </p:column>
+			    <p:column>
+			       <p:commandButton 
+			       		process="@this"  
+			       		update="mainForm:newPackageDialog" 
+			       		oncomplete="PF('newPackageDialog').show()" 
+			       		icon="modifyBtnImg"
+			       		title="Ažuriraj"
+			       		actionListener="#{packageView.editPackage}"
+			       		>
+		                <f:setPropertyActionListener 
+		                	value="#{cardPackage}" 
+		                	target="#{packageView.cardPackage}" />
+		            </p:commandButton>
 			    </p:column>
 		</p:dataTable>
 		
@@ -145,6 +167,13 @@
 				<p:inputText 
 					value="#{packageView.cardPackage.cardNumber}" 
 					disabled="true"  />
+				<p:outputLabel 
+	  				value="Status "/>
+	  			<p:inputText
+					value="#{packageView.cardPackage.status.name}" 
+					disabled="true" />
+	  			<p:outputLabel 
+					value="Tip kartice " />
 				<p:commandButton 
 					value="Spremi" 
 					icon="ui-icon-circle-save"  

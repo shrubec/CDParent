@@ -32,6 +32,10 @@ public class Card {
 	@JoinColumn(name="card_type")
 	private CardType cardType;
 	
+	@ManyToOne
+	@JoinColumn(name="card_package")
+	private CardPackage cardPackage;
+	
 	@Column(name = "card_number")
 	private String cardNumber;
 	

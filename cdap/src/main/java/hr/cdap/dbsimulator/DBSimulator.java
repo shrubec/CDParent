@@ -8,6 +8,7 @@ import hr.cdap.entity.DeliveryLocation;
 import hr.cdap.entity.Log;
 import hr.cdap.entity.LogType;
 import hr.cdap.entity.PersoMachine;
+import hr.cdap.entity.Status;
 import hr.cdap.entity.User;
 import hr.cdap.web.util.WebUtil;
 
@@ -35,6 +36,7 @@ public class DBSimulator {
 	private @Getter @Setter List<CardPackage> packageList=new ArrayList<CardPackage>();
 	private @Getter @Setter List<DeliveryLocation> locationList=new ArrayList<DeliveryLocation>();
 	private @Getter @Setter Map<Integer,LogType> logTypeMap=new HashMap<Integer,LogType>();
+	private @Getter @Setter List<Status> statusList=new ArrayList<Status>();
 	
 
 	@PostConstruct
@@ -44,6 +46,7 @@ public class DBSimulator {
 		initializeMachine();
 		initializeLogEvent();
 		initializeLocationList();
+		initializeStatusList();
 	}
 
 	public void logAction(Integer logType,User user,Card card,PersoMachine machine,CardPackage cardPackage,CardType cardType,String additionalInfo) {
@@ -290,5 +293,49 @@ public class DBSimulator {
 		le9.setName("Neuspješna prijava u sustav");
 		le9.setActive(true);
 		logTypeMap.put(9, le9);
+	}
+	
+	public List<CardPackage> getPackageListForCardType(CardType cardType) {
+		List<CardPackage> list=new ArrayList<CardPackage>();
+		for (CardPackage cardPackage:packageList) {
+			if (cardPackage.getCardType().equals(cardType)) {
+				list.add(cardPackage);
+			}
+		}
+		return list;
+	}
+	
+	public CardPackage findPackageById(Integer id) {
+		for (CardPackage cardPackage:packageList) {
+			if (cardPackage.getId().equals(id)) {
+				return cardPackage;
+			}
+		}
+		return null;
+	}
+	
+	private void initializeStatusList() {
+		Status s1=new Status();
+		s1.setId(1);
+		s1.setName("PRIPREMA");
+		statusList.add(s1);
+		
+		Status s2=new Status();
+		s2.setId(2);
+		s2.setName("SPREMNO");
+		statusList.add(s2);
+		
+		Status s3=new Status();
+		s3.setId(3);
+		s3.setName("PEROSNALIZIRANO");
+		statusList.add(s3);
+	}
+	
+	public Status findStatusById(Integer id) {
+		for (Status status:statusList) {
+			if (status.getId().equals(id))
+				return status;
+		}
+		return null;
 	}
 }

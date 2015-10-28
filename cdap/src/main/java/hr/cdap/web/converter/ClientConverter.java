@@ -17,7 +17,7 @@ public class ClientConverter implements Converter {
 
 	private DBSimulator dbSimulator;
 
-	@Override
+//	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String arg2) {
 		try {
 			InitialContext ic = new InitialContext();
@@ -30,7 +30,7 @@ public class ClientConverter implements Converter {
 		return obj;
 	}
 
-	@Override
+//	@Override
 	public String getAsString(FacesContext arg0, UIComponent arg1, Object arg2) {
 		Client client = (Client) arg2;
 		return client.getName();

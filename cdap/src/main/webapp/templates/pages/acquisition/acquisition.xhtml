@@ -37,10 +37,13 @@
 			<p:commandButton 
 				value="Nova kartica"
 				icon="ui-icon-circle-plus"  
-				update="mainForm"  
-				actionListener="#{acquisitionView.newCard}" 
+				actionListener="#{acquisitionView.showCardToPackgageDialog}" 
 				immediate="true" 
-				styleClass="topToolbarRight" />
+				styleClass="topToolbarRight" 
+				oncomplete="PF('packageDialog').show()"  
+				update="mainForm:packageDialog"
+				process="@this"
+				/>
 		</f:facet>
 	</p:toolbar>
 
@@ -114,11 +117,22 @@
 			value="#{acquisitionView.cardList}" 
 			selectionMode="single" 
 			selection="#{acquisitionView.selectedCard}" 
-			rowKey="#{card.id}">
+			rowKey="#{card.id}"
+			paginator="true"
+            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+            rowsPerPageTemplate="10,15,20" 
+            paginatorPosition="bottom"
+			>
 				<p:ajax event="rowSelect" listener="#{acquisitionView.selectCard}"  />
 			    <p:column headerText="Id"><h:outputText value="#{card.id}" /> </p:column>
 			    <p:column headerText="Tip kartice"> <h:outputText value="#{card.cardType.name}" /></p:column>
-			    <p:column headerText="Serijski broj"> <h:outputText value="#{card.cardNumber}" /> </p:column>
+			    <p:column 
+			    	headerText="Paket" 	
+			    	filterBy="#{card.cardPackage.id}" 
+			    	filterMatchMode="contains"> <h:outputText value="#{card.cardPackage.id}" /></p:column>
+			    <p:column headerText="Serijski broj" 
+			    	filterBy="#{card.cardNumber}" 
+			    	filterMatchMode="contains"> <h:outputText value="#{card.cardNumber}" /> </p:column>
 			    <p:column headerText="Datum kreiranja">
 			        <h:outputText value="#{card.dateCreated}" >
 			        	<f:convertDateTime pattern="dd.MM.yyyy HH:mm:ss"/>
@@ -140,12 +154,58 @@
  		onstart="document.getElementById('mainForm:dummyDialogButton').click();"
  	/>
  	
-<!--  	<p:remoteCommand  -->
-<!-- 		name="setCardDimensionsRemote"  -->
-<!-- 		actionListener="#{acquisitionView.setElementDimensions}" -->
-<!-- 		immediate="true" -->
-<!-- 		process="@this" -->
-<!-- 	/>		 -->
+ 	<p:remoteCommand 
+		name="setCardDimensionsRemote" 
+		actionListener="#{acquisitionView.setElementDimensions}"
+		immediate="true"
+		process="@this"
+	/>		
+	
+	
+		 <p:dialog 
+		 	id="packageDialog" 
+		 	widgetVar="packageDialog" 
+		 	modal="true" 
+		 	header="Paket kartice" 
+		 	position="center center" 
+		 	width="400" 
+		 	height="100" 
+		 	resizable="false"  
+		 	appendToBody="true" >
+	  		<h:panelGrid 
+	  			id="dialogPanelGrid" 
+	  			columns="2" 
+	  			style="margin-bottom:10px" 
+	  			cellpadding="15" 
+	  			columnClasses="packageDialogLeft,packageDialogRight">
+	  		 <p:outputLabel 
+					value="Paket " />
+				<p:selectOneMenu 
+					id="package"
+		        	value="#{acquisitionView.cardPackage}" 
+		        	converter="cardPackageConverter"
+		        	required="true"
+		        	requiredMessage="Odabir paketa je obavezan"
+		        	style="vertical-align:middle; width:145px;" >
+			            <f:selectItems 
+			            	value="#{acquisitionView.packageList}"  
+			            	var="cardPackage" 
+			            	itemValue="#{cardPackage}" 
+			            	itemLabel="Paket #{cardPackage.id}, #{cardPackage.deliveryLocation.name}"
+			            	/>
+			     </p:selectOneMenu>	
+		   		
+				<p:commandButton 
+					value="OK" 
+					icon="ui-icon-circle-save"  
+					actionListener="#{acquisitionView.savePackage}" 
+					/>
+	       </h:panelGrid>
+	       	<p:messages 
+				id="messagesDialog" 
+				autoUpdate="true" 
+				closable="true" />
+	  </p:dialog>
 
 </h:form>
 

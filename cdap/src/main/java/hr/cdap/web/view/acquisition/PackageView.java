@@ -4,6 +4,7 @@ import hr.cdap.dbsimulator.DBSimulator;
 import hr.cdap.entity.CardPackage;
 import hr.cdap.entity.CardType;
 import hr.cdap.entity.DeliveryLocation;
+import hr.cdap.entity.Status;
 import hr.cdap.service.LoginService;
 import hr.cdap.web.util.WebUtil;
 
@@ -48,6 +49,11 @@ public class PackageView {
 		cardPackage.setCardNumber(0);
 		cardPackage.setDateCreated(new Date());
 		cardPackage.setUserCreated(loginService.getLoggedUser(WebUtil.getSession()));
+		cardPackage.setStatus(dbSimulator.findStatusById(Status.PRIPREMA));
+	}
+	
+	public void editPackage() {
+		refreshLocationList();
 	}
 	
 	public void savePackage() {
