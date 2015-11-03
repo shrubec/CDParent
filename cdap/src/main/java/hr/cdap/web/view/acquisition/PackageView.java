@@ -56,6 +56,13 @@ public class PackageView {
 		refreshLocationList();
 	}
 	
+	public void sendToPerso() {
+		cardPackage.setStatus(dbSimulator.findStatusById(Status.SPREMNO));
+		WebUtil.infoMessage("Paket uspješno poslan na personalizaciju. ");
+		RequestContext.getCurrentInstance().update("mainForm");
+		RequestContext.getCurrentInstance().execute("PF('newPackageDialog').hide()");
+	}
+	
 	public void savePackage() {
 		cardPackage.setCardType(selectedType);
 		if (cardPackage.getId()== null) {

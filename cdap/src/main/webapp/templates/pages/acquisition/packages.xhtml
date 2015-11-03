@@ -172,12 +172,15 @@
 	  			<p:inputText
 					value="#{packageView.cardPackage.status.name}" 
 					disabled="true" />
-	  			<p:outputLabel 
-					value="Tip kartice " />
 				<p:commandButton 
 					value="Spremi" 
 					icon="ui-icon-circle-save"  
 					actionListener="#{packageView.savePackage}" 
+					/>
+				<p:commandButton 
+					value="Pošalji na perso." 
+					icon="ui-icon-gear"  
+					actionListener="#{packageView.sendToPerso}" 
 					/>
 	       </h:panelGrid>
 	       	<p:messages 
